@@ -15,6 +15,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 
 import static ru.javaops.topjava.util.UserUtil.DEFAULT_CALORIES_PER_DAY;
@@ -25,7 +27,9 @@ import static ru.javaops.topjava.util.UserUtil.DEFAULT_CALORIES_PER_DAY;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = {"password", "meals"})
-public class User extends NamedEntity implements HasIdAndEmail {
+public class User extends NamedEntity implements HasIdAndEmail, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
