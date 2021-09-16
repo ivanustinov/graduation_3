@@ -1,19 +1,31 @@
-INSERT INTO USERS (name, email, password, calories_per_day)
-VALUES ('User', 'user@yandex.ru', '{noop}password', 2005),
-       ('Admin', 'admin@gmail.com', '{noop}admin', 1900);
+INSERT INTO USERS (name, email, password)
+VALUES ('User', 'user@yandex.ru', '{noop}password'),
+       ('Admin', 'admin@gmail.com', '{noop}admin'),
+       ('User2', 'user_2@gmail.ru', '{noop}user2');
 
 INSERT INTO USER_ROLES (role, user_id)
 VALUES ('USER', 1),
        ('ADMIN', 2),
-       ('USER', 2);
+       ('USER', 2),
+       ('USER', 3);
 
-INSERT INTO MEALS (date_time, description, calories, user_id)
-VALUES ('2020-01-30 10:00:00', 'Завтрак', 500, 1),
-       ('2020-01-30 13:00:00', 'Обед', 1000, 1),
-       ('2020-01-30 20:00:00', 'Ужин', 500, 1),
-       ('2020-01-31 0:00:00', 'Еда на граничное значение', 100, 1),
-       ('2020-01-31 10:00:00', 'Завтрак', 500, 1),
-       ('2020-01-31 13:00:00', 'Обед', 1000, 1),
-       ('2020-01-31 20:00:00', 'Ужин', 510, 1),
-       ('2020-01-31 14:00:00', 'Админ ланч', 510, 2),
-       ('2020-01-31 21:00:00', 'Админ ужин', 1500, 2);
+
+INSERT INTO RESTAURANT (name)
+VALUES ('Харбин'),
+       ('Си'),
+       ('Ханой');
+
+INSERT INTO VOTE (restaurant_id, date, user_id)
+VALUES (1, now(), 1),
+       (1, now(), 2),
+       (2, 20150416, 1),
+       (2, 20150416, 2);
+
+INSERT INTO DISH (name, date, price, restaurant_id)
+VALUES ('Харчо', now(), 500, 1),
+       ('Жаркое', now(), 500, 1),
+       ('Компот', now(), 500, 1),
+       ('Селедка', now(), 320, 2),
+       ('Пиво', now(), 150, 2),
+       ('Фрукты', 20150416, 500, 2),
+       ('Солянка', 20150430, 260, 1);

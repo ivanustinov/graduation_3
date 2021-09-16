@@ -12,9 +12,9 @@
     <artifactId>topjava</artifactId>
     <version>1.0</version>
 
-    <name>Calories Management</name>
+    <name>Voting Manager</name>
     <description>Migration TopJava to Spring Boot</description>
-    <url>https://javaops.ru/view/topjava</url>
+    <url>https://github.com/ivanustinov/voting</url>
 
     <properties>
         <java.version>16</java.version>

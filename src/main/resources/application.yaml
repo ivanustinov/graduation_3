@@ -14,13 +14,16 @@ spring:
         default_batch_fetch_size: 20
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
+
   datasource:
     # ImMemory
-    url: jdbc:h2:mem:topjava
-    #    tcp: jdbc:h2:tcp://localhost:9092/mem:topjava
+    url: jdbc:h2:mem:voting
+    #    tcp: jdbc:h2:tcp://localhost:9092/mem:voting
     username: sa
     password:
   h2.console.enabled: true
+
+
 
   # Jackson Serialization Issue Resolver
   jackson:
@@ -29,11 +32,19 @@ spring:
       getter: none
       setter: none
       is-getter: none
+    default-property-inclusion: non_null
 
-  # https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
+
+
+#    https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
   cache:
-    cache-names: users
-    caffeine.spec: maximumSize=1,expireAfterAccess=60s
+    cache-names: users, res, votes
+    caffeine:
+      spec: maximumSize=200,expireAfterAccess=3600s
+  mvc:
+    format:
+      date: iso
+      time: iso
 
 logging:
   level:
@@ -46,3 +57,7 @@ server.servlet:
     charset: UTF-8 # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly
     enabled: true # Enable http encoding support
     force: true
+
+server:
+  servlet:
+    context-path: /api

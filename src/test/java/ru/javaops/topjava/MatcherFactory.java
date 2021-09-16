@@ -3,7 +3,7 @@ package ru.javaops.topjava;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import ru.javaops.topjava.util.JsonUtil;
+import ru.javaops.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -69,8 +69,12 @@ public class MatcherFactory {
         }
 
         public ResultMatcher contentJson(Iterable<T> expected) {
-            return result -> assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
+            System.out.println();
+            return result -> {
+                assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
+            };
         }
+
 
         public T readFromJson(ResultActions action) throws UnsupportedEncodingException {
             return JsonUtil.readValue(getContent(action.andReturn()), clazz);

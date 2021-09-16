@@ -29,14 +29,10 @@ public class UserTo extends NamedTo implements HasIdAndEmail {
     @Size(min = 5, max = 32)
     String password;
 
-    @Range(min = 10, max = 10000)
-    @NotNull
-    Integer caloriesPerDay;
 
-    public UserTo(Integer id, String name, String email, String password, int caloriesPerDay) {
+    public UserTo(Integer id, String name, String email, String password) {
         super(id, name);
         this.email = email;
         this.password = password;
-        this.caloriesPerDay = caloriesPerDay;
     }
 }

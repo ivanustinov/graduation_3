@@ -1,4 +1,4 @@
-package ru.javaops.topjava.util;
+package ru.javaops.topjava.web.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 @UtilityClass
 public class JsonUtil {
-    private static ObjectMapper mapper;
+    public static ObjectMapper mapper;
 
     public static void setMapper(ObjectMapper mapper) {
         JsonUtil.mapper = mapper;
