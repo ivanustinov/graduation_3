@@ -20,11 +20,9 @@ import static ru.javaops.topjava.web.user.UserTestData.user;
  * @since 11.09.2021
  */
 public class VoteTestData {
-    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER_WITH_USER = MatcherFactory
-            .usingIgnoringFieldsComparator(Vote.class, "restaurant.dishes", "restaurant.votes", "user.password", "user.votes");
-
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory
-            .usingIgnoringFieldsComparator(Vote.class, "restaurant.dishes", "restaurant.votes", "user");
+            .usingIgnoringFieldsComparator(Vote.class, "restaurant.dishes", "restaurant.votes",
+                    "user.votes", "user.password", "user.roles");
 
     public static final int VOTE_ID = 1;
 

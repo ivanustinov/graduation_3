@@ -8,12 +8,12 @@
         <version>2.5.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>ru.javaops</groupId>
-    <artifactId>topjava</artifactId>
+    <groupId>ru.ustinov</groupId>
+    <artifactId>voting</artifactId>
     <version>1.0</version>
 
     <name>Voting Manager</name>
-    <description>Migration TopJava to Spring Boot</description>
+    <description>Choose your restaurant for lunch</description>
     <url>https://github.com/ivanustinov/voting</url>
 
     <properties>

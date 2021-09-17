@@ -35,7 +35,7 @@ public class Vote extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey=@ForeignKey(
             foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL"))
-    @JsonIgnoreProperties({"votes", "roles", "date"})
+    @JsonIgnoreProperties({"votes", "roles"})
     private User user;
 
 

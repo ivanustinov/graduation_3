@@ -8,7 +8,6 @@ import ru.javaops.topjava.web.json.JsonUtil;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,11 +40,11 @@ public class UserTestData {
     }
 
     public static User getNew() {
-        return new User(null, "New", "new@gmail.com", "newPass",  Collections.singleton(Role.USER));
+        return new User(null, "New", "new@gmail.com", "newPass", Collections.singleton(Role.USER));
     }
 
     public static User getUpdated() {
-        return new User(USER_ID, "UpdatedName", USER_MAIL, "newPass",  List.of(Role.ADMIN));
+        return new User(USER_ID, "UpdatedName", USER_MAIL, "newPass", List.of(Role.ADMIN));
     }
 
     public static String jsonWithPassword(User user, String passw) {

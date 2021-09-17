@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.repository.RestaurantRepository;
 import ru.javaops.topjava.web.AbstractControllerTest;
@@ -80,7 +82,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(WITH_VOTES_DISHES_MATCHER.contentJson(RESTAURANT_HARBIN, RESTAURANT_CI));
+                .andExpect(WITH_VOTES_DISHES_USER_MATCHER.contentJson(RESTAURANT_HARBIN, RESTAURANT_CI));
     }
 
     @Test

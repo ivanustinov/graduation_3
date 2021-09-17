@@ -33,7 +33,7 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 @AllArgsConstructor
 public class RestaurantController {
 
-    static final String REST_URL = "/admin/restaurants";
+    public static final String REST_URL = "/admin/restaurants";
     private final RestaurantRepository repository;
 
     @GetMapping("/{id}")

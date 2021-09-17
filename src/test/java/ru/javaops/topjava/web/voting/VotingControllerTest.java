@@ -5,16 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.javaops.topjava.model.Restaurant;
-import ru.javaops.topjava.model.Vote;
 import ru.javaops.topjava.repository.VoteRepository;
 import ru.javaops.topjava.web.AbstractControllerTest;
 
 import java.time.LocalTime;
-import java.util.List;
 
 import static java.time.LocalDate.now;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -64,7 +59,7 @@ class VotingControllerTest extends AbstractControllerTest {
                 .param("time", String.valueOf(LocalTime.of(10, 0))))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        VOTE_MATCHER_WITH_USER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, now()), VOTE_USER_2_HARBIN_NOW);
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, now()), VOTE_USER_2_HARBIN_NOW);
     }
 
     @Test
@@ -89,11 +84,11 @@ class VotingControllerTest extends AbstractControllerTest {
 //        VOTE_MATCHER_WITH_USER.assertMatch(votesByUserAndDate.get(0), VOTE_USER_2_HANOY_NOW);
 //    }
 
-    private void voteAnotherOne(int restaurant_id, LocalTime time) throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL)
-                .param("restaurant_id", String.valueOf(restaurant_id))
-                .param("time", String.valueOf(time)))
-                .andExpect(status().isNoContent())
-                .andDo(print());
-    }
+//    private void voteAnotherOne(int restaurant_id, LocalTime time) throws Exception {
+//        perform(MockMvcRequestBuilders.post(REST_URL)
+//                .param("restaurant_id", String.valueOf(restaurant_id))
+//                .param("time", String.valueOf(time)))
+//                .andExpect(status().isNoContent())
+//                .andDo(print());
+//    }
 }
