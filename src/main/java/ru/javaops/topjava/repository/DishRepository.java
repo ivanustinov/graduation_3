@@ -1,6 +1,7 @@
 package ru.javaops.topjava.repository;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,15 +17,22 @@ import java.util.Optional;
 public interface DishRepository extends BaseRepository<Dish> {
 
 
+
+    @Query("SELECT d FROM Dish d WHERE d.date = :date ORDER BY d.name")
+    List<Dish> getDishesByDate(LocalDate date);
+
+    @EntityGraph(attributePaths = {"restaurant"})
+    @Query("SELECT d FROM Dish d WHERE d.id = :id")
+    Optional<Dish> get(int id);
+
+    @EntityGraph(attributePaths = {"restaurant"})
     @Query("SELECT d FROM Dish d ORDER BY d.date DESC, d.name")
     List<Dish> getAll();
 
-    //    @Query("SELECT d FROM Dish d WHERE d.restaurant.id=:restaurant_id AND d.date = :date ORDER BY d.name")
-    List<Dish> getDishesByRestaurantAndDate(Restaurant restaurant, LocalDate date);
 
-
-    @Query("SELECT d FROM Dish d WHERE d.id = :id")
-    Optional<Dish> get(int id);
+    @Modifying
+    @Query("delete from Dish d where d.restaurant = ?1")
+    void deleteAllByRestaurant(Restaurant restaurant);
 
     @Override
     @Modifying

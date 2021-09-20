@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.repository.RestaurantRepository;
+import ru.javaops.topjava.service.RestaurantService;
 import ru.javaops.topjava.service.VoteService;
+import ru.javaops.topjava.to.RestaurantTo;
 import ru.javaops.topjava.web.AuthUser;
 
 import java.time.LocalDate;
@@ -32,19 +34,19 @@ import java.util.List;
 public class VotingController {
     static final String REST_URL = "/voting";
 
-    private final RestaurantRepository restaurantRepository;
+    private final RestaurantService restaurantService;
     private final VoteService voteService;
 
     @GetMapping
-    public ResponseEntity<List<Restaurant>> getWithDishesToday(@AuthenticationPrincipal AuthUser authUser) {
+    public ResponseEntity<List<RestaurantTo>> getWithDishesToday(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get restaurants with dishes today for user {}",  authUser.id());
-        return ResponseEntity.of(restaurantRepository.getWithDishesByDate(LocalDate.now()));
+        return ResponseEntity.of(restaurantService.getWithDishes(LocalDate.now()));
     }
 
     @GetMapping("/results")
-    public ResponseEntity<List<Restaurant>> getWithVotesAndDishesToday(@AuthenticationPrincipal AuthUser authUser) {
+    public ResponseEntity<List<RestaurantTo>> getWithVotesAndDishesToday(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get restaurants with dishes today for user {}",  authUser.id());
-        return ResponseEntity.of(restaurantRepository.getWithVotesAndDishesByDate(LocalDate.now()));
+        return ResponseEntity.of(restaurantService.getWithVotesAndDishes(LocalDate.now()));
     }
 
     @PostMapping

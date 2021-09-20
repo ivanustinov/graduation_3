@@ -3,6 +3,7 @@ package ru.javaops.topjava.web.json;
 import org.junit.jupiter.api.Test;
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.model.User;
+import ru.javaops.topjava.to.RestaurantTo;
 import ru.javaops.topjava.web.AbstractControllerTest;
 import ru.javaops.topjava.web.user.UserTestData;
 
@@ -19,18 +20,18 @@ class JsonUtilTest extends AbstractControllerTest {
 
     @Test
     void readWriteValue() {
-        final String json = JsonUtil.writeValue(RESTAURANT_HARBIN);
+        final String json = JsonUtil.writeValue(RESTAURANT_HARBIN_TO);
         System.out.println(json);
-        final Restaurant restaurant = JsonUtil.readValue(json, Restaurant.class);
-        WITH_VOTES_DISHES_MATCHER.assertMatch(restaurant, RESTAURANT_HARBIN);
+        final RestaurantTo restaurant = JsonUtil.readValue(json, RestaurantTo.class);
+        WITH_VOTES_DISHES_MATCHER.assertMatch(restaurant, RESTAURANT_HARBIN_TO);
     }
 
 
     @Test
     void readWriteValues() {
-        final List<Restaurant> restaurantsBefore = List.of(RESTAURANT_HARBIN, RESTAURANT_CI);
+        final List<RestaurantTo> restaurantsBefore = List.of(RESTAURANT_HARBIN_TO, RESTAURANT_CI_TO);
         String json = JsonUtil.writeValue(restaurantsBefore);
-        List<Restaurant> restaurantsAfter = JsonUtil.readValues(json, Restaurant.class);
+        List<RestaurantTo> restaurantsAfter = JsonUtil.readValues(json, RestaurantTo.class);
         WITH_VOTES_DISHES_MATCHER.assertMatch(restaurantsAfter, restaurantsBefore);
     }
 

@@ -4,15 +4,13 @@ import ru.javaops.topjava.MatcherFactory;
 import ru.javaops.topjava.model.Dish;
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.model.Vote;
+import ru.javaops.topjava.to.RestaurantTo;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.time.LocalDate.now;
-import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javaops.topjava.web.dish.DishTestData.*;
 import static ru.javaops.topjava.web.user.UserTestData.user_2;
 import static ru.javaops.topjava.web.voting.VoteTestData.HARBIN_VOTES_NOW;
@@ -26,21 +24,21 @@ import static ru.javaops.topjava.web.voting.VoteTestData.VOTE_ID;
 public class RestaurantTestData {
 
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER =
-            MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "votes", "dishes");
+            MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "");
 
 
-    public static MatcherFactory.Matcher<Restaurant> WITH_DISHES_MATCHER =
-            MatcherFactory.usingRecurciveIgnoringFieldsComparator(Restaurant.class,
+    public static MatcherFactory.Matcher<RestaurantTo> WITH_DISHES_MATCHER =
+            MatcherFactory.usingRecurciveIgnoringFieldsComparator(RestaurantTo.class,
                     "dishes.restaurant", "dishes.date", "votes");
 
 
-    public static MatcherFactory.Matcher<Restaurant> WITH_VOTES_DISHES_MATCHER =
-            MatcherFactory.usingRecurciveIgnoringFieldsComparator(Restaurant.class,
+    public static MatcherFactory.Matcher<RestaurantTo> WITH_VOTES_DISHES_MATCHER =
+            MatcherFactory.usingRecurciveIgnoringFieldsComparator(RestaurantTo.class,
                     "votes.restaurant", "votes.date", "votes.user", "dishes.restaurant", "dishes.date");
 
-    public static MatcherFactory.Matcher<Restaurant> WITH_VOTES_DISHES_USER_MATCHER =
-            MatcherFactory.usingRecurciveIgnoringFieldsComparator(Restaurant.class,
-                    "votes.restaurant", "votes.date", "votes.user.roles",
+    public static MatcherFactory.Matcher<RestaurantTo> WITH_VOTES_DISHES_USER_MATCHER =
+            MatcherFactory.usingRecurciveIgnoringFieldsComparator(RestaurantTo.class,
+                    "votes.restaurant", "votes.date", "votes.user.roles", "votes.user.votes",
                     "dishes.restaurant", "dishes.date");
 
     public static final int RESTAURAUNT_HARBIN_ID = 1;
@@ -48,15 +46,19 @@ public class RestaurantTestData {
     public static final Restaurant RESTAURANT_CI = new Restaurant(RESTAURAUNT_HARBIN_ID + 1, "Си");
     public static final Restaurant RESTAURANT_HANOY = new Restaurant(RESTAURAUNT_HARBIN_ID + 2, "Ханой");
 
+    public static final RestaurantTo RESTAURANT_HARBIN_TO = new RestaurantTo(RESTAURANT_HARBIN);
+    public static final RestaurantTo RESTAURANT_CI_TO = new RestaurantTo(RESTAURANT_CI);
+    public static final RestaurantTo RESTAURANT_HANOY_TO = new RestaurantTo(RESTAURANT_HANOY);
+
+
     public static final List<Restaurant> RESTAURANTS = Stream.of(RESTAURANT_CI, RESTAURANT_HARBIN, RESTAURANT_HANOY)
             .sorted(Comparator.comparing(Restaurant::getName)).toList();
 
 
-    static {
-        RESTAURANT_HARBIN.setDishes(Set.of(dish1, dish2, dish3));
-        RESTAURANT_HARBIN.setVotes(HARBIN_VOTES_NOW);
-        RESTAURANT_CI.setDishes(Set.of(dish4, dish5));
-        RESTAURANT_CI.setVotes(Set.of());
+
+    public static void setVotesAndDishes(RestaurantTo restaurantTo, List<Dish> dishes, List<Vote> votes) {
+        restaurantTo.setDishes(dishes);
+        restaurantTo.setVotes(votes);
     }
 
 
@@ -64,19 +66,24 @@ public class RestaurantTestData {
     public static final Vote VOTE_USER_2_HANOY_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HANOY, user_2, now());
 
     public static Restaurant getNew() {
-        return new Restaurant(null, "Resturant_created");
+        return new Restaurant(null, "Restaurant_created");
     }
 
-    public static Restaurant setUpdatedDish(Restaurant restaurant, Dish dish) {
-        final Restaurant updated = new Restaurant(restaurant.getId(), restaurant.getName());
-        updated.setDishes(Set.of(dish, dish2, dish3));
+    public static RestaurantTo setUpdatedDish(Restaurant restaurant, Dish dish) {
+        final RestaurantTo updated = new RestaurantTo(restaurant);
+        updated.setDishes(Stream.of(dish, dish2, dish3).sorted(Comparator.comparing(Dish::getName)).toList());
         return updated;
-
     }
 
+    public static RestaurantTo getUpdatedTo() {
+        final RestaurantTo new_Harbin = new RestaurantTo(RESTAURANT_HARBIN);
+        new_Harbin.setName("Харбин обновлен");
+        setVotesAndDishes(new_Harbin, harbinDishesNow, HARBIN_VOTES_NOW);
+        return new_Harbin;
+    }
     public static Restaurant getUpdated() {
-        final Restaurant new_Harbin = new Restaurant(RESTAURAUNT_HARBIN_ID, "Харбин обновлен");
-        new_Harbin.setVotes(HARBIN_VOTES_NOW);
+        final Restaurant new_Harbin = new Restaurant(RESTAURANT_HARBIN);
+        new_Harbin.setName("Харбин обновлен");
         return new_Harbin;
     }
 

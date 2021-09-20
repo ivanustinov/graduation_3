@@ -29,9 +29,8 @@ public class Dish extends NamedEntity {
     @Range(min = 10, max = 3000)
     private BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    @JsonIgnoreProperties({"dishes", "votes"})
     private Restaurant restaurant;
 
     public Dish(Integer id, String name, LocalDate date, BigDecimal price, Restaurant restaurant) {

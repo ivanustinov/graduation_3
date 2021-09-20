@@ -29,22 +29,15 @@ import java.util.Set;
 public class Restaurant extends NamedEntity {
 
 
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OrderBy("name ASC")
-    @JsonIgnoreProperties({"restaurant", "date"})
-    @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
-    private Set<Dish> dishes;
 
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnoreProperties({"restaurant", "date"})
-    private Set<Vote> votes;
 
     public Restaurant(Integer id, String name) {
         super(id, name);
 
+    }
+
+    public Restaurant(Restaurant restaurant) {
+        super(restaurant.getId(), restaurant.getName());
     }
 
 }

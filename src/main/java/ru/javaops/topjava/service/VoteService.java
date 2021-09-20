@@ -33,7 +33,7 @@ public class VoteService {
 
     //In real life i want to disable opportunity to get results before eleven o'clock.
     // So annotation @CacheEvict can be removed
-    @CacheEvict(value = "votes", allEntries = true)
+//    @CacheEvict(value = "votes", allEntries = true)
     public void vote(User user, int restaurant_id, LocalTime time) {
         if (time.isAfter(LocalTime.of(11, 0))) {
             throw new NotFoundException("Время для голосования истекло");

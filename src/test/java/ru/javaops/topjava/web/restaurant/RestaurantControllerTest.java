@@ -1,26 +1,29 @@
 package ru.javaops.topjava.web.restaurant;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.repository.RestaurantRepository;
 import ru.javaops.topjava.web.AbstractControllerTest;
 import ru.javaops.topjava.web.json.JsonUtil;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javaops.topjava.web.dish.DishTestData.ciDishesNow;
+import static ru.javaops.topjava.web.dish.DishTestData.harbinDishesNow;
 import static ru.javaops.topjava.web.restaurant.RestaurantTestData.*;
 import static ru.javaops.topjava.web.user.UserTestData.*;
+import static ru.javaops.topjava.web.voting.VoteTestData.HARBIN_VOTES_NOW;
 
 /**
  *
@@ -31,6 +34,13 @@ import static ru.javaops.topjava.web.user.UserTestData.*;
 @WithUserDetails(value = ADMIN_MAIL)
 class RestaurantControllerTest extends AbstractControllerTest {
     static final String REST_URL = RestaurantController.REST_URL + '/';
+
+
+    @BeforeAll
+    public static void initRestaurantTo() {
+        setVotesAndDishes(RESTAURANT_HARBIN_TO, harbinDishesNow, HARBIN_VOTES_NOW);
+        setVotesAndDishes(RESTAURANT_CI_TO, ciDishesNow, List.of());
+    }
 
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -67,13 +77,10 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(WITH_DISHES_MATCHER.contentJson(RESTAURANT_CI,
-                        RESTAURANT_HARBIN));
+                .andExpect(WITH_DISHES_MATCHER.contentJson(RESTAURANT_CI_TO,
+                        RESTAURANT_HARBIN_TO));
     }
 
-    @Test
-    void getWithDishesAndVotesByDate() {
-    }
 
     @Test
     void getWithVotesDishesAndUsersByDate() throws Exception{
@@ -82,7 +89,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(WITH_VOTES_DISHES_USER_MATCHER.contentJson(RESTAURANT_HARBIN, RESTAURANT_CI));
+                .andExpect(WITH_VOTES_DISHES_USER_MATCHER.contentJson(RESTAURANT_HARBIN_TO, RESTAURANT_CI_TO));
     }
 
     @Test

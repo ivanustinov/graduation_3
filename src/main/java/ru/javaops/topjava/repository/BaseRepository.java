@@ -1,5 +1,6 @@
 package ru.javaops.topjava.repository;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +19,7 @@ public interface BaseRepository<T> extends JpaRepository<T, Integer> {
     @Query("DELETE FROM #{#entityName} u WHERE u.id=:id")
     int delete(int id);
 
+    @CacheEvict(value = {"res", "votes"}, allEntries = true)
     default void deleteExisted(int id) {
         checkModification(delete(id), id);
     }

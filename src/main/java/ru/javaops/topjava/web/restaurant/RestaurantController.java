@@ -12,6 +12,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.topjava.error.NotFoundException;
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.repository.RestaurantRepository;
+import ru.javaops.topjava.service.RestaurantService;
+import ru.javaops.topjava.to.RestaurantTo;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -34,6 +36,9 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 public class RestaurantController {
 
     public static final String REST_URL = "/admin/restaurants";
+
+    private final RestaurantService restaurantService;
+
     private final RestaurantRepository repository;
 
     @GetMapping("/{id}")
@@ -49,29 +54,29 @@ public class RestaurantController {
     }
 
     @GetMapping("/with-dishes-by-date")
-    public ResponseEntity<List<Restaurant>> getWithDishesByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate date) {
+    public ResponseEntity<List<RestaurantTo>> getWithDishesByDate(@RequestParam LocalDate date) {
         log.info("get all restaurants with dishes on {}", date);
-        return ResponseEntity.of(repository.getWithDishesByDate(date));
+        return ResponseEntity.of(restaurantService.getWithDishes(date));
     }
 
     @GetMapping("/with-dishes-votes-by-date")
-    public ResponseEntity<List<Restaurant>> getWithDishesAndVotesByDate(@RequestParam LocalDate date) {
+    public ResponseEntity<List<RestaurantTo>> getWithDishesAndVotesByDate(@RequestParam LocalDate date) {
         log.info("get all restaurants with dishes on {}", date);
-        return ResponseEntity.of(repository.getWithVotesAndDishesByDate(date));
+        return ResponseEntity.of(restaurantService.getWithVotesAndDishes(date));
     }
 
     @GetMapping("/with-votes-users-by-date")
-    public ResponseEntity<List<Restaurant>> getWithVotesAndDishesAndUsersByDate
+    public ResponseEntity<List<RestaurantTo>> getWithVotesAndDishesAndUsersByDate
             (@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate date) {
         log.info("get all restaurants with dishes on {}", date);
-        return ResponseEntity.of(repository.getWithVotesAndDishesAndUsersByDate(date));
+        return ResponseEntity.of(restaurantService.getWithVotesAndDishesAndUsers(date));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete restaurant with id {}", id);
-        repository.deleteById(id);
+        restaurantService.delete(id);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

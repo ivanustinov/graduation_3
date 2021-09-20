@@ -1,10 +1,14 @@
 package ru.javaops.topjava.web.voting;
 
+import org.w3c.dom.stylesheets.LinkStyle;
 import ru.javaops.topjava.MatcherFactory;
 import ru.javaops.topjava.model.Vote;
 
 import java.time.Month;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.time.LocalDate.now;
 import static java.time.LocalDate.of;
@@ -31,5 +35,5 @@ public class VoteTestData {
     public static final Vote voteUserCi_20150416 = new Vote(VOTE_ID + 2, RESTAURANT_CI, user, of(2015, Month.APRIL, 16));
     public static final Vote voteAdminCi_201501416 = new Vote(VOTE_ID + 3, RESTAURANT_CI, admin, of(2015, Month.APRIL, 16));
 
-    public static final Set<Vote> HARBIN_VOTES_NOW = Set.of(voteUserHarbinNow, voteAdminHarbinNow);
+    public static final List<Vote> HARBIN_VOTES_NOW = Stream.of(voteUserHarbinNow, voteAdminHarbinNow).sorted(Comparator.comparing(vote -> vote.getId())).toList();
 }

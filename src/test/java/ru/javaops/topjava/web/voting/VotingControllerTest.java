@@ -1,6 +1,7 @@
 package ru.javaops.topjava.web.voting;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,11 +11,14 @@ import ru.javaops.topjava.repository.VoteRepository;
 import ru.javaops.topjava.web.AbstractControllerTest;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import static java.time.LocalDate.now;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javaops.topjava.web.dish.DishTestData.ciDishesNow;
+import static ru.javaops.topjava.web.dish.DishTestData.harbinDishesNow;
 import static ru.javaops.topjava.web.restaurant.RestaurantTestData.*;
 import static ru.javaops.topjava.web.user.UserTestData.USER_2_MAIL;
 import static ru.javaops.topjava.web.user.UserTestData.user_2;
@@ -29,6 +33,12 @@ import static ru.javaops.topjava.web.voting.VoteTestData.*;
 @WithUserDetails(value = USER_2_MAIL)
 class VotingControllerTest extends AbstractControllerTest {
 
+    @BeforeAll
+    public static void initRestaurantTo() {
+        setVotesAndDishes(RESTAURANT_HARBIN_TO, harbinDishesNow, HARBIN_VOTES_NOW);
+        setVotesAndDishes(RESTAURANT_CI_TO, ciDishesNow, List.of());
+    }
+
     public static final String REST_URL = VotingController.REST_URL + '/';
 
     @Autowired
@@ -40,7 +50,7 @@ class VotingControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(WITH_DISHES_MATCHER.contentJson(RESTAURANT_CI, RESTAURANT_HARBIN));
+                .andExpect(WITH_DISHES_MATCHER.contentJson(RESTAURANT_CI_TO, RESTAURANT_HARBIN_TO));
     }
 
     @Test
@@ -49,7 +59,7 @@ class VotingControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(WITH_VOTES_DISHES_MATCHER.contentJson(RESTAURANT_HARBIN, RESTAURANT_CI));
+                .andExpect(WITH_VOTES_DISHES_MATCHER.contentJson(RESTAURANT_HARBIN_TO, RESTAURANT_CI_TO));
     }
 
     @Test
