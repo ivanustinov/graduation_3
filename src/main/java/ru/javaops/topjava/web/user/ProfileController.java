@@ -1,5 +1,6 @@
 package ru.javaops.topjava.web.user;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,6 +28,7 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @CacheConfig(cacheNames = "users")
+@Tag(name = "Profile Controller")
 public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/profile";
 
@@ -37,6 +39,7 @@ public class ProfileController extends AbstractUserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "users", key = "#authUser.getUser().getEmail()")
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         super.delete(authUser.id());
     }
@@ -45,7 +48,6 @@ public class ProfileController extends AbstractUserController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         log.info("register {}", userTo);
-        checkNew(userTo);
         User created = prepareAndSave(UserUtil.createNewFromTo(userTo));
         created.setRoles(EnumSet.of(Role.USER));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -57,7 +59,6 @@ public class ProfileController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
-        assureIdConsistent(userTo, authUser.id());
         User user = authUser.getUser();
         prepareAndSave(UserUtil.updateFromTo(user, userTo));
     }

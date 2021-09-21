@@ -1,7 +1,9 @@
 package ru.javaops.topjava.web.dish;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 @RequestMapping(value = DishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
+@Tag(name = "Dish Controller")
 public class DishController {
     public static final String REST_URL = "/admin/dishes";
 
@@ -44,6 +47,7 @@ public class DishController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = {"res", "votes"}, allEntries = true)
     public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         log.info("delete dish with id {}", id);
         repository.deleteExisted(id);

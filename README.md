@@ -9,6 +9,7 @@ Voting is held until eleven o'clock in the afternoon, after which you can see th
 Only a user with administrator rights can create and edit dishes, restaurants and users. 
 The administrator can also get lists of restaurants with the names of the employees who voted for them.
 
+[You can test this application in swagger](http://localhost:8080/api/swagger-ui.html)
 
 ### curl samples (application deployed at application context `api`).
 

@@ -1,6 +1,8 @@
 package ru.javaops.topjava.web.user;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +25,7 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-@CacheConfig(cacheNames = "users")
+@Tag(name = "Admin User Controller")
 public class AdminUserController extends AbstractUserController {
 
     static final String REST_URL = "/admin/users";
@@ -38,12 +40,12 @@ public class AdminUserController extends AbstractUserController {
     @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "users", allEntries = true)
     public void delete(@PathVariable int id) {
         super.delete(id);
     }
 
     @GetMapping
-    @Cacheable
     public List<User> getAll() {
         log.info("getAll");
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name", "email"));

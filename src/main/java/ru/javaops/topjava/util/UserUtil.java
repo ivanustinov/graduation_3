@@ -19,7 +19,6 @@ public class UserUtil {
     public static User updateFromTo(User user, UserTo userTo) {
         user.setName(userTo.getName());
         user.setEmail(userTo.getEmail().toLowerCase());
-//        user.setCaloriesPerDay(userTo.getCaloriesPerDay());
         user.setPassword(userTo.getPassword());
         return user;
     }

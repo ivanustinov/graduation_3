@@ -43,5 +43,5 @@ public interface UserRepository extends BaseRepository<User> {
     @Modifying
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
-    void deleteById(Integer integer);
+    void deleteById(Integer user_id);
 }

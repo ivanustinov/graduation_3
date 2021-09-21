@@ -37,8 +37,8 @@ public class RestaurantService {
 
     VoteRepository voteRepository;
 
-    @Cacheable(cacheNames = "res")
-    public Optional<List<RestaurantTo>> getWithDishes(LocalDate date) {
+
+    public List<RestaurantTo> getWithDishes(LocalDate date) {
         final List<Dish> dishesByDate = dishRepository.getDishesByDate(date);
         if (dishesByDate.isEmpty()) {
             throw new NotFoundException("Сегодня нет ресторанов для обслуживания");
@@ -46,42 +46,41 @@ public class RestaurantService {
         final Map<Integer, List<Dish>> integerListMap = DishUtil.groupByRestaurant(dishesByDate);
         final Set<Integer> restId = integerListMap.keySet();
         final List<Restaurant> restaurants = restaurantRepository.getRestaurantsById(restId);
-        final List<RestaurantTo> restaurantTos = restaurants.stream()
+        return restaurants.stream()
                 .map(restaurant -> createTo(restaurant, integerListMap.get(restaurant.getId()))).toList();
-        return Optional.of(restaurantTos);
     }
 
-    @Cacheable(cacheNames = "votes")
-    public Optional<List<RestaurantTo>> getWithVotesAndDishes(LocalDate date) {
-        final Optional<List<RestaurantTo>> withDishes = getWithDishes(date);
+
+    public List<RestaurantTo> getWithVotesAndDishes(LocalDate date) {
+        final List<RestaurantTo> withDishes = getWithDishes(date);
         final List<Vote> voteByDateOpt = voteRepository.getVotesByDate(date);
         if (voteByDateOpt.isEmpty()) {
             throw new NotFoundException("За этот день не было голосований");
         }
         final Map<Integer, List<Vote>> votes = voteByDateOpt.stream().collect(
                 Collectors.groupingBy((Vote vote) -> vote.getRestaurant().getId(), Collectors.toList()));
-        final List<RestaurantTo> restaurantTos = withDishes.orElseThrow().stream()
+        final List<RestaurantTo> restaurantTos = withDishes.stream()
                 .peek(restaurantTo -> restaurantTo.setVotes(votes.getOrDefault(restaurantTo.getId(), List.of()))).toList();
-        return Optional.of(restaurantTos.stream().sorted(Comparator.comparingInt
-                ((ToIntFunction<RestaurantTo>) restaurantTo -> restaurantTo.getVotes().size()).reversed()).toList());
+        return restaurantTos.stream().sorted(Comparator.comparingInt
+                ((ToIntFunction<RestaurantTo>) restaurantTo -> restaurantTo.getVotes().size()).reversed()).toList();
     }
 
 
     public Optional<List<RestaurantTo>> getWithVotesAndDishesAndUsers(LocalDate date) {
-        final Optional<List<RestaurantTo>> withDishes = getWithDishes(date);
+        final List<RestaurantTo> withDishes = getWithDishes(date);
         final List<Vote> voteByDate = voteRepository.getVoteByDateWithUsers(date);
         if (voteByDate.isEmpty()) {
             throw new NotFoundException("За этот день не было голосований");
         }
         final Map<Integer, List<Vote>> votes = voteByDate.stream().collect(
                 Collectors.groupingBy((Vote vote) -> vote.getRestaurant().getId(), Collectors.toList()));
-        final List<RestaurantTo> restaurantTos = withDishes.orElseThrow().stream().peek(restaurantTo -> restaurantTo
+        final List<RestaurantTo> restaurantTos = withDishes.stream().peek(restaurantTo -> restaurantTo
                 .setVotes(votes.getOrDefault(restaurantTo.getId(), List.of()))).toList();
         return Optional.of(restaurantTos.stream().sorted(Comparator.comparingInt
                 ((ToIntFunction<RestaurantTo>) restaurantTo -> restaurantTo.getVotes().size()).reversed()).toList());
     }
 
-    @CacheEvict(value = {"res", "votes"}, allEntries = true)
+
     public void delete(int restaurant_id) {
         final Optional<Restaurant> restaurantOptional = restaurantRepository.get(restaurant_id);
         final Restaurant restaurant = restaurantOptional

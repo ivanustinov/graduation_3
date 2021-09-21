@@ -3,6 +3,7 @@ package ru.javaops.topjava.config;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,6 +31,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserRepository userRepository;
 
+    private final ServerProperties serverProperties;
+
+    private final String[] swaggerPatterns = {"/swagger-ui.html", "/swagger-ui/**",
+            "/swagger-resources/**", "/v3/api-docs/**"};
+
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> {
@@ -51,7 +57,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/admin/**").hasRole(Role.ADMIN.name())
                 .antMatchers(HttpMethod.POST, "/profile").anonymous()
-                .antMatchers("/**").authenticated()
+                .antMatchers("/profile").authenticated()
+                .antMatchers("/voting").authenticated()
+                .antMatchers(swaggerPatterns).permitAll()
                 .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();

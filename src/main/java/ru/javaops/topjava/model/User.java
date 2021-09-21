@@ -5,7 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
-import ru.javaops.topjava.HasIdAndEmail;
+import ru.javaops.topjava.HasEmail;
+import ru.javaops.topjava.HasId;
 import ru.javaops.topjava.util.validation.NoHtml;
 
 import javax.persistence.*;
@@ -22,7 +23,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = {"password", "votes"})
-public class User extends NamedEntity implements HasIdAndEmail, Serializable {
+public class User extends NamedEntity implements HasEmail, HasId, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 

@@ -19,7 +19,7 @@ public interface BaseRepository<T> extends JpaRepository<T, Integer> {
     @Query("DELETE FROM #{#entityName} u WHERE u.id=:id")
     int delete(int id);
 
-    @CacheEvict(value = {"res", "votes"}, allEntries = true)
+
     default void deleteExisted(int id) {
         checkModification(delete(id), id);
     }
