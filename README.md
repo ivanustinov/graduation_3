@@ -1,13 +1,26 @@
 Voting Application
 ===============================
+Design and implement a REST API using Hibernate/Spring/SpringMVC (or Spring-Boot) **without frontend**.
 
-Наиболее востребованные технологии /инструменты / фреймворки Java Enterprise:
-Maven/ Spring Boot 2.x/ Spring Security/ JPA(Hibernate)/ REST(Jackson)/.
+The task is:
 
-The application allows you to vote among the company's employees to choose a restaurant for lunch. 
-Voting is held until eleven o'clock in the afternoon, after which you can see the results. 
-Only a user with administrator rights can create and edit dishes, restaurants and users. 
-The administrator can also get lists of restaurants with the names of the employees who voted for them.
+Build a voting system for deciding where to have lunch.
+
+* 2 types of users: admin and regular users
+* Admin can input a restaurant and it's lunch menu of the day (2-5 items usually, just a dish name and price)
+* Menu changes each day (admins do the updates)
+* Users can vote on which restaurant they want to have lunch at
+* Only one vote counted per user
+* If user votes again the same day:
+    - If it is before 11:00 we assume that he changed his mind.
+    - If it is after 11:00 then it is too late, vote can't be changed
+
+Each restaurant provides a new menu each day.
+
+Admin:
+name: admin@gmail.com, password: admin
+User:
+name: user@yandex.ru, password: password
 
 [You can test this application in swagger](http://localhost:8080/api/swagger-ui.html)
 
