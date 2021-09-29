@@ -20,8 +20,7 @@ import static java.time.LocalDate.now;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.ustinov.voting.web.restaurant.RestaurantTestData.RESTAURANT_CI_TO;
-import static ru.ustinov.voting.web.restaurant.RestaurantTestData.RESTAURANT_HARBIN_TO;
+import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
 import static ru.ustinov.voting.web.user.UserTestData.user_2;
 import static ru.ustinov.voting.web.voting.VoteTestData.*;
 
@@ -100,12 +99,12 @@ class VotingControllerTest extends AbstractControllerTest {
                 .param("time", String.valueOf(LocalTime.of(10, 0))))
                 .andExpect(status().isCreated())
                 .andDo(print());
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, now()), RestaurantTestData.VOTE_USER_2_HARBIN_NOW);
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, now()), VOTE_USER_2_HARBIN_NOW);
         perform(MockMvcRequestBuilders.put(REST_URL)
                 .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURANT_HANOY.id()))
                 .param("time", String.valueOf(LocalTime.of(10, 30))))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, now()), RestaurantTestData.VOTE_USER_2_HANOY_NOW);
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, now()), VOTE_USER_2_HANOY_NOW);
     }
 }

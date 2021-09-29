@@ -21,13 +21,13 @@ public class DishServise {
 
     private final DishRepository dishRepository;
 
-    private final EntityManager entityManager;
+    private final RestaurantRepository restaurantRepository;
 
     @Transactional
     public void update(Dish dish, int restaurant_id) {
         Assert.notNull(dish, "dish must not be null");
         final Dish dishDb = Util.getEntity(dishRepository.get(dish.getId()),"Такого блюда не существует");
-        dish.setRestaurant(entityManager.getReference(Restaurant.class, restaurant_id));
+        dish.setRestaurant(restaurantRepository.getById(restaurant_id));
         dish.setDate(dishDb.getDate());
         dishRepository.save(dish);
     }
@@ -35,7 +35,7 @@ public class DishServise {
     public Dish save(Dish dish, int restaurant_id) {
         Assert.notNull(dish, "dish must not be null");
         dish.setDate(LocalDate.now());
-        dish.setRestaurant(entityManager.getReference(Restaurant.class, restaurant_id));
+        dish.setRestaurant(restaurantRepository.getById(restaurant_id));
         return dishRepository.save(dish);
     }
 }

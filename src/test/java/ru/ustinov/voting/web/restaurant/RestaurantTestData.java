@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.time.LocalDate.now;
+import static ru.ustinov.voting.web.user.UserTestData.user_2;
 import static ru.ustinov.voting.web.voting.VoteTestData.HARBIN_VOTES_NOW;
 import static ru.ustinov.voting.web.voting.VoteTestData.VOTE_ID;
 
@@ -58,8 +59,8 @@ public class RestaurantTestData {
     }
 
 
-    public static final Vote VOTE_USER_2_HARBIN_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HARBIN, UserTestData.user_2, now());
-    public static final Vote VOTE_USER_2_HANOY_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HANOY, UserTestData.user_2, now());
+    public static final Vote VOTE_USER_2_HARBIN_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HARBIN, user_2, now());
+    public static final Vote VOTE_USER_2_HANOY_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HANOY, user_2, now());
 
     public static Restaurant getNew() {
         return new Restaurant(null, "Restaurant_created");

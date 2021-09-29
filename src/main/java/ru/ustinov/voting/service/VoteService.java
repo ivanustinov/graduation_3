@@ -7,6 +7,7 @@ import ru.ustinov.voting.error.NotFoundException;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
+import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 
 import javax.persistence.EntityManager;
@@ -14,7 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- *
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
  * @version 1.0
  * @since 03.09.2021
@@ -26,7 +26,7 @@ public class VoteService {
 
     private final VoteRepository voteRepository;
 
-    private final EntityManager entityManager;
+    private final RestaurantRepository restaurantRepository;
 
     private final LocalTime votingTime = LocalTime.of(11, 0);
 
@@ -38,7 +38,8 @@ public class VoteService {
         if (time.isAfter(votingTime)) {
             throw new NotFoundException("Время для голосования истекло");
         }
-        final Restaurant restaurant = entityManager.getReference(Restaurant.class, restaurant_id);
+//        final Restaurant restaurant = entityManager.getReference(Restaurant.class, restaurant_id);
+        final Restaurant restaurant = restaurantRepository.getById(restaurant_id);
         final LocalDate now = LocalDate.now();
         Vote vote = voteRepository.getVoteByUserAndDate(user, now);
         if (vote != null) {
