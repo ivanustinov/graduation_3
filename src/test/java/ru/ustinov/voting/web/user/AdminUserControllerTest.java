@@ -63,17 +63,6 @@ class AdminUserControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
-    void getWithVotes() throws Exception {
-        final User adminWithVotes = UserTestData.getUserWithVotes(UserTestData.admin, List.of(voteAdminHarbinNow, voteAdminCi_201501416));
-        perform(MockMvcRequestBuilders.get(REST_URL + "/" + UserTestData.admin.getId() + "/with-votes"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(UserTestData.WITH_VOTES_MATCHER.contentJson(adminWithVotes));
-    }
-
-    @Test
-    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + UserTestData.USER_ID))
                 .andDo(print())

@@ -27,7 +27,8 @@ public interface VoteRepository extends BaseRepository<Vote> {
     @Query("select v from Vote v where v.restaurant.id = ?1")
     List<Vote> getVoteByRestaurant(int restaurant_id);
 
-    @EntityGraph(attributePaths = {"restaurant"})
+    @EntityGraph(attributePaths = {"restaurant"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("select v from Vote v where v.user =?1 order by v.date desc")
     List<Vote> getVoteByUser(User user);
+
 }

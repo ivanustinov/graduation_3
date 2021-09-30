@@ -17,11 +17,6 @@ public interface UserRepository extends BaseRepository<User> {
     @Cacheable("users")
     Optional<User> getByEmail(String email);
 
-    //    https://stackoverflow.com/a/46013654/548473
-    @EntityGraph(attributePaths = {"votes", "votes.restaurant"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT u FROM User u WHERE u.id=?1")
-    Optional<User> getUserWithVotes(int id);
-
     @Override
     @Modifying
     @Transactional

@@ -34,11 +34,6 @@ public class UserTestData {
     public static final User user_2 = new User(USER_2_ID, "User2", USER_2_MAIL, null, Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", ADMIN_MAIL, null, Role.ADMIN, Role.USER);
 
-    public static User getUserWithVotes(User user, List<Vote> votes) {
-        user.setVotes(votes);
-        return user;
-    }
-
     public static User getNew() {
         return new User(null, "New", "new@gmail.com", "newPass", Collections.singleton(Role.USER));
     }

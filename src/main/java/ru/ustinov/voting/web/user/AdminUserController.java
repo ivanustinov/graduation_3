@@ -70,9 +70,4 @@ public class AdminUserController extends AbstractUserController {
         return ResponseEntity.of(repository.getByEmail(email));
     }
 
-    @GetMapping("/{id}/with-votes")
-    public ResponseEntity<User> getWithVotes(@PathVariable int id) {
-        log.info("get user with id {} with votes", id);
-        return ResponseEntity.of(repository.getUserWithVotes(id));
-    }
 }

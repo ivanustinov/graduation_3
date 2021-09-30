@@ -53,13 +53,6 @@ public class User extends NamedEntity implements HasEmail, HasId{
     private Set<Role> roles;
 
 
-    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "user")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OrderBy("date DESC")
-    @JsonIgnoreProperties({"user"})
-    private List<Vote> votes;
-
-
-
     public User(User u) {
         this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getRoles());
     }
