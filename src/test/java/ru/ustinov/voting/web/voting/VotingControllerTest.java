@@ -2,12 +2,12 @@ package ru.ustinov.voting.web.voting;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.web.AbstractControllerTest;
 import ru.ustinov.voting.web.dish.DishTestData;
@@ -16,7 +16,6 @@ import ru.ustinov.voting.web.user.UserTestData;
 
 import java.time.*;
 
-import static java.time.LocalDate.now;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -87,52 +86,61 @@ class VotingControllerTest extends AbstractControllerTest {
 
     @Test
     void voteAfterEleven() throws Exception {
-        fixTime("T11:10:00Z");
-        perform(MockMvcRequestBuilders.post(REST_URL)
-                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
-                .andExpect(status().isCreated())
-                .andDo(print());
+        final MockedStatic<LocalTime> localTimeMockedStatic = fixTime("T11:10:00Z");
+        try (localTimeMockedStatic) {
+            perform(MockMvcRequestBuilders.post(REST_URL)
+                    .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
+                    .andExpect(status().isCreated())
+                    .andDo(print());
+        }
         VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
     }
 
     @Test
     void voteTwiceBeforeEleven() throws Exception {
-        fixTime("T10:10:00Z");
-        perform(MockMvcRequestBuilders.post(REST_URL)
-                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
-                .andExpect(status().isCreated())
-                .andDo(print());
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
-        perform(MockMvcRequestBuilders.put(REST_URL)
-                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURANT_HANOY.id())))
-                .andExpect(status().isNoContent())
-                .andDo(print());
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HANOY_NOW);
+        final MockedStatic<LocalTime> localTimeMockedStatic = fixTime("T10:10:00Z");
+        try (localTimeMockedStatic) {
+            perform(MockMvcRequestBuilders.post(REST_URL)
+                    .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
+                    .andExpect(status().isCreated())
+                    .andDo(print());
+            VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
+            perform(MockMvcRequestBuilders.put(REST_URL)
+                    .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURANT_HANOY.id())))
+                    .andExpect(status().isNoContent())
+                    .andDo(print());
+            VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HANOY_NOW);
+        }
     }
 
 
     @Test
     void voteTwiceAfterEleven() throws Exception {
-        fixTime("T10:10:00Z");
-        perform(MockMvcRequestBuilders.post(REST_URL)
-                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
-                .andExpect(status().isCreated())
-                .andDo(print());
+        final MockedStatic<LocalTime> localTimeMockedStatic = fixTime("T10:10:00Z");
+        try (localTimeMockedStatic) {
+            perform(MockMvcRequestBuilders.post(REST_URL)
+                    .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
+                    .andExpect(status().isCreated())
+                    .andDo(print());
+        }
         VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
-        fixTime("T11:10:00Z");
-        perform(MockMvcRequestBuilders.put(REST_URL)
-                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURANT_HANOY.id())))
-                .andExpect(status().isUnprocessableEntity())
-                .andDo(print());
+        final MockedStatic<LocalTime> localTimeMockedStatic1 = fixTime("T11:10:00Z");
+        try (localTimeMockedStatic1) {
+            perform(MockMvcRequestBuilders.put(REST_URL)
+                    .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURANT_HANOY.id())))
+                    .andExpect(status().isUnprocessableEntity())
+                    .andDo(print());
+        }
         VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
     }
 
 
-    private void fixTime(String time) {
-        final Clock fixed = Clock.fixed(Instant.parse(DATE + time), ZoneId.of("Z"));
-        final LocalDateTime dateTimeFixed = LocalDateTime.now(fixed);
-        Mockito.mockStatic(LocalDateTime.class).when(() -> LocalDateTime.now()).thenReturn(dateTimeFixed);
+    private MockedStatic<LocalTime> fixTime(String time) {
+        final Instant instant = Instant.parse(DATE + time);
+        final LocalTime timeFixed = LocalTime.ofInstant(instant, ZoneId.of("UTC"));
+        final MockedStatic<LocalTime> localTimeMockedStatic = Mockito.mockStatic(LocalTime.class);
+        localTimeMockedStatic.when(() -> LocalTime.now()).thenReturn(timeFixed);
+        return localTimeMockedStatic;
     }
-
 
 }
