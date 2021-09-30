@@ -1,6 +1,7 @@
 package ru.ustinov.voting.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ustinov.voting.error.NotFoundException;
@@ -10,9 +11,8 @@ import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 
-import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.time.*;
 
 /**
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
@@ -24,21 +24,17 @@ import java.time.LocalTime;
 public class VoteService {
 
 
+
     private final VoteRepository voteRepository;
 
     private final RestaurantRepository restaurantRepository;
 
     private final LocalTime votingTime = LocalTime.of(11, 0);
 
-    //In real life i want to disable opportunity to get results before eleven o'clock.
-    // So annotation @CacheEvict can be removed
-//    @CacheEvict(value = "votes", allEntries = true)
     @Transactional
-    public void vote(User user, int restaurant_id, LocalTime time) {
-        if (time.isAfter(votingTime)) {
-            throw new NotFoundException("Время для голосования истекло");
-        }
-//        final Restaurant restaurant = entityManager.getReference(Restaurant.class, restaurant_id);
+    @CacheEvict(value = "votes", allEntries = true)
+    public void vote(User user, int restaurant_id) {
+        final LocalTime time = LocalDateTime.now().toLocalTime();
         final Restaurant restaurant = restaurantRepository.getById(restaurant_id);
         final LocalDate now = LocalDate.now();
         Vote vote = voteRepository.getVoteByUserAndDate(user, now);
@@ -46,6 +42,11 @@ public class VoteService {
             vote.setRestaurant(restaurant);
         } else {
             vote = new Vote(restaurant, user, now);
+            voteRepository.save(vote);
+            return;
+        }
+        if (time.isAfter(votingTime)) {
+            throw new NotFoundException("Время для голосования истекло");
         }
         voteRepository.save(vote);
     }

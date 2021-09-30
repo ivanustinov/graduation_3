@@ -75,7 +75,6 @@ public class MatcherFactory {
         }
 
         public ResultMatcher contentJson(Iterable<T> expected) {
-            System.out.println();
             return result -> {
                 assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
             };

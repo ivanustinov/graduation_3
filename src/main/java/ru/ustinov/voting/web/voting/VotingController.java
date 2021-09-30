@@ -67,19 +67,17 @@ public class VotingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void vote(@AuthenticationPrincipal AuthUser authUser,
-                     @RequestParam int restaurant_id, @RequestParam @Parameter(schema = @Schema(type = "string")) LocalTime time) {
+    public void vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
         final User user = authUser.getUser();
         log.info("user {} is voting for restaurant {}", user.getName(), restaurant_id);
-        voteService.vote(user, restaurant_id, time);
+        voteService.vote(user, restaurant_id);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void voteAnotherOne(@AuthenticationPrincipal AuthUser authUser,
-                     @RequestParam int restaurant_id, @RequestParam @Parameter(schema = @Schema(type = "string")) LocalTime time) {
+    public void voteAnotherOne(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
         final User user = authUser.getUser();
         log.info("user {} is voting another one for restaurant {}", user.getName(), restaurant_id);
-        voteService.vote(user, restaurant_id, time);
+        voteService.vote(user, restaurant_id);
     }
 }

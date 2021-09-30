@@ -1,20 +1,20 @@
 package ru.ustinov.voting.web.voting;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.web.AbstractControllerTest;
 import ru.ustinov.voting.web.dish.DishTestData;
 import ru.ustinov.voting.web.restaurant.RestaurantTestData;
 import ru.ustinov.voting.web.user.UserTestData;
 
-import java.time.LocalTime;
-import java.util.List;
+import java.time.*;
 
 import static java.time.LocalDate.now;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -29,8 +29,10 @@ import static ru.ustinov.voting.web.voting.VoteTestData.*;
  * @version 1.0
  * @since 06.09.2021
  */
+
 @WithUserDetails(value = UserTestData.USER_2_MAIL)
 class VotingControllerTest extends AbstractControllerTest {
+
 
     @BeforeAll
     public static void initRestaurantTo() {
@@ -39,6 +41,7 @@ class VotingControllerTest extends AbstractControllerTest {
     }
 
     public static final String REST_URL = VotingController.REST_URL + '/';
+    public static final LocalDate DATE = LocalDate.now();
 
     @Autowired
     private VoteRepository voteRepository;
@@ -49,7 +52,7 @@ class VotingControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RestaurantTestData.WITH_DISHES_MATCHER.contentJson(RESTAURANT_CI_TO, RESTAURANT_HARBIN_TO));
+                .andExpect(WITH_DISHES_MATCHER.contentJson(RESTAURANT_CI_TO, RESTAURANT_HARBIN_TO));
     }
 
     @Test
@@ -78,33 +81,58 @@ class VotingControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RestaurantTestData.WITH_VOTES_DISHES_MATCHER.contentJson(RESTAURANT_HARBIN_TO, RESTAURANT_CI_TO));
+                .andExpect(WITH_VOTES_DISHES_MATCHER.contentJson(RESTAURANT_HARBIN_TO, RESTAURANT_CI_TO));
     }
 
 
     @Test
     void voteAfterEleven() throws Exception {
+        fixTime("T11:10:00Z");
         perform(MockMvcRequestBuilders.post(REST_URL)
-                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID))
-                .param("time", String.valueOf(LocalTime.of(12, 0))))
-                .andExpect(status().isUnprocessableEntity())
+                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
+                .andExpect(status().isCreated())
                 .andDo(print());
-        Assertions.assertNull(voteRepository.getVoteByUserAndDate(user_2, now()));
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
     }
 
     @Test
-    void voteAnotherOne() throws Exception {
+    void voteTwiceBeforeEleven() throws Exception {
+        fixTime("T10:10:00Z");
         perform(MockMvcRequestBuilders.post(REST_URL)
-                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID))
-                .param("time", String.valueOf(LocalTime.of(10, 0))))
+                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
                 .andExpect(status().isCreated())
                 .andDo(print());
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, now()), VOTE_USER_2_HARBIN_NOW);
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
         perform(MockMvcRequestBuilders.put(REST_URL)
-                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURANT_HANOY.id()))
-                .param("time", String.valueOf(LocalTime.of(10, 30))))
+                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURANT_HANOY.id())))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, now()), VOTE_USER_2_HANOY_NOW);
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HANOY_NOW);
     }
+
+
+    @Test
+    void voteTwiceAfterEleven() throws Exception {
+        fixTime("T10:10:00Z");
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURAUNT_HARBIN_ID)))
+                .andExpect(status().isCreated())
+                .andDo(print());
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
+        fixTime("T11:10:00Z");
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .param("restaurant_id", String.valueOf(RestaurantTestData.RESTAURANT_HANOY.id())))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print());
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
+    }
+
+
+    private void fixTime(String time) {
+        final Clock fixed = Clock.fixed(Instant.parse(DATE + time), ZoneId.of("Z"));
+        final LocalDateTime dateTimeFixed = LocalDateTime.now(fixed);
+        Mockito.mockStatic(LocalDateTime.class).when(() -> LocalDateTime.now()).thenReturn(dateTimeFixed);
+    }
+
+
 }

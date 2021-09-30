@@ -21,8 +21,7 @@ import static java.time.LocalDate.of;
  */
 public class VoteTestData {
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory
-            .usingIgnoringFieldsComparator(Vote.class,
-                    "user.votes", "user.password", "user.roles");
+            .usingIgnoringFieldsComparator(Vote.class,"user.votes", "user.password", "user.roles");
 
     public static final int VOTE_ID = 1;
 
