@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.ustinov.voting.error.NotFoundException;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.service.RestaurantService;
@@ -61,7 +58,7 @@ public class RestaurantController {
 
 
     @GetMapping("/with-dishes-by-date")
-    public List<RestaurantTo> getWithDishesByDate(@RequestParam LocalDate date) {
+    public List<Restaurant> getWithDishesByDate(@RequestParam LocalDate date) {
         log.info("get all restaurants with dishes on {}", date);
         return restaurantService.getWithDishes(date);
     }

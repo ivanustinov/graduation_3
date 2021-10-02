@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Profile;
 import ru.ustinov.voting.web.json.JsonUtil;
 
 import java.sql.SQLException;
-import java.time.Clock;
 
 @Configuration
 @Slf4j
@@ -30,7 +29,8 @@ public class AppConfig {
     //    https://stackoverflow.com/a/46947975/548473
     @Bean
     Module module() {
-        return new Hibernate5Module();
+        return new Hibernate5Module()
+                .configure(Hibernate5Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS, true);
     }
 
     @Autowired

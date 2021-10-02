@@ -1,14 +1,14 @@
 package ru.ustinov.voting.repository;
 
-import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ustinov.voting.model.Restaurant;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  *
@@ -18,7 +18,6 @@ import java.util.Set;
  */
 
 @Transactional(readOnly = true)
-@CacheConfig(cacheNames = {"restaurants", "votes"})
 public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
     @Query("SELECT r FROM Restaurant r WHERE r.id = :id")
@@ -27,8 +26,10 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
     @Query("SELECT r FROM Restaurant r ORDER BY r.name")
     List<Restaurant> getAll();
 
-    @Query("SELECT r FROM Restaurant r where r.id in :id ORDER BY r.name")
-    List<Restaurant> getRestaurantsById(Set<Integer> id);
+
+    @EntityGraph(attributePaths = {"dishes"}, type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT r FROM Restaurant r join r.dishes d on d.date = :date ORDER BY r.name")
+    List<Restaurant> getWithDishes(LocalDate date);
 
     @Override
     @Modifying

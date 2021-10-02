@@ -2,7 +2,6 @@ package ru.ustinov.voting.util.validation;
 
 import ru.ustinov.voting.error.NotFoundException;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 /**

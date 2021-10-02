@@ -1,15 +1,12 @@
 package ru.ustinov.voting.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
+import java.util.List;
 
 
 /**
@@ -25,14 +22,26 @@ import javax.persistence.UniqueConstraint;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "name")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "name")
 public class Restaurant extends NamedEntity {
+
+
+    @ToString.Exclude
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OrderBy("name ASC")
+    @JsonIgnoreProperties({"restaurant", "date"})
+    @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
+    private List<Dish> dishes;
 
     public Restaurant(Integer id, String name) {
         super(id, name);
+    }
 
+    public Restaurant(Integer id, String name, List<Dish> dishes) {
+        super(id, name);
+        this.dishes = dishes;
     }
 
     public Restaurant(Restaurant restaurant) {

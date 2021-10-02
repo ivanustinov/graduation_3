@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import ru.ustinov.voting.model.Dish;
 import ru.ustinov.voting.model.Restaurant;
-import ru.ustinov.voting.model.Vote;
 
 import java.util.List;
 
@@ -28,15 +27,13 @@ public class RestaurantTo extends NamedTo {
 
 
     @ToString.Exclude
-    private int votes;
+    private int countVotes;
 
-    public RestaurantTo(Restaurant restaurant) {
-        super(restaurant.getId(), restaurant.getName());
-    }
 
-    public RestaurantTo(Restaurant restaurant, List<Dish> dishes) {
+    public RestaurantTo(Restaurant restaurant, int countVotes) {
         super(restaurant.getId(), restaurant.getName());
-        this.dishes = dishes;
+        this.dishes = restaurant.getDishes();
+        this.countVotes = countVotes;
     }
 
 }

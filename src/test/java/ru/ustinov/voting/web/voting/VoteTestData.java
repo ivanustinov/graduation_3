@@ -5,6 +5,7 @@ import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.web.restaurant.RestaurantTestData;
 import ru.ustinov.voting.web.user.UserTestData;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.Comparator;
 import java.util.List;
@@ -12,6 +13,9 @@ import java.util.stream.Stream;
 
 import static java.time.LocalDate.now;
 import static java.time.LocalDate.of;
+import static ru.ustinov.voting.web.restaurant.RestaurantTestData.RESTAURANT_CI;
+import static ru.ustinov.voting.web.restaurant.RestaurantTestData.RESTAURANT_HARBIN;
+import static ru.ustinov.voting.web.user.UserTestData.*;
 
 /**
  *
@@ -21,15 +25,17 @@ import static java.time.LocalDate.of;
  */
 public class VoteTestData {
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory
-            .usingIgnoringFieldsComparator(Vote.class,"id", "user", "user.password", "user.roles");
+            .usingIgnoringFieldsComparator(Vote.class,"id", "user", "restaurant.dishes");
 
     public static final int VOTE_ID = 1;
+    public static LocalDate now = now();
 
-    public static final Vote voteUserHarbinNow = new Vote(VOTE_ID, RestaurantTestData.RESTAURANT_HARBIN, UserTestData.user, now());
-    public static final Vote voteAdminHarbinNow = new Vote(VOTE_ID + 1, RestaurantTestData.RESTAURANT_HARBIN, UserTestData.admin, now());
-    public static final Vote voteUserCi_20150416 = new Vote(VOTE_ID + 2, RestaurantTestData.RESTAURANT_CI, UserTestData.user, of(2015, Month.APRIL, 16));
-    public static final Vote voteAdminCi_201501416 = new Vote(VOTE_ID + 3, RestaurantTestData.RESTAURANT_CI, UserTestData.admin, of(2015, Month.APRIL, 16));
+    public static final Vote voteUserHarbinNow = new Vote(VOTE_ID, RESTAURANT_HARBIN, user, now);
+    public static final Vote voteAdminHarbinNow = new Vote(VOTE_ID + 1, RESTAURANT_HARBIN, admin, now);
+    public static final Vote voteUserCi_20150416 = new Vote(VOTE_ID + 2, RESTAURANT_CI, user, of(2015, Month.APRIL, 16));
+    public static final Vote voteAdminCi_201501416 = new Vote(VOTE_ID + 3, RESTAURANT_CI, admin, of(2015, Month.APRIL, 16));
+    public static final Vote voteUser_2HarbinNow = new Vote(VOTE_ID + 4, RESTAURANT_HARBIN, user_2, now);
 
     public static final List<Vote> HARBIN_VOTES_NOW = Stream.of(voteUserHarbinNow, voteAdminHarbinNow).sorted(Comparator.comparing(vote -> vote.getId())).toList();
-    public static final List<Vote> USER_VOTES = Stream.of(voteUserHarbinNow, voteUserCi_20150416).sorted(Comparator.comparing(vote -> vote.getId())).toList();
+    public static final List<Vote> USER_VOTES = Stream.of(voteUserHarbinNow, voteUserCi_20150416).sorted(Comparator.comparing(Vote::getDate).reversed()).toList();
 }

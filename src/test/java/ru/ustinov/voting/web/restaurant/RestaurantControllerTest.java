@@ -16,14 +16,11 @@ import ru.ustinov.voting.web.json.JsonUtil;
 import ru.ustinov.voting.web.user.UserTestData;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.ustinov.voting.web.dish.DishTestData.ciDishesNow;
-import static ru.ustinov.voting.web.dish.DishTestData.harbinDishesNow;
 import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
 import static ru.ustinov.voting.web.voting.VoteTestData.HARBIN_VOTES_NOW;
 
@@ -35,13 +32,6 @@ import static ru.ustinov.voting.web.voting.VoteTestData.HARBIN_VOTES_NOW;
 @WithUserDetails(value = UserTestData.ADMIN_MAIL)
 class RestaurantControllerTest extends AbstractControllerTest {
     static final String REST_URL = RestaurantController.REST_URL + '/';
-
-
-    @BeforeAll
-    public static void initRestaurantTo() {
-        setVotesAndDishes(RESTAURANT_HARBIN_TO, harbinDishesNow, HARBIN_VOTES_NOW.size());
-        setVotesAndDishes(RESTAURANT_CI_TO, ciDishesNow, 0);
-    }
 
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -82,10 +72,9 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(WITH_DISHES_MATCHER.contentJson(RESTAURANT_CI_TO,
-                        RESTAURANT_HARBIN_TO));
+                .andExpect(WITH_DISHES_MATCHER.contentJson(RESTAURANT_CI,
+                        RESTAURANT_HARBIN));
     }
-
 
     @Test
     void delete() throws Exception {
@@ -104,7 +93,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        RestaurantTestData.RESTAURANT_MATCHER.assertMatch(restaurantRepository.getById(RESTAURAUNT_HARBIN_ID), updated);
+        RESTAURANT_MATCHER.assertMatch(restaurantRepository.getById(RESTAURAUNT_HARBIN_ID), updated);
     }
 
     @Test
@@ -114,10 +103,10 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRest)))
                 .andDo(print());
-        final Restaurant created = RestaurantTestData.RESTAURANT_MATCHER.readFromJson(action);
+        final Restaurant created = RESTAURANT_MATCHER.readFromJson(action);
         final int id = created.id();
         newRest.setId(id);
-        RestaurantTestData.RESTAURANT_MATCHER.assertMatch(created, newRest);
-        RestaurantTestData.RESTAURANT_MATCHER.assertMatch(restaurantRepository.getById(id), newRest);
+        RESTAURANT_MATCHER.assertMatch(created, newRest);
+        RESTAURANT_MATCHER.assertMatch(restaurantRepository.getById(id), newRest);
     }
 }

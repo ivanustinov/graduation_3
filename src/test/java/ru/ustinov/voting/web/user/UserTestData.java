@@ -8,19 +8,13 @@ import ru.ustinov.voting.web.json.JsonUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserTestData {
-    public static final MatcherFactory.Matcher<User> MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "password", "votes");
-    public static MatcherFactory.Matcher<User> WITH_VOTES_MATCHER =
-            MatcherFactory.usingAssertions(User.class,
-//     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
-                    (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("registered", "password", "votes.user", "votes.restaurant.dishes", "votes.restaurant.votes").isEqualTo(e),
-                    (a, e) -> {
-                        throw new UnsupportedOperationException();
-                    });
+    public static final MatcherFactory.Matcher<User> MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "password");
+
 
     public static final int USER_ID = 1;
     public static final int ADMIN_ID = 2;

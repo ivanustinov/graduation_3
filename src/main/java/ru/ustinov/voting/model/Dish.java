@@ -1,14 +1,13 @@
 package ru.ustinov.voting.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Entity
@@ -33,6 +32,7 @@ public class Dish extends NamedEntity {
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
+    @JsonIgnoreProperties({"dishes"})
     private Restaurant restaurant;
 
     public Dish(Integer id, String name, LocalDate date, BigDecimal price, Restaurant restaurant) {
@@ -48,7 +48,7 @@ public class Dish extends NamedEntity {
         this.price = price;
     }
 
-    public Dish(Integer id, String name, BigDecimal price) {
+    public Dish(Integer id, String name, BigDecimal price, LocalDate date) {
         super(id, name);
         this.price = price;
     }

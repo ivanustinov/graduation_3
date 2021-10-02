@@ -28,7 +28,6 @@ public abstract class AbstractControllerTest {
     @Autowired
     protected CacheManager cacheManager;
 
-
     @AfterEach
     void clearCache() {
         cacheManager.getCache("votes").clear();

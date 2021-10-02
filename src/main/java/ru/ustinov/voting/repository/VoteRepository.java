@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface VoteRepository extends BaseRepository<Vote> {
 
-    @EntityGraph(attributePaths = {"restaurant", "user"}, type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = {"restaurant"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("select v from Vote v where v.user =:user and v.date =:date")
     Vote getVoteByUserAndDate(User user, LocalDate date);
 
@@ -28,7 +28,7 @@ public interface VoteRepository extends BaseRepository<Vote> {
     List<Vote> getVoteByRestaurant(int restaurant_id);
 
     @EntityGraph(attributePaths = {"restaurant"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("select v from Vote v where v.user =?1 order by v.date desc")
-    List<Vote> getVoteByUser(User user);
+    @Query("select v from Vote v where v.user =:user order by v.date desc")
+    List<Vote> getVotesByUser(User user);
 
 }

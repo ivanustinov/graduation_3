@@ -10,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.ustinov.voting.model.Dish;
-import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.repository.DishRepository;
-import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.service.DishServise;
 import ru.ustinov.voting.util.validation.ValidationUtil;
 
@@ -30,14 +28,8 @@ public class DishController {
     public static final String REST_URL = "/admin/dishes";
 
     private final DishRepository dishRepository;
-    private final RestaurantRepository restaurantRepository;
-    private final DishServise service;
 
-    @GetMapping()
-    public List<Restaurant> getRestaurants() {
-        log.info("get all restaurants");
-        return restaurantRepository.getAll();
-    }
+    private final DishServise service;
 
     @GetMapping("/{restaurant_id}/{id}")
     public ResponseEntity<Dish> get(@PathVariable int restaurant_id, @PathVariable int id) {
@@ -49,12 +41,6 @@ public class DishController {
     public List<Dish> getDishesByDateAndRestaurant(@PathVariable int restaurant_id, @RequestParam LocalDate date) {
         log.info("get dishes for restaurant {} and date {}", restaurant_id, date);
         return dishRepository.getDishesByDateAndRestaurant(restaurant_id, date);
-    }
-
-    @GetMapping("/get-all")
-    public List<Dish> getAll() {
-        log.info("get all dishes");
-        return dishRepository.getAll();
     }
 
     @DeleteMapping("/{restaurant_id}/{id}")

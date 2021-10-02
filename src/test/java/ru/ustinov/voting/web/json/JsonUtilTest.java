@@ -16,7 +16,6 @@ import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
 
 class JsonUtilTest extends AbstractControllerTest {
 
-
     @Test
     void readWriteValue() {
         final String json = JsonUtil.writeValue(RESTAURANT_HARBIN_TO);
@@ -24,7 +23,6 @@ class JsonUtilTest extends AbstractControllerTest {
         final RestaurantTo restaurant = JsonUtil.readValue(json, RestaurantTo.class);
         WITH_VOTES_DISHES_MATCHER.assertMatch(restaurant, RESTAURANT_HARBIN_TO);
     }
-
 
     @Test
     void readWriteValues() {

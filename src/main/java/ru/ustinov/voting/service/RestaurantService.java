@@ -4,20 +4,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ustinov.voting.error.NotFoundException;
-import ru.ustinov.voting.model.Dish;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.DishRepository;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.to.RestaurantTo;
-import ru.ustinov.voting.util.DishUtil;
 import ru.ustinov.voting.util.validation.Util;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -37,21 +36,17 @@ public class RestaurantService {
     VoteRepository voteRepository;
 
 
-    public List<RestaurantTo> getWithDishes(LocalDate date) {
-        final List<Dish> dishesByDate = dishRepository.getDishesByDate(date);
-        if (dishesByDate.isEmpty()) {
-            throw new NotFoundException("Сегодня нет ресторанов для обслуживания");
+    public List<Restaurant> getWithDishes(LocalDate date) {
+        final List<Restaurant> withDishes = restaurantRepository.getWithDishes(date);
+        if (withDishes.isEmpty()) {
+            throw new NotFoundException("Сегодня нет ресторанова на обслуживании.");
         }
-        final Map<Integer, List<Dish>> integerListMap = DishUtil.groupByRestaurant(dishesByDate);
-        final Set<Integer> restId = integerListMap.keySet();
-        final List<Restaurant> restaurants = restaurantRepository.getRestaurantsById(restId);
-        return restaurants.stream()
-                .map(restaurant -> createTo(restaurant, integerListMap.get(restaurant.getId()))).toList();
+        return withDishes;
     }
 
 
     public List<RestaurantTo> getWithVotesAndDishes(LocalDate date) {
-        final List<RestaurantTo> withDishes = getWithDishes(date);
+        final List<Restaurant> withDishes = getWithDishes(date);
         final List<Vote> voteByDateOpt = voteRepository.getVotesByDate(date);
         if (voteByDateOpt.isEmpty()) {
             throw new NotFoundException("За этот день не было голосований");
@@ -59,8 +54,8 @@ public class RestaurantService {
         final Map<Integer, List<Vote>> votes = voteByDateOpt.stream().collect(
                 Collectors.groupingBy((Vote vote) -> vote.getRestaurant().getId(), Collectors.toList()));
         final List<RestaurantTo> restaurantTos = withDishes.stream()
-                .peek(restaurantTo -> restaurantTo.setVotes(votes.getOrDefault(restaurantTo.getId(), List.of()).size())).toList();
-        return restaurantTos.stream().sorted(Comparator.comparing(RestaurantTo::getVotes).reversed()).toList();
+                .map(restaurant -> createTo(restaurant, votes.get(restaurant.getId()))).toList();
+        return restaurantTos.stream().sorted(Comparator.comparing(RestaurantTo::getCountVotes).reversed()).toList();
     }
 
 
@@ -71,8 +66,9 @@ public class RestaurantService {
         restaurantRepository.deleteById(restaurant_id);
     }
 
-    public static RestaurantTo createTo(Restaurant restaurant, List<Dish> dishes) {
-        return new RestaurantTo(restaurant, dishes);
+    public static RestaurantTo createTo(Restaurant restaurant, List<Vote> votes) {
+        int countVotes = votes == null ? 0 : votes.size();
+        return new RestaurantTo(restaurant, countVotes);
     }
 
 }

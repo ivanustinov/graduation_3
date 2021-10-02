@@ -11,8 +11,8 @@ import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
@@ -33,7 +33,7 @@ public class VoteService {
 
     @Transactional
     @CacheEvict(value = "votes", allEntries = true)
-    public void vote(User user, int restaurant_id) {
+    public Vote vote(User user, int restaurant_id) {
         final LocalTime time = LocalTime.now();
         final Restaurant restaurant = restaurantRepository.getById(restaurant_id);
         final LocalDate now = LocalDate.now();
@@ -42,12 +42,11 @@ public class VoteService {
             vote.setRestaurant(restaurant);
         } else {
             vote = new Vote(restaurant, user, now);
-            voteRepository.save(vote);
-            return;
+            return voteRepository.save(vote);
         }
         if (time.isAfter(votingTime)) {
             throw new NotFoundException("Время для голосования истекло");
         }
-        voteRepository.save(vote);
+        return voteRepository.save(vote);
     }
 }

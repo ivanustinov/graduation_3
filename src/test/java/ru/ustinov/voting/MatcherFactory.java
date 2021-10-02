@@ -32,7 +32,7 @@ public class MatcherFactory {
     public static <T> Matcher<T> usingIgnoringFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
         return usingAssertions(clazz,
                 (a, e) -> assertThat(a).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(e),
-                (a, e) -> assertThat(a).usingElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(e));
+                (a, e) -> assertThat(a).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(e));
     }
 
     public static <T> Matcher<T> usingRecurciveIgnoringFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
@@ -79,7 +79,6 @@ public class MatcherFactory {
                 assertMatch(JsonUtil.readValues(getContent(result), clazz), expected);
             };
         }
-
 
         public T readFromJson(ResultActions action) throws UnsupportedEncodingException {
             return JsonUtil.readValue(getContent(action.andReturn()), clazz);

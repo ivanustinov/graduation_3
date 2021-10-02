@@ -1,15 +1,16 @@
 package ru.ustinov.voting.web.voting;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.VoteRepository;
@@ -18,8 +19,8 @@ import ru.ustinov.voting.service.VoteService;
 import ru.ustinov.voting.to.RestaurantTo;
 import ru.ustinov.voting.web.AuthUser;
 
+import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public class VotingController {
 
     @GetMapping
     @Cacheable(cacheNames = "restaurants", key = "#root.methodName")
-    public List<RestaurantTo> getWithDishesToday(@AuthenticationPrincipal AuthUser authUser) {
+    public List<Restaurant> getWithDishesToday(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get restaurants with dishes today for user {}", authUser.id());
         return restaurantService.getWithDishes(LocalDate.now());
     }
@@ -55,7 +56,7 @@ public class VotingController {
     @GetMapping("/my-votes")
     public List<Vote> getVotes(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get votes for user {}", authUser.id());
-        return voteRepository.getVoteByUser(authUser.getUser());
+        return voteRepository.getVotesByUser(authUser.getUser());
     }
 
     @GetMapping("/results")
@@ -65,12 +66,15 @@ public class VotingController {
         return restaurantService.getWithVotesAndDishes(LocalDate.now());
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
         final User user = authUser.getUser();
         log.info("user {} is voting for restaurant {}", user.getName(), restaurant_id);
-        voteService.vote(user, restaurant_id);
+        final Vote vote = voteService.vote(user, restaurant_id);
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/{id}")
+                .buildAndExpand(vote.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).body(vote);
     }
 
     @PutMapping

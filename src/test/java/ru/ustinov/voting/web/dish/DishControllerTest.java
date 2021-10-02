@@ -18,6 +18,7 @@ import ru.ustinov.voting.web.user.UserTestData;
 import java.time.LocalDate;
 
 import static java.math.BigDecimal.valueOf;
+import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,20 +52,10 @@ class DishControllerTest extends AbstractControllerTest {
                 .andExpect(MATCHER.contentJson(dish1));
     }
 
-
-    @Test
-    void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "/get-all"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MATCHER_WITH_RESTAURANT.contentJson(dishes));
-    }
-
     @Test
     void getDishesByDateAndRestaurant() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + RESTAURAUNT_HARBIN_ID)
-                .param("date", String.valueOf(LocalDate.now())))
+                .param("date", String.valueOf(now())))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -118,10 +109,9 @@ class DishControllerTest extends AbstractControllerTest {
         MATCHER.assertMatch(dishRepository.getById(newId), newDish);
     }
 
-
     @Test
     void createInvalid() throws Exception {
-        Dish invalid = new Dish(null, null, valueOf(200));
+        Dish invalid = new Dish(null, null, now(), valueOf(200));
         perform(MockMvcRequestBuilders.post(REST_URL+ RESTAURAUNT_HARBIN_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))
@@ -131,7 +121,7 @@ class DishControllerTest extends AbstractControllerTest {
 
     @Test
     void updateInvalid() throws Exception {
-        Dish invalid = new Dish(DISH_ID, null, valueOf(200));
+        Dish invalid = new Dish(DISH_ID, null, now(), valueOf(200));
         perform(MockMvcRequestBuilders.put(REST_URL + RESTAURAUNT_HARBIN_ID + "/" + DISH_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))
@@ -139,11 +129,10 @@ class DishControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
 
-
     @Test
     @Transactional(propagation = Propagation.NEVER)
     void updateDuplicate() {
-        Dish invalid = new Dish(dish2.getId(), "Харчо", valueOf(500));
+        Dish invalid = new Dish(dish2.getId(), "Харчо", now(), valueOf(500));
         assertThrows(Exception.class, () ->
                 perform(MockMvcRequestBuilders.put(REST_URL + RESTAURAUNT_HARBIN_ID + "/" + dish2.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -155,7 +144,7 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     @Transactional(propagation = Propagation.NEVER)
     void createDuplicate() {
-        Dish invalid = new Dish(null, "Харчо", valueOf(500));
+        Dish invalid = new Dish(null, "Харчо", now(), valueOf(500));
         assertThrows(Exception.class, () ->
                 perform(MockMvcRequestBuilders.post(REST_URL+ RESTAURAUNT_HARBIN_ID )
                         .contentType(MediaType.APPLICATION_JSON)
