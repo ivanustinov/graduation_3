@@ -1,4 +1,5 @@
 #  https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
 spring:
   jpa:
     show-sql: true
@@ -15,17 +16,8 @@ spring:
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
 
-  datasource:
-    # ImMemory
-    url: jdbc:h2:mem:voting
-    #    tcp: jdbc:h2:tcp://localhost:9092/mem:voting
-    username: sa
-    password:
-  h2.console.enabled: true
-
-
-
   # Jackson Serialization Issue Resolver
+
   jackson:
     visibility:
       field: any
@@ -36,21 +28,42 @@ spring:
 
 
 
-#    https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
+  #    https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
   cache:
     cache-names: users, restaurants, votes
     caffeine:
       spec: maximumSize=200,expireAfterAccess=3600s
+
   mvc:
     format:
       date: iso
       time: iso
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+  aop:
+    proxy-target-class: false
+
+  sql:
+    init:
+      mode: always
+
+  profiles:
+    active: "h2"
+
+
+
+
+
 
 logging:
   level:
     root: WARN
     ru.javaops.topjava: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+    org.springframework.orm.jpa: DEBUG
+
 
 server.servlet:
   encoding:
@@ -61,3 +74,28 @@ server.servlet:
 server:
   servlet:
     context-path: /api
+
+
+---
+
+
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/voting
+    username: user
+    password: password
+
+---
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    # ImMemory
+    url: jdbc:h2:mem:voting
+  #   tcp: jdbc:h2:tcp://localhost:9092/mem:voting
+  h2.console.enabled: true
+

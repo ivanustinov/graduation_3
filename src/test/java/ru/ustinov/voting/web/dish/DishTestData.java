@@ -17,10 +17,7 @@ import static java.time.LocalDate.of;
 
 public class DishTestData {
     public static final MatcherFactory.Matcher<Dish> MATCHER = MatcherFactory
-            .usingIgnoringFieldsComparator(Dish.class, "restaurant", "date");
-
-    public static final MatcherFactory.Matcher<Dish> MATCHER_WITH_RESTAURANT = MatcherFactory
-            .usingIgnoringFieldsComparator(Dish.class, "restaurant.dishes");
+            .usingIgnoringFieldsComparator(Dish.class, "restaurant");
 
     public static final int DISH_ID = 1;
     public static final int NOT_FOUND = 100;

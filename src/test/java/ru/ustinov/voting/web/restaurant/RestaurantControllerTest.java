@@ -1,6 +1,5 @@
 package ru.ustinov.voting.web.restaurant;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,12 +16,12 @@ import ru.ustinov.voting.web.user.UserTestData;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
-import static ru.ustinov.voting.web.voting.VoteTestData.HARBIN_VOTES_NOW;
 
 /**
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)

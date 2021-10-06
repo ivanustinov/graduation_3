@@ -1,9 +1,16 @@
 package ru.ustinov.voting.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import ru.ustinov.voting.error.NotFoundException;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.model.User;
@@ -24,12 +31,12 @@ import java.time.LocalTime;
 public class VoteService {
 
 
-
     private final VoteRepository voteRepository;
 
     private final RestaurantRepository restaurantRepository;
 
     private final LocalTime votingTime = LocalTime.of(11, 0);
+
 
     @Transactional
     @CacheEvict(value = "votes", allEntries = true)
@@ -38,13 +45,11 @@ public class VoteService {
         final Restaurant restaurant = restaurantRepository.getById(restaurant_id);
         final LocalDate now = LocalDate.now();
         Vote vote = voteRepository.getVoteByUserAndDate(user, now);
-        if (vote != null) {
+        if (vote == null) {
+            vote = new Vote(restaurant, user, now);
+        } else if (time.isBefore(votingTime)) {
             vote.setRestaurant(restaurant);
         } else {
-            vote = new Vote(restaurant, user, now);
-            return voteRepository.save(vote);
-        }
-        if (time.isAfter(votingTime)) {
             throw new NotFoundException("Время для голосования истекло");
         }
         return voteRepository.save(vote);

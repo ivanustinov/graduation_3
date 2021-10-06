@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  cache:
+    type: none
+---
+spring:
+  config:
+    activate:
+      on-profile: cache
+  cache:
+    type: caffeine

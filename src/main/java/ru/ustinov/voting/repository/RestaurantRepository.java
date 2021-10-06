@@ -31,6 +31,7 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
     @Query("SELECT r FROM Restaurant r join r.dishes d on d.date = :date ORDER BY r.name")
     List<Restaurant> getWithDishes(LocalDate date);
 
+
     @Override
     @Modifying
     @Transactional
