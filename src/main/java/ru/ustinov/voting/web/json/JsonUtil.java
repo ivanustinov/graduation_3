@@ -12,6 +12,7 @@ import java.util.Map;
 
 @UtilityClass
 public class JsonUtil {
+
     public static ObjectMapper mapper;
 
     public static void setMapper(ObjectMapper mapper) {
@@ -42,6 +43,7 @@ public class JsonUtil {
             throw new IllegalStateException("Invalid write to JSON:\n'" + obj + "'", e);
         }
     }
+
 
     public static <T> String writeAdditionProps(T obj, String addName, Object addValue) {
         return writeAdditionProps(obj, Map.of(addName, addValue));

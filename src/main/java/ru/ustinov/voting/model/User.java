@@ -13,6 +13,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
@@ -21,9 +23,12 @@ import java.util.Set;
 @Table(name = "users")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true, exclude = {"password", "votes"})
-public class User extends NamedEntity implements HasEmail, HasId{
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString(callSuper = true, exclude = {"password"})
+public class User extends NamedEntity implements HasEmail, HasId, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "email", nullable = false, unique = true)
     @Email

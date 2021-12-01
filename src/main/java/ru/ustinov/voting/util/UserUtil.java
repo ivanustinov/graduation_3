@@ -7,6 +7,8 @@ import ru.ustinov.voting.model.Role;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.to.UserTo;
 
+import java.util.Collections;
+
 @UtilityClass
 public class UserUtil {
 
@@ -24,6 +26,7 @@ public class UserUtil {
     }
 
     public static User prepareToSave(User user) {
+        user.setRoles(Collections.singletonList(Role.USER));
         user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         user.setEmail(user.getEmail().toLowerCase());
         return user;

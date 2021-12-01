@@ -16,11 +16,11 @@ import ru.ustinov.voting.web.GlobalExceptionHandler;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.ustinov.voting.web.user.ProfileController.REST_URL;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.ustinov.voting.service.VoteService.EXCEPTION_VOTING_TWICE_AFTER_VOTING_TIME_IS_UP;
+import static ru.ustinov.voting.web.user.ProfileRestController.REST_URL;
 
-class ProfileControllerTest extends AbstractControllerTest {
+class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -72,10 +72,8 @@ class ProfileControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-
         UserTestData.MATCHER.assertMatch(userRepository.getById(UserTestData.USER_ID), UserUtil.updateFromTo(new User(UserTestData.user), updatedTo));
     }
-
 
     @Test
     void registerInvalid() throws Exception {
@@ -106,6 +104,6 @@ class ProfileControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL)));
+                .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage(GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL)));
     }
 }

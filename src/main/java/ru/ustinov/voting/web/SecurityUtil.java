@@ -30,4 +30,8 @@ public class SecurityUtil {
     public static int authId() {
         return get().getUser().id();
     }
+
+    public static String authEmail() {
+        return get().getUser().getEmail();
+    }
 }

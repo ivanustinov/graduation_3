@@ -20,8 +20,8 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 public class Dish extends NamedEntity {
 
-
     @Column(name = "date", nullable = false)
+    @NotNull
     private LocalDate date;
 
     @Column(name = "price", nullable = false)
@@ -48,10 +48,10 @@ public class Dish extends NamedEntity {
         this.price = price;
     }
 
-    public Dish(Integer id, String name, BigDecimal price, LocalDate date) {
-        super(id, name);
-        this.price = price;
-        this.date = date;
+    public Dish(Dish dish) {
+        super(dish.getId(), dish.getName());
+        this.price = dish.price;
+        this.date = dish.getDate();
     }
 
 }

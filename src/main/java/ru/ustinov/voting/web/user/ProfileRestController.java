@@ -22,12 +22,11 @@ import java.net.URI;
 import java.util.EnumSet;
 
 @RestController
-@RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = ProfileRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-@CacheConfig(cacheNames = "users")
 @Tag(name = "Profile Controller")
-public class ProfileController extends AbstractUserController {
-    static final String REST_URL = "/profile";
+public class ProfileRestController extends AbstractUserController {
+    static final String REST_URL = "/rest/profile";
 
     @GetMapping
     public User get(@AuthenticationPrincipal AuthUser authUser) {
@@ -36,7 +35,7 @@ public class ProfileController extends AbstractUserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(value = "users", key = "#authUser.getUser().getEmail()")
+    @CacheEvict(value = "users", key = "#authUser.user.email")
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         super.delete(authUser.id());
     }

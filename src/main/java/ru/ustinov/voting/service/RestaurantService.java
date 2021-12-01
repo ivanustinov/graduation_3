@@ -1,23 +1,31 @@
 package ru.ustinov.voting.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ustinov.voting.error.AppException;
 import ru.ustinov.voting.error.NotFoundException;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.model.Vote;
-import ru.ustinov.voting.repository.DishRepository;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.to.RestaurantTo;
 import ru.ustinov.voting.util.validation.Util;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
 /**
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
@@ -29,41 +37,48 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class RestaurantService {
 
-    DishRepository dishRepository;
+    public static final String EXCEPTION_GETTING_RESULT_BEFORE_VOTING_TIME_LEFT = "voting.before_time";
 
-    RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
 
-    VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
 
+    private final VoteService voteService;
 
+    @Autowired
+    private MessageSourceAccessor messageSourceAccessor;
+
+    @Cacheable(cacheNames = "restaurants")
     public List<Restaurant> getWithDishes(LocalDate date) {
-        final List<Restaurant> withDishes = restaurantRepository.getWithDishes(date);
-        if (withDishes.isEmpty()) {
-            throw new NotFoundException("Сегодня нет ресторанова на обслуживании.");
-        }
-        return withDishes;
+        return restaurantRepository.getWithDishes(date);
     }
 
-
-    public List<RestaurantTo> getWithVotesAndDishes(LocalDate date) {
+    @Transactional
+    public RestaurantTo getResult(LocalDate date) {
+        checkResultTime();
         final List<Restaurant> withDishes = getWithDishes(date);
-        final List<Vote> voteByDateOpt = voteRepository.getVotesByDate(date);
-        if (voteByDateOpt.isEmpty()) {
-            throw new NotFoundException("За этот день не было голосований");
+        final List<Vote> voteByDate = voteRepository.getVotesByDate(date);
+        if (voteByDate.isEmpty()) {
+            throw new NotFoundException(messageSourceAccessor.getMessage("voting.no_votes", new LocalDate[]{date}));
         }
-        final Map<Integer, List<Vote>> votes = voteByDateOpt.stream().collect(
+        final Map<Integer, List<Vote>> votes = voteByDate.stream().collect(
                 Collectors.groupingBy((Vote vote) -> vote.getRestaurant().getId(), Collectors.toList()));
         final List<RestaurantTo> restaurantTos = withDishes.stream()
                 .map(restaurant -> createTo(restaurant, votes.get(restaurant.getId()))).toList();
-        return restaurantTos.stream().sorted(Comparator.comparing(RestaurantTo::getCountVotes).reversed()).toList();
+        final Optional<RestaurantTo> restaurant = restaurantTos.stream().max(Comparator.comparing(RestaurantTo::getCountVotes)
+                .thenComparing(Comparator.comparing(RestaurantTo::getName).reversed()));
+        return Util.getEntity(restaurant, "Today no result");
     }
 
+    private void checkResultTime() {
+        final LocalTime votingTime = voteService.getVotingTime();
+        if ((LocalTime.now().isBefore(votingTime))) {
+            throw new AppException(HttpStatus.BAD_REQUEST, messageSourceAccessor.getMessage(EXCEPTION_GETTING_RESULT_BEFORE_VOTING_TIME_LEFT), ErrorAttributeOptions.of(MESSAGE));
+        }
+    }
 
-    @Transactional
-    public void delete(int restaurant_id) {
-        final Optional<Restaurant> restaurantOptional = restaurantRepository.get(restaurant_id);
-        Util.getEntity(restaurantOptional, "Ресторана с id " + restaurant_id + " не сущуствует");
-        restaurantRepository.deleteById(restaurant_id);
+    public Restaurant getRestaurant(int restaurant_id) {
+        return Util.getEntity(restaurantRepository.get(restaurant_id), messageSourceAccessor.getMessage("restaurant.unexisting", new Integer[]{restaurant_id}));
     }
 
     public static RestaurantTo createTo(Restaurant restaurant, List<Vote> votes) {

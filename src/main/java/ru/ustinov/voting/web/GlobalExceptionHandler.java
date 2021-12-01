@@ -4,38 +4,49 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.ustinov.voting.error.AppException;
+import ru.ustinov.voting.util.validation.ValidationUtil;
 
 import javax.persistence.EntityNotFoundException;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
+@Slf4j
 @RestControllerAdvice
 @AllArgsConstructor
-@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    public static final String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exists";
+
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
+    public static final String EXCEPTION_DUPLICATE_DISH_NAME = "dish.name_duplicate";
+    public static final String EXCEPTION_DUPLICATE_RESTAURANT_NAME = "restaurant.name_duplicate";
 
     private final ErrorAttributes errorAttributes;
+
+    private final MessageSourceAccessor messageSourceAccessor;
 
     @NonNull
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+            MethodArgumentNotValidException ex, @NonNull HttpHeaders headers,
+            @NonNull HttpStatus status, @NonNull WebRequest request) {
         return handleBindingErrors(ex.getBindingResult(), request);
     }
 
@@ -49,25 +60,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appException(WebRequest request, AppException ex) {
         log.error("ApplicationException", ex);
-        return createResponseEntity(getDefaultBody(request, ex.getOptions(), null), ex.getStatus());
+        return createResponseEntity(getDefaultBody(request, ex.getOptions(), ex.getMessage()), ex.getStatus());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> persistException(WebRequest request, EntityNotFoundException ex) {
         log.error("EntityNotFoundException ", ex);
-        return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(MESSAGE), null), HttpStatus.UNPROCESSABLE_ENTITY);
+        final Throwable rootCause = ValidationUtil.getRootCause(ex);
+        return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(MESSAGE),
+                ValidationUtil.getMessage(rootCause)), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(java.sql.SQLException.class)
+    public ResponseEntity<?> persistException(WebRequest request, SQLException ex) {
+        log.error("SQLException", ex);
+        return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(MESSAGE), ex.getMessage()),
+                HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     private ResponseEntity<Object> handleBindingErrors(BindingResult result, WebRequest request) {
-        String msg = result.getFieldErrors().stream()
-                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                .collect(Collectors.joining("\n"));
+        String[] msg = result.getAllErrors().stream().map(messageSourceAccessor::getMessage).toArray(String[]::new);
         return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.defaults(), msg), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-    private Map<String, Object> getDefaultBody(WebRequest request, ErrorAttributeOptions options, String msg) {
+    private Map<String, Object> getDefaultBody(WebRequest request, ErrorAttributeOptions options, String... msg) {
         Map<String, Object> body = errorAttributes.getErrorAttributes(request, options);
-        if (msg != null) {
+        if (msg.length != 0) {
             body.put("message", msg);
         }
         return body;

@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserTo implements HasEmail {
@@ -31,7 +30,6 @@ public class UserTo implements HasEmail {
     @NotBlank
     @Size(min = 5, max = 32)
     String password;
-
 
     @Override
     public String toString() {

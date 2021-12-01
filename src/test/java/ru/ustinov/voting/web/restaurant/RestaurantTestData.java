@@ -27,31 +27,33 @@ public class RestaurantTestData {
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "dishes");
 
-
     public static MatcherFactory.Matcher<Restaurant> WITH_DISHES_MATCHER =
             MatcherFactory.usingRecurciveIgnoringFieldsComparator(Restaurant.class,
                     "dishes.restaurant", "dishes.date");
 
-
-    public static MatcherFactory.Matcher<RestaurantTo> WITH_VOTES_DISHES_MATCHER =
+    public static MatcherFactory.Matcher<RestaurantTo> TO_MATCHER =
             MatcherFactory.usingRecurciveIgnoringFieldsComparator(RestaurantTo.class,
                      "dishes.restaurant", "dishes.date");
 
-
     public static final int RESTAURAUNT_HARBIN_ID = 1;
+
+    public static final int RESTAURAUNT_NOT_FOUND_ID = 100;
+
     public static final Restaurant RESTAURANT_HARBIN = new Restaurant(RESTAURAUNT_HARBIN_ID, "Харбин", harbinDishesNow);
+
     public static final Restaurant RESTAURANT_CI = new Restaurant(RESTAURAUNT_HARBIN_ID + 1, "Си", ciDishesNow);
+
     public static final Restaurant RESTAURANT_HANOY = new Restaurant(RESTAURAUNT_HARBIN_ID + 2, "Ханой");
 
     public static final RestaurantTo RESTAURANT_HARBIN_TO = new RestaurantTo(RESTAURANT_HARBIN, 2);
-    public static final RestaurantTo RESTAURANT_CI_TO = new RestaurantTo(RESTAURANT_CI, 0);
 
+    public static final RestaurantTo RESTAURANT_CI_TO = new RestaurantTo(RESTAURANT_CI, 0);
 
     public static final List<Restaurant> RESTAURANTS = Stream.of(RESTAURANT_CI, RESTAURANT_HARBIN, RESTAURANT_HANOY)
             .sorted(Comparator.comparing(Restaurant::getName)).toList();
 
-
     public static final Vote VOTE_USER_2_HARBIN_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HARBIN, user_2, now());
+
     public static final Vote VOTE_USER_2_HANOY_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HANOY, user_2, now());
 
     public static Restaurant getNew() {
@@ -69,6 +71,7 @@ public class RestaurantTestData {
         new_Harbin.setName("Харбин обновлен");
         return new_Harbin;
     }
+
     public static Restaurant getUpdated() {
         final Restaurant new_Harbin = new Restaurant(RESTAURANT_HARBIN);
         new_Harbin.setName("Харбин обновлен");

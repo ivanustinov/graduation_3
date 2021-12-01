@@ -20,15 +20,10 @@ import java.util.List;
 @ToString(callSuper = true)
 public class RestaurantTo extends NamedTo {
 
-
-    @ToString.Exclude
     @JsonIgnoreProperties({"restaurant", "date"})
     private List<Dish> dishes;
 
-
-    @ToString.Exclude
     private int countVotes;
-
 
     public RestaurantTo(Restaurant restaurant, int countVotes) {
         super(restaurant.getId(), restaurant.getName());

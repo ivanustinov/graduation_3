@@ -26,11 +26,9 @@ spring:
       is-getter: none
     default-property-inclusion: non_null
 
-
-
   #    https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
   cache:
-    cache-names: users, restaurants, votes
+    cache-names: users, restaurants, result
     caffeine:
       spec: maximumSize=200,expireAfterAccess=3600s
 
@@ -41,29 +39,26 @@ spring:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
-
   aop:
     proxy-target-class: false
 
   sql:
     init:
       mode: always
+#  messages:
+#    basename: app
 
   profiles:
     active: "h2"
 
-
-
-
-
-
 logging:
   level:
     root: WARN
-    ru.javaops.topjava: DEBUG
+    ru.ustinov.voting: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
-    org.springframework.orm.jpa: DEBUG
-
+#    org.springframework.security: DEBUG
+#    org.springframework.orm.jpa: DEBUG
+    org.springframework.cache: DEBUG
 
 server.servlet:
   encoding:
@@ -75,10 +70,7 @@ server:
   servlet:
     context-path: /api
 
-
 ---
-
-
 spring:
   config:
     activate:
@@ -94,8 +86,10 @@ spring:
     activate:
       on-profile: h2
   datasource:
-    # ImMemory
+      # ImMemory
     url: jdbc:h2:mem:voting
-  #   tcp: jdbc:h2:tcp://localhost:9092/mem:voting
-  h2.console.enabled: true
+      #   tcp: jdbc:h2:tcp://localhost:9092/mem:voting
+    h2.console.enabled: true
+
+
 

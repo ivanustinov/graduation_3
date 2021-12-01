@@ -13,7 +13,7 @@ import java.util.Optional;
 public class  Util {
 
     public static <T> T getEntity(Optional<T> opt, String msg) {
-        return opt.orElseThrow(() -> new NotFoundException(msg));
+         return opt.orElseThrow(() -> new NotFoundException(msg));
     }
 
 }

@@ -10,6 +10,7 @@ import ru.ustinov.voting.HasId;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 public abstract class BaseTo implements HasId {
+
     protected Integer id;
 
     @Override

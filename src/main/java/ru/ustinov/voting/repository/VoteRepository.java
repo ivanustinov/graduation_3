@@ -19,10 +19,8 @@ public interface VoteRepository extends BaseRepository<Vote> {
     @Query("select v from Vote v where v.user =:user and v.date =:date")
     Vote getVoteByUserAndDate(User user, LocalDate date);
 
-
     @Query("select v from Vote v where v.date = ?1")
     List<Vote> getVotesByDate(LocalDate date);
-
 
     @Query("select v from Vote v where v.restaurant.id = ?1")
     List<Vote> getVoteByRestaurant(int restaurant_id);

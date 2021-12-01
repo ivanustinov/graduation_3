@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UniqueMailValidator implements org.springframework.validation.Validator {
 
     private final UserRepository repository;
+
     private final HttpServletRequest request;
 
     @Override
@@ -40,7 +41,7 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
                             if (requestURI.endsWith("/" + dbId) || (dbId == SecurityUtil.authId() && requestURI.contains("/profile")))
                                 return;
                         }
-                        errors.rejectValue("email", "", GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL);
+                        errors.rejectValue("email", GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL);
                     });
         }
     }

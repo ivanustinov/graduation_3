@@ -22,13 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.ustinov.voting.web.user.UserTestData.NOT_FOUND;
-import static ru.ustinov.voting.web.voting.VoteTestData.voteAdminCi_201501416;
-import static ru.ustinov.voting.web.voting.VoteTestData.voteAdminHarbinNow;
 
 
-class AdminUserControllerTest extends AbstractControllerTest {
+class AdminRestUserControllerTest extends AbstractControllerTest {
 
-    private static final String REST_URL = AdminUserController.REST_URL + '/';
+    private static final String REST_URL = AdminRestUserController.REST_URL + '/';
 
     @Autowired
     private UserRepository userRepository;
