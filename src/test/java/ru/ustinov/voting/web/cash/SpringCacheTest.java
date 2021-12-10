@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.core.env.Environment;
+import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,16 +14,12 @@ import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.repository.DishRepository;
 import ru.ustinov.voting.service.RestaurantService;
 import ru.ustinov.voting.web.AbstractControllerTest;
-import ru.ustinov.voting.web.dish.DishRestController;
 import ru.ustinov.voting.web.json.JsonUtil;
 import ru.ustinov.voting.web.restaurant.RestaurantRestController;
 import ru.ustinov.voting.web.restaurant.RestaurantTestData;
 import ru.ustinov.voting.web.user.UserTestData;
-import ru.ustinov.voting.web.voting.VotingRestController;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -31,8 +27,6 @@ import java.util.stream.Stream;
 import static java.util.Comparator.comparing;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.ustinov.voting.web.dish.DishTestData.DISH_ID;
-import static ru.ustinov.voting.web.dish.DishTestData.getUpdatedDish;
 import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
 
 
@@ -58,9 +52,6 @@ public class SpringCacheTest extends AbstractControllerTest {
     @Autowired
     protected CacheManager cacheManager;
 
-    @Autowired
-    private Environment environment;
-
     @AfterEach
     void clearCache() {
         Objects.requireNonNull(cacheManager.getCache("result")).clear();
@@ -70,9 +61,9 @@ public class SpringCacheTest extends AbstractControllerTest {
 
     @Test
     public void cacheEvictWhenUpdateRestaurant() throws Exception {
-        System.out.println(Arrays.toString(environment.getActiveProfiles()));
         getRestaurantsWithDishes();
-        final List<Restaurant> resBeforeUpdate = cacheManager.getCache("restaurants").get(LocalDate.now(), List.class);
+        final SimpleKey key = new SimpleKey(new Object[]{LocalDate.now(), true});
+        final List<Restaurant> resBeforeUpdate = cacheManager.getCache("restaurants").get(key, List.class);
         WITH_DISHES_MATCHER.assertMatch(resBeforeUpdate, Stream.of(RESTAURANT_CI, RESTAURANT_HARBIN).sorted(comparing(NamedEntity::getName)).toList());
         final Restaurant updated = RestaurantTestData.getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL_ADMIN + RESTAURAUNT_HARBIN_ID)
@@ -80,7 +71,7 @@ public class SpringCacheTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print());
         getRestaurantsWithDishes();
-        final List<Restaurant> resAfterUpdate = cacheManager.getCache("restaurants").get(LocalDate.now(), List.class);
+        final List<Restaurant> resAfterUpdate = cacheManager.getCache("restaurants").get(key, List.class);
         WITH_DISHES_MATCHER.assertMatch(resAfterUpdate, Stream.of(RESTAURANT_CI, getUpdated()).sorted(comparing(NamedEntity::getName)).toList());
     }
 
@@ -91,8 +82,9 @@ public class SpringCacheTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
     public void cacheEvictWhenUpdateDish() throws Exception {
+        final SimpleKey key = new SimpleKey(new Object[]{LocalDate.now(), true});
         getRestaurantsWithDishes();
-        final List<Restaurant> resBeforeUpdate = cacheManager.getCache("restaurants").get(LocalDate.now(), List.class);
+        final List<Restaurant> resBeforeUpdate = cacheManager.getCache("restaurants").get(key, List.class);
         WITH_DISHES_MATCHER.assertMatch(resBeforeUpdate, Stream.of(RESTAURANT_CI, RESTAURANT_HARBIN).sorted(comparing(NamedEntity::getName)).toList());
         System.out.println("Start Updating Dish");
         perform(MockMvcRequestBuilders.put("/rest/admin/dishes" + '/' + RESTAURAUNT_HARBIN_ID + '/' + DISH_ID)
@@ -100,7 +92,7 @@ public class SpringCacheTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(getUpdatedDish())))
                 .andDo(print());
         getRestaurantsWithDishes();
-        final List<Restaurant> resAftereUpdate = cacheManager.getCache("restaurants").get(LocalDate.now(), List.class);
+        final List<Restaurant> resAftereUpdate = cacheManager.getCache("restaurants").get(key, List.class);
         WITH_DISHES_MATCHER.assertMatch(resAftereUpdate,
                 Stream.of(RESTAURANT_CI, setUpdatedDish(RESTAURANT_HARBIN, getUpdatedDish())).sorted(comparing(NamedEntity::getName)).toList());
     }

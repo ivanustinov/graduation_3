@@ -14,11 +14,11 @@ import ru.ustinov.voting.util.UserUtil;
 import ru.ustinov.voting.web.AbstractControllerTest;
 import ru.ustinov.voting.web.GlobalExceptionHandler;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static ru.ustinov.voting.service.VoteService.EXCEPTION_VOTING_TWICE_AFTER_VOTING_TIME_IS_UP;
 import static ru.ustinov.voting.web.user.ProfileRestController.REST_URL;
+import static ru.ustinov.voting.web.user.UserTestData.USER_ID;
+import static ru.ustinov.voting.web.user.UserTestData.user;
 
 class ProfileRestControllerTest extends AbstractControllerTest {
 
@@ -31,21 +31,13 @@ class ProfileRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(UserTestData.MATCHER.contentJson(UserTestData.user));
+                .andExpect(UserTestData.MATCHER.contentJson(user));
     }
 
     @Test
     void getUnAuth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithUserDetails(value = UserTestData.USER_MAIL)
-    void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL))
-                .andExpect(status().isNoContent());
-        UserTestData.MATCHER.assertMatch(userRepository.findAll(), UserTestData.admin, UserTestData.user_2);
     }
 
     @Test
@@ -72,7 +64,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        UserTestData.MATCHER.assertMatch(userRepository.getById(UserTestData.USER_ID), UserUtil.updateFromTo(new User(UserTestData.user), updatedTo));
+        UserTestData.MATCHER.assertMatch(userRepository.getById(USER_ID), UserUtil.updateFromTo(new User(user), updatedTo));
     }
 
     @Test

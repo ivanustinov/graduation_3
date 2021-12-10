@@ -1,7 +1,9 @@
 package ru.ustinov.voting.web;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.ustinov.voting.web.formatter.DateFormatter;
 
 import java.time.LocalDate;
 
@@ -9,6 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.ustinov.voting.TestUtil.userAuth;
+import static ru.ustinov.voting.web.restaurant.RestaurantTestData.RESTAURANT_HARBIN;
 import static ru.ustinov.voting.web.restaurant.RestaurantTestData.RESTAURAUNT_HARBIN_ID;
 import static ru.ustinov.voting.web.user.UserTestData.admin;
 import static ru.ustinov.voting.web.user.UserTestData.user;
@@ -70,7 +73,7 @@ class RootControlllerTest extends AbstractControllerTest {
     void getMenus() throws Exception {
         perform(MockMvcRequestBuilders.get("/menus")
                 .with(userAuth(admin))
-                .param("date", String.valueOf(LocalDate.now())))
+                .param("date", DateFormatter.format(LocalDate.now())))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("menus"))
@@ -79,12 +82,36 @@ class RootControlllerTest extends AbstractControllerTest {
 
     @Test
     void getDishes() throws Exception {
-        perform(MockMvcRequestBuilders.get("/dishes/" + RESTAURAUNT_HARBIN_ID + "/" + LocalDate.now())
-                .with(userAuth(admin)))
+        perform(MockMvcRequestBuilders.get("/dishes/" + RESTAURAUNT_HARBIN_ID)
+                .with(userAuth(admin))
+                .param("date", DateFormatter.format(LocalDate.now())))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("dishes"))
                 .andExpect(forwardedUrl("/WEB-INF/jsp/dishes.jsp"));
+    }
+
+    @Test
+    void getDishesByName() throws Exception {
+        perform(MockMvcRequestBuilders.get("/dishes_by_name/" + RESTAURANT_HARBIN.getName())
+                .with(userAuth(admin))
+                .param("date", DateFormatter.format(LocalDate.now())))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("dishes"))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/dishes.jsp"));
+    }
+
+    @Test
+    void deleteAll() throws Exception {
+        final String dateFormatted = DateFormatter.format(LocalDate.now());
+        perform(MockMvcRequestBuilders.get("/delete_all_dishes")
+                .with(userAuth(admin))
+                .param("date", dateFormatted)
+                .param("restaurant_id", String.valueOf(RESTAURAUNT_HARBIN_ID)))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/menus?date=" + dateFormatted));
     }
 
     @Test

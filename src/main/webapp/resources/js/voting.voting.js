@@ -1,13 +1,13 @@
-const restaurantAjaxUrl = "voting";
+const myVoteAjaxUrl = "voting";
 const getVotingTimeUrl = "voting/voting_time";
 const getResultUrl = "profile/result";
 const my_votes = "voting/my_votes";
 let voted;
-let myVotes
+let myVotes;
 
 function vote(restaurant_id) {
     $.post({
-        url: restaurantAjaxUrl,
+        url: myVoteAjaxUrl,
         data: {restaurant_id: restaurant_id},
         dataType: "json"
     }).done(function (data) {
@@ -18,26 +18,6 @@ function vote(restaurant_id) {
         $("#" + voted).css('background-color', '#1b47d7');
         successNoty("common.restaurant", "common.voted");
     });
-}
-
-let failedNote;
-
-function closeNoty() {
-    if (failedNote) {
-        failedNote.close();
-        failedNote = undefined;
-    }
-}
-
-function failNoty(jqXHR) {
-    closeNoty();
-    var errorInfo = jqXHR.responseJSON;
-    failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.message.join("<br>"),
-        type: "error",
-        layout: "bottomRight"
-    });
-    failedNote.show()
 }
 
 function getResult() {
@@ -54,7 +34,11 @@ function getResult() {
 }
 
 function getMyVotes() {
-    myVotes.ajax.reload();
+    if (myVotes === undefined) {
+        myVotes = createVotesDataTable();
+    } else {
+        myVotes.ajax.reload();
+    }
     $('#votes').modal();
 }
 
@@ -73,13 +57,15 @@ function getVotingTime() {
     $.get(getVotingTimeUrl, function (data) {
         let leftMinutes = getLeftMinutes(data);
         let number = checkTime(leftMinutes);
+        if (number === 0) {
+            return
+        }
         let interval = setInterval(function () {
             if (number === 0) {
                 clearInterval(interval);
-            } else {
-                number = checkTime(number);
             }
-        }, 1000);
+            number = checkTime(number);
+        }, 60000);
     });
 }
 
@@ -121,28 +107,9 @@ function checkTime(minutes) {
     return minutes;
 }
 
-function renderRestultButton() {
-    $('#votebutton').append($('<button>', {
-        class: "btn btn-primary mybutton",
-        onclick: 'getResult()'
-    }))
-    $('#votebutton>button').html(i18n["voting.result"]);
-}
-
-$(function () {
-    getVotingTime();
-    $.ajax({
-        url: restaurantAjaxUrl,
-        method: "GET",
-        dataType: "json"
-    }).done(function (data) {
-        voted = data.restaurant.id;
-        if (voted) {
-            $("#" + voted).css('background-color', '#1b47d7');
-        }
-    });
-
-    myVotes = $("#my_votes").DataTable({
+function createVotesDataTable() {
+    $.fn.dataTable.moment('DD.MM.YYYY');
+    return $("#my_votes").DataTable({
         "columns": [
             {
                 "data": "restaurant.name"
@@ -162,10 +129,35 @@ $(function () {
             ]
         ]
     });
+}
+
+function renderRestultButton() {
+    $('#resultButton').append($('<button>', {
+        class: "btn btn-primary mybutton",
+        onclick: 'getResult()'
+    }))
+    $('#resultButton>button').html(i18n["voting.result"]);
+}
+
+$(function () {
+    getVotingTime();
+    $.ajax({
+        url: myVoteAjaxUrl,
+        method: "GET",
+        dataType: "json"
+    }).done(function (data) {
+        if (!jQuery.isEmptyObject(data)) {
+            voted = data.restaurant.id;
+            $("#" + voted).css('background-color', '#1b47d7');
+        }
+    });
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
     });
+    // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
+    $.ajaxSetup({cache: false});
+
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function (e, xhr, options) {

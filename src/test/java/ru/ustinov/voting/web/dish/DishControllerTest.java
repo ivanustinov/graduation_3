@@ -13,6 +13,7 @@ import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.repository.DishRepository;
 import ru.ustinov.voting.web.AbstractControllerTest;
 import ru.ustinov.voting.web.GlobalExceptionHandler;
+import ru.ustinov.voting.web.formatter.DateFormatter;
 import ru.ustinov.voting.web.json.JsonUtil;
 
 import java.time.LocalDate;
@@ -24,8 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.ustinov.voting.web.dish.DishTestData.*;
-import static ru.ustinov.voting.web.restaurant.RestaurantTestData.RESTAURAUNT_HARBIN_ID;
-import static ru.ustinov.voting.web.restaurant.RestaurantTestData.RESTAURAUNT_NOT_FOUND_ID;
+import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
 import static ru.ustinov.voting.web.user.UserTestData.ADMIN_MAIL;
 import static ru.ustinov.voting.web.user.UserTestData.USER_MAIL;
 
@@ -63,7 +63,7 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     void getDishesByDateAndRestaurant() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + RESTAURAUNT_HARBIN_ID)
-                .param("date", String.valueOf(now())))
+                .param("date", DateFormatter.format(LocalDate.now())))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -74,7 +74,7 @@ class DishControllerTest extends AbstractControllerTest {
     void getLastMenu() throws Exception {
         final LocalDate localDate = now().plusDays(1);
         perform(MockMvcRequestBuilders.get(REST_URL + RESTAURAUNT_HARBIN_ID + "/lastMenu")
-                .param("date", String.valueOf(localDate)))
+                .param("date", DateFormatter.format(localDate)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -92,13 +92,15 @@ class DishControllerTest extends AbstractControllerTest {
     void deleteNotFound() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURAUNT_HARBIN_ID + "/" + NOT_FOUND))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").value(
+                        messageSourceAccessor.getMessage("error.validationError")));
     }
 
     @Test
     void deletAllByRestaurantAndDate() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURAUNT_HARBIN_ID)
-                .param("date", String.valueOf(now())))
+                .param("date", DateFormatter.format(LocalDate.now())))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertTrue(dishRepository.getDishesByDateAndRestaurant(RESTAURAUNT_HARBIN_ID, LocalDate.now()).isEmpty());
@@ -134,22 +136,24 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     public void createWithUnexistingRestaurant() throws Exception {
         Dish newDish = getNewDish();
-        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURAUNT_NOT_FOUND_ID)
+        perform(MockMvcRequestBuilders.post(REST_URL + NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newDish)))
                 .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").value(
+                        messageSourceAccessor.getMessage("restaurant.unexisting", new Object[]{NOT_FOUND})))
                 .andDo(print());
     }
 
     @Test
     public void createDishesFromLastMenu() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL + RESTAURAUNT_HARBIN_ID + "/lastMenu")
-                .content(JsonUtil.writeValue(newHarbinDishes))
+                .content(JsonUtil.writeValue(newHarbinDishesFromLastMenu))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(print());
         MATCHER_WITHOUT_ID_RESTAURANT.assertMatch(
-                dishRepository.getDishesByDateAndRestaurant(RESTAURAUNT_HARBIN_ID, now().plusDays(1)), newHarbinDishes);
+                dishRepository.getDishesByDateAndRestaurant(RESTAURAUNT_HARBIN_ID, now().plusDays(1)), newHarbinDishesFromLastMenu);
     }
 
     @Test

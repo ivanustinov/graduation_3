@@ -2,8 +2,6 @@ const rootDishesAjaxUrl = "dishes/";
 const dishesAjaxUrl = "admin/dishes/";
 const restaurantWithoutDishes = "admin/restaurants/without";
 
-let form;
-
 function remove(restaurant_id, date) {
     $.ajax({
         url: dishesAjaxUrl + restaurant_id,
@@ -36,38 +34,23 @@ function getRestaurantsWithoutDishes(date) {
             $('#name').append($('<option>', {value: value.id, html: value.name}));
         });
         let value1 = $('#name option:selected').attr('value');
-        $('#detailsForm').attr('action', rootDishesAjaxUrl + value1 +'/' + date)
+        $('#detailsForm').attr('action', rootDishesAjaxUrl + value1)
     });
-}
-
-let failedNote;
-
-function closeNoty() {
-    if (failedNote) {
-        failedNote.close();
-        failedNote = undefined;
-    }
-}
-
-function successNoty(key) {
-    closeNoty();
-    new Noty({
-        text: "<span class='fa fa-lg fa-check'></span> &nbsp;" + i18n[key],
-        type: 'success',
-        layout: "bottomRight",
-        timeout: 1000
-    }).show();
 }
 
 $(function () {
     $('#name').on('change', function () {
         let value1 = $('#name option:selected').val();
-        $('#detailsForm').attr('action', rootDishesAjaxUrl + value1 + '/' + dDate)
+        $('#detailsForm').attr('action', rootDishesAjaxUrl + value1)
     });
-    //form = $('#detailsForm');
-    // $('#create_button').click(function () {
-    //     $('#detailsForm').submit();
-    // });
+
+    $(document).ajaxError(function (event, jqXHR, options, jsExc) {
+        failNoty(jqXHR);
+    });
+
+    // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
+    $.ajaxSetup({cache: false});
+
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function (e, xhr, options) {

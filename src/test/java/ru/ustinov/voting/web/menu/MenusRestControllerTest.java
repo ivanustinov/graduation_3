@@ -7,6 +7,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.ustinov.voting.service.MenuServise;
 import ru.ustinov.voting.web.AbstractControllerTest;
+import ru.ustinov.voting.web.formatter.DateFormatter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,22 +36,22 @@ class MenusRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(MenusRestController.REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MenusTestData.MENUS_TO_MATCHER.contentJson(MENUS_TO_NOW, MENUS_TO_2015_04_30, MENUS_TO_2015_04_16));
+                .andExpect(MenusTestData.MENUS_TO_MATCHER.contentJson(MENUS_TO_NOW, MENUS_TO_2015_04_16));
     }
 
     @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(MenusRestController.REST_URL)
-                .param("date", String.valueOf(LocalDate.now())))
+                .param("date", DateFormatter.format(LocalDate.now())))
                 .andExpect(status().isNoContent());
-        assertEquals(menuServise.getAll(), List.of(MENUS_TO_2015_04_30, MENUS_TO_2015_04_16));
+        assertEquals(List.of(MENUS_TO_2015_04_16), menuServise.getAll());
     }
 
     @Test
     void copy() throws Exception {
         perform(MockMvcRequestBuilders.post(MenusRestController.REST_URL)
-                .param("date", String.valueOf(LocalDate.now())))
+                .param("date", DateFormatter.format(LocalDate.now())))
                 .andExpect(status().isCreated());
-        assertEquals(menuServise.getAll(), List.of(MENUS_TO_COPIED, MENUS_TO_NOW, MENUS_TO_2015_04_30, MENUS_TO_2015_04_16));
+        assertEquals(menuServise.getAll(), List.of(MENUS_TO_COPIED, MENUS_TO_NOW,  MENUS_TO_2015_04_16));
     }
 }

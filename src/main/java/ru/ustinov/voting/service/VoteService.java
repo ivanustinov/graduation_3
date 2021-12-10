@@ -2,9 +2,7 @@ package ru.ustinov.voting.service;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +28,11 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 @Setter
 public class VoteService {
 
-    public final static String EXCEPTION_VOTING_TWICE_AFTER_VOTING_TIME_IS_UP = "voting.time_is_up";
+    public final static String EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP = "voting.time_is_up";
 
     private final VoteRepository voteRepository;
 
     private final RestaurantRepository restaurantRepository;
-
-    @Autowired
-    private MessageSourceAccessor messageSourceAccessor;
 
     public VoteService(VoteRepository voteRepository, RestaurantRepository restaurantRepository) {
         this.voteRepository = voteRepository;
@@ -52,13 +47,15 @@ public class VoteService {
         final Restaurant restaurant = restaurantRepository.getById(restaurant_id);
         final LocalDate date = LocalDate.now();
         Vote vote = voteRepository.getVoteByUserAndDate(user, date);
-        if (vote == null) {
-            vote = new Vote(restaurant, user, date);
-        } else if (time.isBefore(votingTime)) {
-            vote.setRestaurant(restaurant);
+        if (time.isBefore(votingTime)) {
+            if (vote == null) {
+                vote = new Vote(restaurant, user, date);
+            } else {
+                vote.setRestaurant(restaurant);
+            }
         } else {
-            throw new AppException(HttpStatus.CONFLICT, messageSourceAccessor.getMessage(EXCEPTION_VOTING_TWICE_AFTER_VOTING_TIME_IS_UP),
-                    ErrorAttributeOptions.of(MESSAGE));
+            throw new AppException(HttpStatus.CONFLICT, ErrorAttributeOptions.of(MESSAGE),
+                    EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP);
         }
         return voteRepository.save(vote);
     }

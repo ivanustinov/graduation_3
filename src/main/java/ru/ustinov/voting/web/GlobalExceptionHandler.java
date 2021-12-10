@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.ustinov.voting.error.AppException;
+import ru.ustinov.voting.error.NotFoundException;
 import ru.ustinov.voting.util.validation.ValidationUtil;
 
 import javax.persistence.EntityNotFoundException;
@@ -60,7 +61,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appException(WebRequest request, AppException ex) {
         log.error("ApplicationException", ex);
-        return createResponseEntity(getDefaultBody(request, ex.getOptions(), ex.getMessage()), ex.getStatus());
+        final String messagCode = Objects.requireNonNull(ex.getReason());
+        return createResponseEntity(getDefaultBody(request, ex.getOptions(),
+                messageSourceAccessor.getMessage(messagCode, ex.getParams())), ex.getStatus());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -70,6 +73,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return createResponseEntity(getDefaultBody(request, ErrorAttributeOptions.of(MESSAGE),
                 ValidationUtil.getMessage(rootCause)), HttpStatus.UNPROCESSABLE_ENTITY);
     }
+
 
     @ExceptionHandler(java.sql.SQLException.class)
     public ResponseEntity<?> persistException(WebRequest request, SQLException ex) {

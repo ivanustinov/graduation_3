@@ -33,7 +33,7 @@ public class UserTestData {
     }
 
     public static User getUpdated() {
-        return new User(USER_ID, "UpdatedName", USER_MAIL, "newPass", List.of(Role.ADMIN));
+        return new User(USER_ID, "UpdatedName", USER_MAIL, "newPass", List.of(Role.USER));
     }
 
     public static String jsonWithPassword(User user, String passw) {

@@ -16,23 +16,18 @@ public class ValidationUtil {
     }
 
     public static void checkNotFoundWithId(boolean found, int id) {
-        checkNotFound(found, "id=" + id);
+        checkNotFound(found, id);
     }
 
-    public static <T> T checkNotFound(T object, String msg) {
-        checkNotFound(object != null, msg);
-        return object;
-    }
-
-    public static void checkNotFound(boolean found, String msg) {
+    public static void checkNotFound(boolean found, int id) {
         if (found) {
-            throw new NotFoundException("Not found entity with " + msg);
+            throw new NotFoundException("error.entityWithIdNotFound", String.valueOf(id));
         }
     }
 
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {
-            throw new IllegalRequestDataException(bean.getClass().getSimpleName() + " must be new (id=null)");
+            throw new IllegalRequestDataException("error.entityMustBeNew", bean.getClass().getSimpleName());
         }
     }
 
@@ -41,13 +36,13 @@ public class ValidationUtil {
         if (bean.isNew()) {
             bean.setId(id);
         } else if (bean.id() != id) {
-            throw new IllegalRequestDataException(bean.getClass().getSimpleName() + " must has id=" + id);
+            throw new IllegalRequestDataException("error.entityMustHaveId", bean.getClass().getSimpleName(), String.valueOf(id));
         }
     }
 
     public static void checkModification(int count, int id) {
         if (count == 0) {
-            throw new NotFoundException("Entity with id=" + id + " not found");
+            throw new NotFoundException("error.entityWithIdNotFound", String.valueOf(id));
         }
     }
 

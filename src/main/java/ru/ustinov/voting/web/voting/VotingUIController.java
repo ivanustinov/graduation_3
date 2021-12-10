@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.web.AuthUser;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,6 +20,7 @@ import java.util.List;
  * @version 1.0
  * @since 25.10.2021
  */
+@ApiIgnore
 @RestController
 @RequestMapping(value = VotingUIController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VotingUIController extends AbstractVoteController {

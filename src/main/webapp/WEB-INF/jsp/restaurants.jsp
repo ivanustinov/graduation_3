@@ -45,7 +45,7 @@
                 <form id="detailsForm">
                     <input type="hidden" id="id" name="id">
                     <div class="form-group">
-                        <label for="name" class="col-form-label"><spring:message code="restaurant.one"/></label>
+                        <label for="name" class="col-form-label"><spring:message code="restaurant.name"/></label>
                         <input type="text" id="name" name="name"/>
                     </div>
                     <div class="modal-footer">

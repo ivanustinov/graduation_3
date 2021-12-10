@@ -11,7 +11,9 @@ import ru.ustinov.voting.error.AppException;
 import ru.ustinov.voting.error.NotFoundException;
 import ru.ustinov.voting.model.Dish;
 import ru.ustinov.voting.repository.DishRepository;
+import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.service.DishServise;
+import ru.ustinov.voting.util.validation.Util;
 import ru.ustinov.voting.util.validation.ValidationUtil;
 import ru.ustinov.voting.web.SecurityUtil;
 
@@ -42,6 +44,9 @@ public abstract class AbstractDishController {
     private DishRepository dishRepository;
 
     @Autowired
+    private VoteRepository voteRepository;
+
+    @Autowired
     private UniqueNameDateRestaurantValidator uniqueNameDateRestaurantValidator;
 
     @Autowired
@@ -59,7 +64,7 @@ public abstract class AbstractDishController {
 
     public Dish get(int id) {
         log.info("get dish {} for user {}", id, SecurityUtil.authEmail());
-        return dishRepository.get(id).orElseThrow(() -> new NotFoundException("dish with id = " + id + " not found"));
+        return Util.getEntity(dishRepository.get(id), "error.entityWithIdNotFound", String.valueOf(id));
     }
 
     public List<Dish> getDishByDateAndRestaurant(int restaurant_id, LocalDate date) {
@@ -77,36 +82,32 @@ public abstract class AbstractDishController {
         return dishRepository.getLastMenuDate(restaurant_id, date);
     }
 
-    @CacheEvict(value = {"restaurants", "result"}, allEntries = true)
+
     public void deleteAllByRestaurantAndDate(int restaurant_id, LocalDate date) {
-        if (date.isBefore(LocalDate.now())) {
-            throw new AppException(HttpStatus.OK, "dish.create_in_the_past", ErrorAttributeOptions.of(MESSAGE));
-        }
         log.info("delete dishes with restaurant {} and date {} by user {}", restaurant_id, date, SecurityUtil.authEmail());
-        dishRepository.deleteAllByRestaurantAndDate(restaurant_id, date);
+        dishServise.deleteAllByRestaurantAndDate(restaurant_id, date);
+        voteRepository.deleteAllByDateAndRestaurant(date, restaurant_id);
     }
 
-    @CacheEvict(value = {"restaurants", "result"}, allEntries = true)
     public void delete(int id, int restaurant_id) {
         log.info("delete dish with id {} by user {}", id, SecurityUtil.authEmail());
-        checkNotFoundWithId(dishRepository.delete(id, restaurant_id) == 0, id);
+        dishServise.delete(id, restaurant_id);
     }
 
-    @CacheEvict(value = {"restaurants", "result"}, allEntries = true)
+
     public void update(Dish dish, int restaurant_id, int id) {
         log.info("update {} for restaurant {} by user {}", dish, restaurant_id, SecurityUtil.authEmail());
-        ValidationUtil.assureIdConsistent(dish, id);
-        dishServise.update(dish, restaurant_id);
+        dishServise.update(dish, restaurant_id, id);
     }
 
-    @CacheEvict(value = {"restaurants", "result"}, allEntries = true)
+
     public Dish create(Dish dish, int restaurant_id) {
         log.info("create {} for restaurant {} by user {}", dish, restaurant_id, SecurityUtil.authEmail());
         checkNew(dish);
         return dishServise.save(dish, restaurant_id);
     }
 
-    @CacheEvict(value = {"restaurants", "result"}, allEntries = true)
+
     public void createDishes(int restaurant_id, ArrayList<Dish> dishes) {
         log.info("create dishes {} for restaurant {} by user {}", dishes, restaurant_id, SecurityUtil.authEmail());
         dishServise.createDishes(restaurant_id, dishes);

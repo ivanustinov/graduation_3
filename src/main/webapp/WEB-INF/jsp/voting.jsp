@@ -3,9 +3,11 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" import="java.time.LocalDate" %>
+<%@ taglib prefix="fn" uri="http://voting.ustinov.ru/functions" %>
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
+<script type="text/javascript" src="resources/js/voting.common.js" defer></script>
 <script type="text/javascript" src="resources/js/voting.voting.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
@@ -22,7 +24,8 @@
                 <spring:message code="voting.history"/>
             </button>
         </div>
-        <h3 style="margin-top: 30px; margin-bottom: 20px" class="text-center"><spring:message code="menu.on"/> <%=LocalDate.now()%></h3>
+        <h3 style="margin-top: 30px; margin-bottom: 20px" class="text-center"><spring:message
+                code="menu.on"/> ${fn:formatDate(LocalDate.now())}</h3>
         <div class="row justify-content-md-center text-center">
             <%--https://getbootstrap.com/docs/4.0/components/card/--%>
             <c:forEach items="${restaurants}" var="restaurant">
@@ -32,7 +35,8 @@
                     <ul class="list-unstyled mt-3 mb-4"><spring:message code="menu.title"/>
                         <c:forEach items="${restaurant.dishes}" var="dish">
                             <jsp:useBean id="dish" type="ru.ustinov.voting.model.Dish"/>
-                            <li style="font-size: 10px">${dish.name} ${dish.price.stripTrailingZeros().toPlainString()} </li>
+                            <li style="font-size: 10px">${dish.name} ${fn:formatPrice(dish.price)} <spring:message
+                                    code="dish.rubles"/></li>
                         </c:forEach>
                     </ul>
                     <button class="btn btn-primary mybutton" onclick="vote(${restaurant.id})">
@@ -42,7 +46,7 @@
                 </div>
             </c:forEach>
         </div>
-        <div class="row justify-content-end" id="votebutton">
+        <div class="row justify-content-end" id="resultButton">
         </div>
         <br/>
     </div>

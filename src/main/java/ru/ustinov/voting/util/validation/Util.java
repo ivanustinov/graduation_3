@@ -12,8 +12,8 @@ import java.util.Optional;
  */
 public class  Util {
 
-    public static <T> T getEntity(Optional<T> opt, String msg) {
-         return opt.orElseThrow(() -> new NotFoundException(msg));
+    public static <T> T getEntity(Optional<T> opt, String msg, String ... params) {
+         return opt.orElseThrow(() -> new NotFoundException(msg, params));
     }
 
 }

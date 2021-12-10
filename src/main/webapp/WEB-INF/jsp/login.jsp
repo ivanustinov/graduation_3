@@ -28,6 +28,7 @@
             </div>
         </sec:authorize>
         <div class="lead py-4"><spring:message code="app.stackTitle"/> <br>
+            <a href="https://spring.io/projects/spring-boot">Spring Boot</a>,
             <a href="http://projects.spring.io/spring-security/">Spring Security</a>,
             <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html">Spring MVC</a>,
             <a href="http://projects.spring.io/spring-data-jpa/">Spring Data JPA</a>,
@@ -36,13 +37,13 @@
             <a href="http://hibernate.org/orm/">Hibernate ORM</a>,
             <a href="http://hibernate.org/validator/">Hibernate Validator</a>,
             <a href="http://www.slf4j.org/">SLF4J</a>,
+            <a href="https://www.javadevjournal.com/spring-boot/spring-boot-with-caffeine-cache/">Caffeine cache</a>,
             <a href="https://github.com/FasterXML/jackson">Json Jackson</a>,
             <a href="http://ru.wikipedia.org/wiki/JSP">JSP</a>,
             <a href="http://en.wikipedia.org/wiki/JavaServer_Pages_Standard_Tag_Library">JSTL</a>,
             <a href="http://tomcat.apache.org/">Apache Tomcat</a>,
             <a href="http://www.webjars.org/">WebJars</a>,
             <a href="http://datatables.net/">DataTables</a>,
-            <a href="http://ehcache.org">EHCACHE</a>,
             <a href="http://www.postgresql.org/">PostgreSQL</a>,
             <a href="http://hsqldb.org/">HSQLDB</a>,
             <a href="https://junit.org/junit5/">JUnit 5</a>,

@@ -12,7 +12,7 @@ const ctx = {
 
 function renderEditBtn(data, type, row) {
     if (type === "display") {
-        return "<a href=menus/" + row.date + "><span class='fa fa-pencil'></span></a>";
+        return "<a href=menus?date=" + row.date + "><span class='fa fa-pencil'></span></a>";
     }
 }
 
@@ -62,7 +62,65 @@ function setTime() {
     });
 }
 
-function getVotingTime() {
+function createMenu() {
+    let date = $('#date').val();
+    $('#dateform').attr('action', 'menus?' + date)
+}
+
+$(document).ready(function () {
+    $.fn.dataTable.moment('DD.MM.YYYY');
+    makeEditable(
+        {
+            "columns": [
+                {
+                    "data": "restaurants",
+                    "render": function (data, type, row) {
+                        let ro = '';
+                        $.each(data, function (key, value) {
+                            if (key === (data.length - 1)) {
+                                ro += ("<a href=dishes_by_name/" + value + "?date=" + row.date + ">" + value + "</a>");
+                            } else {
+                                ro += ("<a href=dishes_by_name/" + value + "?date=" + row.date + ">" + value + "</a>" + ', ');
+                            }
+                        });
+                        return ro;
+                    }
+                },
+                {
+                    "data": "date"
+                },
+                {
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderEditBtn
+                },
+                {
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderDeleteBtn
+                },
+                {
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderCopyBtn
+                }
+            ],
+            "order": [
+                [
+                    1,
+                    "desc"
+                ]
+            ]
+        }
+    );
+    var date_format = (dateFormat === "ru_date_format" ? 'd.m.Y' : 'Y-m-d');
+    $.datetimepicker.setLocale(localeCode);
+    $('#date').datetimepicker({
+        timepicker: false,
+        format: date_format,
+        value: new Date().toISOString().substring(0, 10)
+    });
+
     $.get(getVotingTimeUrl, function (data) {
         $('#time').datetimepicker({
             datepicker: false,
@@ -70,61 +128,4 @@ function getVotingTime() {
             value: data
         })
     });
-}
-
-function createMenu() {
-    let date = $('#date').val();
-    $('#dateform').attr('action', 'menus/' + date)
-}
-
-$(function () {
-    makeEditable({
-        "columns": [
-            {
-                "data": "restaurants",
-                "render": function (data) {
-                    let row = '';
-                    $.each(data, function (key, value) {
-                        if (key === (data.length - 1)) {
-                            row = row + value;
-                        } else {
-                            row = row + value + ', ';
-                        }
-                    });
-                    return row;
-                }
-            },
-            {
-                "data": "date"
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "render": renderEditBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "render": renderDeleteBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "render": renderCopyBtn
-            }
-        ],
-        "order": [
-            [
-                1,
-                "desc"
-            ]
-        ]
-    });
-    $.datetimepicker.setLocale(localeCode);
-    $('#date').datetimepicker({
-        timepicker: false,
-        format: 'Y-m-d',
-        value: new Date().toISOString().substring(0, 10)
-    });
-    getVotingTime();
 });

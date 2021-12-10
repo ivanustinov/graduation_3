@@ -2,12 +2,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://voting.ustinov.ru/functions" %>
+<%@ page contentType="text/html;charset=UTF-8" import="java.time.LocalDate" %>
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
 <script>
-    let dDate = '${date}'
+    let dDate = "${fn:formatDate(date)}";
     let restaurant_id = '${restaurant.id}'
 </script>
 <script src="resources/js/voting.common.js"></script>
@@ -25,12 +27,24 @@
                 <span class="fa fa-plus"></span>
                 <spring:message code="common.add"/>
             </button>
+            <c:if test="${!date.isBefore(LocalDate.now())}">
+                <a href="delete_all_dishes?date=${fn:formatDate(date)}&restaurant_id=${restaurant.id}"
+                   style="margin-right: 5px" class="btn btn-primary">
+                    <span class="fa fa-remove"></span>
+                    <spring:message code="common.delete_all"/>
+                </a>
+            </c:if>
             <button class="btn btn-primary" onclick="getLastMenu()">
                 <span class="fa fa-plus"></span>
                 <spring:message code="dish.last"/>
             </button>
         </div>
-        <h3 style="margin-top: 30px" class="text-center"><spring:message code="dish.title"/> ${restaurant.name} <spring:message code="common.on"/> ${date}</h3>
+        <c:if test="${date.isBefore(LocalDate.now())}">
+            <h4 style="margin-top: 30px; margin-bottom: 20px" class="text-center"><spring:message
+                    code="dish.create_in_the_past"/></h4>
+        </c:if>
+        <h3 style="margin-top: 30px" class="text-center">${restaurant.name}
+            <spring:message code="common.on"/> ${fn:formatDate(date)}</h3>
         <table class="table table-striped" id="datatable">
             <thead>
             <tr>
@@ -57,11 +71,12 @@
                     <input type="hidden" id="date" name="date">
                     <div class="form-group">
                         <label for="name" class="col-form-label"><spring:message code="dish.name"/></label>
-                        <input type="text" id="name" name="name"/>
+                        <input style="width: 400px" type="text" id="name" name="name"/>
                     </div>
                     <div class="form-group">
                         <label for="price" class="col-form-label"><spring:message code="dish.price"/></label>
-                        <input type="number" min="0.00" step="0.05" value="1.00" id="price" name="price" placeholder="00.00">
+                        <input type="number" min="0.00" step="0.05" value="1.00" id="price" name="price"
+                               placeholder="00.00">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeNoty()">

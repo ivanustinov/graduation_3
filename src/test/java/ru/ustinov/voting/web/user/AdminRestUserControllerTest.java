@@ -19,8 +19,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.ustinov.voting.web.GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL;
 import static ru.ustinov.voting.web.user.UserTestData.NOT_FOUND;
 
 
@@ -100,7 +100,6 @@ class AdminRestUserControllerTest extends AbstractControllerTest {
                 .content(UserTestData.jsonWithPassword(updated, "newPass")))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-
         UserTestData.MATCHER.assertMatch(userRepository.getById(UserTestData.USER_ID), UserTestData.getUpdated());
     }
 
@@ -176,7 +175,7 @@ class AdminRestUserControllerTest extends AbstractControllerTest {
                 .content(UserTestData.jsonWithPassword(updated, "password")))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL)));
+                .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage(EXCEPTION_DUPLICATE_EMAIL)));
     }
 
     @Test
@@ -189,6 +188,6 @@ class AdminRestUserControllerTest extends AbstractControllerTest {
                 .content(UserTestData.jsonWithPassword(expected, "newPass")))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string(containsString(GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL)));
+                .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage(EXCEPTION_DUPLICATE_EMAIL)));
     }
 }

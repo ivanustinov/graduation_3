@@ -48,7 +48,7 @@ public class RestaurantRestController extends AbstractRestaurantController {
 
     @GetMapping(REST_URL + "/with-dishes-by-date")
     public List<Restaurant> getWithDishesByDate(@RequestParam LocalDate date) {
-        return super.getWithDishes(date);
+        return super.getWithDishes(date, false);
     }
 
     @GetMapping(REST_URL + "/without")
@@ -58,7 +58,7 @@ public class RestaurantRestController extends AbstractRestaurantController {
 
     @GetMapping("/rest/profile/voting")
     public List<Restaurant> getWithDishesToday() {
-        return super.getWithDishes(LocalDate.now());
+        return super.getWithDishes(LocalDate.now(), true);
     }
 
     @GetMapping("/rest/profile/result")
@@ -66,12 +66,14 @@ public class RestaurantRestController extends AbstractRestaurantController {
         return super.getResult(LocalDate.now());
     }
 
+    @Override
     @DeleteMapping(REST_URL + "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         super.delete(id);
     }
 
+    @Override
     @PutMapping(value = REST_URL + "/{restaurant_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int restaurant_id) {

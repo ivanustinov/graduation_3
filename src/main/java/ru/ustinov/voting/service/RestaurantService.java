@@ -16,9 +16,11 @@ import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.to.RestaurantTo;
 import ru.ustinov.voting.util.validation.Util;
+import ru.ustinov.voting.web.formatter.DateFormatter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -45,21 +47,19 @@ public class RestaurantService {
 
     private final VoteService voteService;
 
-    @Autowired
-    private MessageSourceAccessor messageSourceAccessor;
 
-    @Cacheable(cacheNames = "restaurants")
-    public List<Restaurant> getWithDishes(LocalDate date) {
+    @Cacheable(cacheNames = "restaurants", condition = "#needCache")
+    public List<Restaurant> getWithDishes(LocalDate date, boolean needCache) {
         return restaurantRepository.getWithDishes(date);
     }
 
     @Transactional
     public RestaurantTo getResult(LocalDate date) {
         checkResultTime();
-        final List<Restaurant> withDishes = getWithDishes(date);
+        final List<Restaurant> withDishes = getWithDishes(date, false);
         final List<Vote> voteByDate = voteRepository.getVotesByDate(date);
         if (voteByDate.isEmpty()) {
-            throw new NotFoundException(messageSourceAccessor.getMessage("voting.no_votes", new LocalDate[]{date}));
+            throw new NotFoundException("voting.no_votes", DateFormatter.format(date));
         }
         final Map<Integer, List<Vote>> votes = voteByDate.stream().collect(
                 Collectors.groupingBy((Vote vote) -> vote.getRestaurant().getId(), Collectors.toList()));
@@ -73,12 +73,16 @@ public class RestaurantService {
     private void checkResultTime() {
         final LocalTime votingTime = voteService.getVotingTime();
         if ((LocalTime.now().isBefore(votingTime))) {
-            throw new AppException(HttpStatus.BAD_REQUEST, messageSourceAccessor.getMessage(EXCEPTION_GETTING_RESULT_BEFORE_VOTING_TIME_LEFT), ErrorAttributeOptions.of(MESSAGE));
+            throw new AppException(HttpStatus.BAD_REQUEST, ErrorAttributeOptions.of(MESSAGE), EXCEPTION_GETTING_RESULT_BEFORE_VOTING_TIME_LEFT);
         }
     }
 
     public Restaurant getRestaurant(int restaurant_id) {
-        return Util.getEntity(restaurantRepository.get(restaurant_id), messageSourceAccessor.getMessage("restaurant.unexisting", new Integer[]{restaurant_id}));
+        return Util.getEntity(restaurantRepository.get(restaurant_id), "restaurant.unexisting", String.valueOf(restaurant_id));
+    }
+
+    public Restaurant getRestaurantByName(String restaurant_name) {
+        return Util.getEntity(restaurantRepository.getRestaurantByName(restaurant_name), "restaurant.unexisting", String.valueOf(restaurant_name));
     }
 
     public static RestaurantTo createTo(Restaurant restaurant, List<Vote> votes) {

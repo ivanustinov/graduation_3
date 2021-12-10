@@ -1,11 +1,11 @@
 package ru.ustinov.voting.web.user;
 
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +15,7 @@ import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.to.UserTo;
 import ru.ustinov.voting.util.UserUtil;
 import ru.ustinov.voting.web.AuthUser;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -25,9 +26,13 @@ import javax.validation.Valid;
  * @version 1.0
  * @since 12.10.2021
  */
+@ApiIgnore
 @Controller
 @RequestMapping("/profile")
-public class ProfileUIController extends AbstractUserController{
+public class ProfileUIController extends AbstractUserController {
+
+    @Autowired
+    private ProfileUIController profileUIController;
 
     @GetMapping
     public String profile(ModelMap modelMap, @AuthenticationPrincipal AuthUser authUser) {
@@ -36,6 +41,7 @@ public class ProfileUIController extends AbstractUserController{
     }
 
     @PostMapping
+    @CacheEvict(value = "users", key = "#authUser.user.email")
     public String updateProfile(@Valid @ModelAttribute("user") UserTo userTo, BindingResult result, SessionStatus status,
                                 @AuthenticationPrincipal AuthUser authUser) {
         if (result.hasErrors()) {
@@ -44,7 +50,7 @@ public class ProfileUIController extends AbstractUserController{
         User user = authUser.getUser();
         final User userUpdated = UserUtil.updateFromTo(user, userTo);
         super.update(userUpdated, authUser.id());
-        authUser.setUser(user);
+        authUser.setUser(userUpdated);
         status.setComplete();
         return "redirect:/voting";
     }

@@ -21,8 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static ru.ustinov.voting.service.VoteService.EXCEPTION_VOTING_TWICE_AFTER_VOTING_TIME_IS_UP;
+import static ru.ustinov.voting.service.VoteService.EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP;
 import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
+import static ru.ustinov.voting.web.restaurant.RestaurantTestData.NOT_FOUND;
 import static ru.ustinov.voting.web.user.UserTestData.*;
 import static ru.ustinov.voting.web.voting.VoteTestData.*;
 
@@ -77,21 +78,19 @@ class VotingRestControllerTest extends AbstractControllerTest {
         try (localTimeMockedStatic) {
             perform(MockMvcRequestBuilders.post(REST_URL)
                     .param("restaurant_id", String.valueOf(RESTAURAUNT_HARBIN_ID)))
-                    .andExpect(status().isCreated())
-                    .andExpect(VOTE_MATCHER.contentJson(voteUser_2HarbinNow))
-                    .andDo(print());
+                    .andExpect(status().isConflict())
+                    .andDo(print())
+                    .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage(EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP)));
         }
-        entityManager.clear();
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
     }
 
     @Test
     void voteForUnexistingRestaurant() throws Exception {
         final LocalTime votingTime = voteService.getVotingTime();
-        final MockedStatic<LocalTime> localTimeMockedStatic = fixCurrentTime(votingTime.plusMinutes(10));
+        final MockedStatic<LocalTime> localTimeMockedStatic = fixCurrentTime(votingTime.minusMinutes(10));
         try (localTimeMockedStatic) {
             perform(MockMvcRequestBuilders.post(REST_URL)
-                    .param("restaurant_id", "100"))
+                    .param("restaurant_id", String.valueOf(NOT_FOUND)))
                     .andExpect(status().isUnprocessableEntity())
                     .andDo(print());
         }
@@ -157,7 +156,7 @@ class VotingRestControllerTest extends AbstractControllerTest {
                     .param("restaurant_id", String.valueOf(RESTAURANT_HANOY.id())))
                     .andExpect(status().isConflict())
                     .andDo(print())
-                    .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage(EXCEPTION_VOTING_TWICE_AFTER_VOTING_TIME_IS_UP)));
+                    .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage(EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP)));
         }
         VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
     }

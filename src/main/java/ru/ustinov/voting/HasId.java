@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.Assert;
 
 public interface HasId {
+
     Integer getId();
 
     void setId(Integer id);

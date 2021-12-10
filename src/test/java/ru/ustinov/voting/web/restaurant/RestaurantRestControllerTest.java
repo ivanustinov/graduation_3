@@ -14,7 +14,7 @@ import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.service.VoteService;
 import ru.ustinov.voting.web.AbstractControllerTest;
-import ru.ustinov.voting.web.GlobalExceptionHandler;
+import ru.ustinov.voting.web.formatter.DateFormatter;
 import ru.ustinov.voting.web.json.JsonUtil;
 import ru.ustinov.voting.web.user.UserTestData;
 
@@ -61,9 +61,17 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND))
+                .andExpect(status().isUnprocessableEntity())
+                .andDo(print())
+                .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage("error.entityWithIdNotFound", new String[]{String.valueOf(NOT_FOUND)})));
+    }
+
+    @Test
     void getWithoutDish() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "without")
-                .param("date", LocalDate.now().toString()))
+                .param("date", DateFormatter.format(LocalDate.now())))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
@@ -88,7 +96,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void getWithDishesByDate() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "with-dishes-by-date")
-                .param("date", String.valueOf(LocalDate.now())))
+                .param("date", DateFormatter.format(LocalDate.now())))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -110,7 +118,6 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = UserTestData.USER_MAIL)
     void getResultAfterVotingTimeLeft() throws Exception {
         Mockito.when(voteService.getVotingTime()).thenReturn(LocalTime.now().minusMinutes(10));
-        System.out.println(voteService.getVotingTime());
         perform(MockMvcRequestBuilders.get("/rest/profile/result"))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -122,7 +129,6 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = UserTestData.USER_MAIL)
     void getResultBeforeVotingTimeLeft() throws Exception {
         Mockito.when(voteService.getVotingTime()).thenReturn(LocalTime.now().plusMinutes(10));
-        System.out.println(voteService.getVotingTime());
         perform(MockMvcRequestBuilders.get("/rest/profile/result"))
                 .andExpect(status().isBadRequest())
                 .andDo(print())
@@ -168,6 +174,17 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage("NotBlank", new String[]{"Название"})))
+                .andDo(print());
+    }
+
+    @Test
+    void updateNotIdConsistent() throws Exception {
+        perform(MockMvcRequestBuilders.put(REST_URL + NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(RESTAURANT_HARBIN)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage("error.entityMustHaveId", new String[]{"Restaurant", String.valueOf(NOT_FOUND)})))
                 .andDo(print());
     }
 

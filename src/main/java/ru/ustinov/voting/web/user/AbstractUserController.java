@@ -3,10 +3,14 @@ package ru.ustinov.voting.web.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import ru.ustinov.voting.Profiles;
+import ru.ustinov.voting.error.UpdateRestrictionException;
+import ru.ustinov.voting.model.BaseEntity;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.repository.UserRepository;
 import ru.ustinov.voting.to.UserTo;
@@ -25,6 +29,14 @@ public abstract class AbstractUserController {
 
     @Autowired
     private UniqueMailValidator emailValidator;
+
+    private boolean modificationRestriction;
+
+    @Autowired
+    @SuppressWarnings("deprecation")
+    public void setEnvironment(Environment environment) {
+        modificationRestriction = environment.acceptsProfiles(Profiles.HEROKU);
+    }
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -46,15 +58,17 @@ public abstract class AbstractUserController {
         return prepareAndSave(user);
     }
 
-    @CacheEvict(value = "users")
+    @CacheEvict(value = "users", allEntries = true)
     public void update(User user, int id) {
+        checkModificationAllowed(id);
         log.info("update {} with id={}", user, id);
         ValidationUtil.assureIdConsistent(user, id);
         prepareAndSave(user);
     }
 
-    @CacheEvict(value = "users")
+    @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
+        checkModificationAllowed(id);
         log.info("delete {}", id);
         repository.deleteExisted(id);
     }
@@ -66,5 +80,11 @@ public abstract class AbstractUserController {
 
     protected User prepareAndSave(User user) {
         return repository.save(UserUtil.prepareToSave(user));
+    }
+
+    protected void checkModificationAllowed(int id) {
+        if (modificationRestriction && id < BaseEntity.START_SEQ + 2) {
+            throw new UpdateRestrictionException();
+        }
     }
 }

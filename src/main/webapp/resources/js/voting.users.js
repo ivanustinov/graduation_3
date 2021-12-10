@@ -24,7 +24,18 @@ $(function () {
                 }
             },
             {
-                "data": "roles"
+                "data": "roles",
+                "render": function (data) {
+                    let row = '';
+                    $.each(data, function (key, value) {
+                        if (key === (data.length - 1)) {
+                            row += value;
+                        } else {
+                            row = row + value + ', ';
+                        }
+                    });
+                    return row;
+                }
             },
             {
                 "orderable": false,

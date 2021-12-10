@@ -1,6 +1,10 @@
 let form;
 
 function makeEditable(datatableOpts) {
+    let url = "";
+    if (localeCode === "ru") {
+        url =  "//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json";
+    }
     ctx.datatableApi = $("#datatable").DataTable(
         // https://api.jquery.com/jquery.extend/#jQuery-extend-deep-target-object1-objectN
         $.extend(true, datatableOpts,
@@ -9,15 +13,12 @@ function makeEditable(datatableOpts) {
                     "url": ctx.ajaxUrl,
                     "dataSrc": ""
                 },
-                "paging": false,
-                "info": true,
                 "language": {
-                    "search": i18n["common.search"]
+                    "url": url
                 }
             }
         ));
     form = $('#detailsForm');
-
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
     });
@@ -114,7 +115,6 @@ function renderDeleteBtn(data, type, row) {
 function failNoty(jqXHR) {
     closeNoty();
     var errorInfo = jqXHR.responseJSON;
-    console.log(errorInfo.message);
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.message.join("<br>"),
         type: "error",

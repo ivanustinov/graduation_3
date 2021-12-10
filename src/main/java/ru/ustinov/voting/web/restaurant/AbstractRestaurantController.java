@@ -53,7 +53,7 @@ public abstract class AbstractRestaurantController {
 
     public Restaurant get(int restaurant_id) {
         log.info("get restaurant {} for user {}", restaurant_id, SecurityUtil.authEmail());
-        return Util.getEntity(repository.get(restaurant_id), "Такого ресторана не существует");
+        return Util.getEntity(repository.get(restaurant_id), "error.entityWithIdNotFound", String.valueOf(restaurant_id));
     }
 
     public List<Restaurant> getAll() {
@@ -62,9 +62,9 @@ public abstract class AbstractRestaurantController {
     }
 
 
-    public List<Restaurant> getWithDishes(LocalDate date) {
+    public List<Restaurant> getWithDishes(LocalDate date, boolean needCache) {
         log.info("get all restaurants with dishes on {} for user {}", date, SecurityUtil.authEmail());
-        return service.getWithDishes(date);
+        return service.getWithDishes(date,  needCache);
     }
 
     public List<Restaurant> getWithoutDishes(LocalDate date) {

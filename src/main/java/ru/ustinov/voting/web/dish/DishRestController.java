@@ -50,7 +50,7 @@ public class DishRestController extends AbstractDishController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletAllByRestaurantAndDate(@PathVariable int restaurant_id, @RequestParam LocalDate date) {
+    public void deleteAllByRestaurantAndDate(@PathVariable int restaurant_id, @RequestParam LocalDate date) {
         super.deleteAllByRestaurantAndDate(restaurant_id, date);
     }
 

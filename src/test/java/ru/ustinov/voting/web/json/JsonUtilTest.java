@@ -29,19 +29,15 @@ class JsonUtilTest extends AbstractControllerTest {
     void readWriteValues() {
         final List<RestaurantTo> restaurantsBefore = List.of(RESTAURANT_HARBIN_TO, RESTAURANT_CI_TO);
         String json = JsonUtil.writeValue(restaurantsBefore);
-//        List<RestaurantTo> restaurantsAfter = JsonUtil.readValues(json, RestaurantTo.class);
-        Dish dish = JsonUtil.readValue("{\"id\":5,\"name\":\"Пиво\",\"date\":\"2021-11-02\",\"price\":150,\"restaurant\":{\"id\": 2}}", Dish.class);
-        System.out.println(dish);
-//        WITH_VOTES_DISHES_MATCHER.assertMatch(restaurantsAfter, restaurantsBefore);
+        List<RestaurantTo> restaurantsAfter = JsonUtil.readValues(json, RestaurantTo.class);
+        TO_MATCHER.assertMatch(restaurantsAfter, restaurantsBefore);
     }
 
     @Test
     void writeOnlyAccess() {
         String json = JsonUtil.writeValue(UserTestData.user);
-        System.out.println(json);
         assertThat(json, not(containsString("password")));
         String jsonWithPass = UserTestData.jsonWithPassword(UserTestData.user, "newPass");
-        System.out.println(jsonWithPass);
         User user = JsonUtil.readValue(jsonWithPass, User.class);
         assertEquals(user.getPassword(), "newPass");
     }

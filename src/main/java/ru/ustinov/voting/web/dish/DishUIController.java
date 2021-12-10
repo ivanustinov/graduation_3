@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.ustinov.voting.model.Dish;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -11,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
  * @version 1.0
  * @since 22.10.2021
  */
+@ApiIgnore
 @RestController
 @RequestMapping(value = "/admin/dishes/{restaurant_id}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DishUIController extends AbstractDishController {
@@ -34,20 +35,23 @@ public class DishUIController extends AbstractDishController {
     public List<Dish> getLastMenu(@PathVariable int restaurant_id, @RequestParam LocalDate date) {
         return super.getRestaurantsLastMenu(restaurant_id, date);
     }
+
     @GetMapping("/lastMenuDate")
     public LocalDate getLastMenuDate(@PathVariable int restaurant_id, @RequestParam LocalDate date) {
         return super.getRestaurantLastMenuDate(restaurant_id, date);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int restaurant_id, @PathVariable int id) {
         super.delete(id, restaurant_id);
     }
 
+    @Override
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletAllByRestaurantAndDate(@PathVariable int restaurant_id, @RequestParam LocalDate date) {
+    public void deleteAllByRestaurantAndDate(@PathVariable int restaurant_id, @RequestParam LocalDate date) {
         super.deleteAllByRestaurantAndDate(restaurant_id, date);
     }
 

@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.web.AuthUser;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.net.URI;
@@ -33,17 +34,17 @@ public class VotingRestController extends AbstractVoteController{
     public static final String REST_URL = "/rest/voting";
 
     @GetMapping
-    public Vote getVote(@AuthenticationPrincipal AuthUser authUser) {
+    public Vote getVote(@AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
         return super.getVote(authUser.getUser(), LocalDate.now());
     }
 
     @GetMapping("/my-votes")
-    public List<Vote> getVotes(@AuthenticationPrincipal AuthUser authUser) {
+    public List<Vote> getVotes(@AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
         return super.getVotes(authUser.getUser());
     }
 
     @GetMapping("/voting_time")
-    public LocalTime getVotingTime(@AuthenticationPrincipal AuthUser authUser) {
+    public LocalTime getVotingTime(@AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
         return super.getVotingTime(authUser.getUser());
     }
 
@@ -54,7 +55,7 @@ public class VotingRestController extends AbstractVoteController{
     }
 
     @PostMapping
-    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
+    public ResponseEntity<Vote> vote(@AuthenticationPrincipal @ApiIgnore AuthUser authUser, @RequestParam int restaurant_id) {
         final User user = authUser.getUser();
         final Vote vote = super.vote(user, restaurant_id);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()

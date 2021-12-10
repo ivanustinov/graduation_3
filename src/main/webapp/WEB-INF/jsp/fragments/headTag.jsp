@@ -22,8 +22,11 @@
     <%--http://stackoverflow.com/a/24070373/548473--%>
     <script src="webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="webjars/bootstrap/4.6.0-1/js/bootstrap.min.js" defer></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js" defer></script>
     <script src="webjars/datatables/1.10.25/js/jquery.dataTables.min.js" defer></script>
+    <script src="//cdn.datatables.net/plug-ins/1.11.3/sorting/datetime-moment.js" defer></script>
     <script src="webjars/noty/3.1.4/lib/noty.min.js" defer></script>
-    <script src="webjars/datatables/1.10.25/js/dataTables.bootstrap4.min.js" defer></script>
     <script src="webjars/datetimepicker/2.5.20-1/build/jquery.datetimepicker.full.min.js" defer></script>
+    <script src="webjars/datatables/1.10.25/js/dataTables.bootstrap4.min.js" defer></script>
+    <script src="//cdn.datatables.net/plug-ins/1.11.3/sorting/date-de.js" defer></script>
 </head>

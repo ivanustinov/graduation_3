@@ -49,7 +49,7 @@ spring:
 #    basename: app
 
   profiles:
-    active: "h2"
+    active: postgres, ru_date_format, heroku
 
 logging:
   level:
@@ -90,6 +90,15 @@ spring:
     url: jdbc:h2:mem:voting
       #   tcp: jdbc:h2:tcp://localhost:9092/mem:voting
     h2.console.enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: ru_date_format
+  mvc:
+    format:
+      date: dd.MM.yyyy
 
 
 

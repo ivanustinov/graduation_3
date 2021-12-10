@@ -1,10 +1,12 @@
 package ru.ustinov.voting.web.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ustinov.voting.model.User;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -16,9 +18,13 @@ import java.util.List;
  * @version 1.0
  * @since 11.10.2021
  */
+@ApiIgnore
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUIController extends AbstractUserController {
+
+    @Autowired
+    private AdminUIController adminUIController;
 
     @GetMapping
     public List<User> getAll() {
@@ -44,7 +50,7 @@ public class AdminUIController extends AbstractUserController {
         if (user.isNew()) {
             super.create(user);
         } else {
-            super.update(user, user.id());
+            adminUIController.update(user, user.id());
         }
     }
 }

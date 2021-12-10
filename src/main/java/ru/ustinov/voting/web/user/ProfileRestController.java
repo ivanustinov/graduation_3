@@ -16,6 +16,7 @@ import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.to.UserTo;
 import ru.ustinov.voting.util.UserUtil;
 import ru.ustinov.voting.web.AuthUser;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -29,15 +30,8 @@ public class ProfileRestController extends AbstractUserController {
     static final String REST_URL = "/rest/profile";
 
     @GetMapping
-    public User get(@AuthenticationPrincipal AuthUser authUser) {
+    public User get(@AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
         return authUser.getUser();
-    }
-
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(value = "users", key = "#authUser.user.email")
-    public void delete(@AuthenticationPrincipal AuthUser authUser) {
-        super.delete(authUser.id());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +39,6 @@ public class ProfileRestController extends AbstractUserController {
     public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         log.info("register {}", userTo);
         User created = prepareAndSave(UserUtil.createNewFromTo(userTo));
-        created.setRoles(EnumSet.of(Role.USER));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
@@ -53,9 +46,10 @@ public class ProfileRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Transactional
-    public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
+    @CacheEvict(value = "users", key = "#authUser.user.email")
+    public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
+        log.info("updating user {} by new userTo {}", authUser.getUser(), userTo);
         User user = authUser.getUser();
-        prepareAndSave(UserUtil.updateFromTo(user, userTo));
+        super.update(UserUtil.updateFromTo(user, userTo), user.id());
     }
 }

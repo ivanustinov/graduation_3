@@ -22,6 +22,9 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
     @Query("SELECT r FROM Restaurant r WHERE r.id = :id")
     Optional<Restaurant> get(int id);
 
+    @Query("select r from Restaurant r where r.name = ?1")
+    Optional<Restaurant> getRestaurantByName(String name);
+
     @Query("select r from Restaurant r WHERE r.name = :name")
     Optional<Restaurant> getByName(String name);
 

@@ -33,7 +33,11 @@ public class AbstractVoteController {
 
     public Vote getVote(User user, LocalDate date) {
         log.info("get today's vote for user {}", user);
-        return voteRepository.getVoteByUserAndDate(user, date);
+        Vote voteByUserAndDate = voteRepository.getVoteByUserAndDate(user, date);
+        if (voteByUserAndDate == null) {
+            voteByUserAndDate = new Vote(null, null, null);
+        }
+        return voteByUserAndDate;
     }
 
     public List<Vote> getVotes(User user) {

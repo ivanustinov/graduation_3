@@ -9,6 +9,9 @@
 <body>
 <script src="resources/js/voting.common.js" defer></script>
 <script src="resources/js/voting.menusList.js" defer></script>
+<script type="text/javascript">
+    var dateFormat = "${dateFormat}";
+</script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">
@@ -18,7 +21,7 @@
                 <div class="col-4 form-inline my-2">
                     <form id="dateform">
                         <label style="justify-content: left" for="date"><spring:message code="menu.date"/></label>
-                        <input style="margin-right: 5px;" class="form-control" type="date" name="date" id="date"/>
+                        <input style="margin-right: 5px;" class="form-control" name="date" id="date"/>
                         <button class="btn btn-info mr-1" onclick="createMenu()">
                             <span class="fa fa-plus"></span>
                             <spring:message code="common.add"/>
@@ -30,7 +33,7 @@
                         <label style="justify-content: left" for="time"><spring:message code="voting.time"/></label>
                         <input style="margin-right: 5px;" class="form-control" type="time" name="time" id="time"/>
                         <button class="btn btn-info mr-1" onclick="setTime()">
-                            <span class="fa fa-plus"></span>
+                            <span class="fa fa-check"></span>
                             <spring:message code="common.establish"/>
                         </button
                     </div>

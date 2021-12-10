@@ -5,14 +5,14 @@ import ru.ustinov.voting.model.Dish;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.to.RestaurantTo;
-import ru.ustinov.voting.web.dish.DishTestData;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.math.BigDecimal.valueOf;
 import static java.time.LocalDate.now;
-import static ru.ustinov.voting.web.dish.DishTestData.*;
 import static ru.ustinov.voting.web.user.UserTestData.user_2;
 import static ru.ustinov.voting.web.voting.VoteTestData.HARBIN_VOTES_NOW;
 import static ru.ustinov.voting.web.voting.VoteTestData.VOTE_ID;
@@ -33,19 +33,19 @@ public class RestaurantTestData {
 
     public static MatcherFactory.Matcher<RestaurantTo> TO_MATCHER =
             MatcherFactory.usingRecurciveIgnoringFieldsComparator(RestaurantTo.class,
-                     "dishes.restaurant", "dishes.date");
+                    "dishes.restaurant", "dishes.date");
 
     public static final int RESTAURAUNT_HARBIN_ID = 1;
 
-    public static final int RESTAURAUNT_NOT_FOUND_ID = 100;
+    public static final int NOT_FOUND = 100;
 
-    public static final Restaurant RESTAURANT_HARBIN = new Restaurant(RESTAURAUNT_HARBIN_ID, "Харбин", harbinDishesNow);
+    public static final Restaurant RESTAURANT_HARBIN = new Restaurant(RESTAURAUNT_HARBIN_ID, "Харбин");
 
-    public static final Restaurant RESTAURANT_CI = new Restaurant(RESTAURAUNT_HARBIN_ID + 1, "Си", ciDishesNow);
+    public static final Restaurant RESTAURANT_CI = new Restaurant(RESTAURAUNT_HARBIN_ID + 1, "Си");
 
     public static final Restaurant RESTAURANT_HANOY = new Restaurant(RESTAURAUNT_HARBIN_ID + 2, "Ханой");
 
-    public static final RestaurantTo RESTAURANT_HARBIN_TO = new RestaurantTo(RESTAURANT_HARBIN, 2);
+    public static final RestaurantTo RESTAURANT_HARBIN_TO;
 
     public static final RestaurantTo RESTAURANT_CI_TO = new RestaurantTo(RESTAURANT_CI, 0);
 
@@ -56,6 +56,51 @@ public class RestaurantTestData {
 
     public static final Vote VOTE_USER_2_HANOY_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HANOY, user_2, now());
 
+    public static final int DISH_ID = 1;
+
+    final static LocalDate now = now();
+
+    public static final Dish dish1 = new Dish(DISH_ID, "Харчо", now, (valueOf(300.23)), RESTAURANT_HARBIN);
+    public static final Dish dish2 = new Dish(DISH_ID + 1, "Жаркое", now, (valueOf(356.45)), RESTAURANT_HARBIN);
+    public static final Dish dish3 = new Dish(DISH_ID + 2, "Компот", now, (valueOf(30.67)), RESTAURANT_HARBIN);
+    public static final Dish dish4 = new Dish(DISH_ID + 3, "Сельдь под шубой", now, (valueOf(176.47)), RESTAURANT_CI);
+
+    public static final Dish dish5 = new Dish(DISH_ID + 4, "Пиво", now, (valueOf(150.89)), RESTAURANT_CI);
+    public static final Dish dish6 = new Dish(null, "Жаркое", now, (valueOf(260)), RESTAURANT_HARBIN);
+    public static final Dish dish7 = new Dish(null, "Пюре картофельное с голубцами", now, (valueOf(225.78)), RESTAURANT_HARBIN);
+    public static final Dish dish8 = new Dish(null, "Кофе с круассаном", now, (valueOf(100.35)), RESTAURANT_HARBIN);
+
+    public static List<Dish> harbinDishesNow = Stream.of(dish2, dish3, dish1).sorted(Comparator.comparing(Dish::getName)).toList();
+    public static List<Dish> ciDishesNow = Stream.of(dish4, dish5).sorted(Comparator.comparing(Dish::getName)).toList();
+
+    public static List<Dish> harbinDishesInThePastWithDuplicate = List.of(dish6, dish7, dish8);
+
+    public static List<Dish> harbinNewDishesFromLastMenu = List.copyOf(harbinDishesNow);
+
+    public static final List<Dish> newHarbinDishesFromLastMenu;
+
+
+    static {
+        newHarbinDishesFromLastMenu = harbinNewDishesFromLastMenu.stream().map(dish -> {
+            Dish newDish = new Dish(dish);
+            newDish.setId(null);
+            newDish.setDate(now.plusDays(1));
+            return newDish;
+        }).toList();
+        RESTAURANT_HARBIN.setDishes(harbinDishesNow);
+        RESTAURANT_CI.setDishes(ciDishesNow);
+        RESTAURANT_HARBIN_TO = new RestaurantTo(RESTAURANT_HARBIN, 2);
+    }
+
+    public static Dish getNewDish() {
+        return new Dish(null, "Созданное блюдо", now, (valueOf(200.34)), RESTAURANT_HARBIN);
+    }
+
+    public static Dish getUpdatedDish() {
+        return new Dish(DISH_ID, "Обновленнoe харчо", now, (valueOf(500)), RESTAURANT_HARBIN);
+    }
+
+
     public static Restaurant getNew() {
         return new Restaurant(null, "Restaurant_created");
     }
@@ -64,12 +109,6 @@ public class RestaurantTestData {
         final Restaurant updated = new Restaurant(restaurant);
         updated.setDishes(Stream.of(dish, dish2, dish3).sorted(Comparator.comparing(Dish::getName)).toList());
         return updated;
-    }
-
-    public static RestaurantTo getUpdatedTo() {
-        final RestaurantTo new_Harbin = new RestaurantTo(RESTAURANT_HARBIN, HARBIN_VOTES_NOW.size());
-        new_Harbin.setName("Харбин обновлен");
-        return new_Harbin;
     }
 
     public static Restaurant getUpdated() {
