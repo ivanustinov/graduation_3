@@ -199,6 +199,9 @@
                     <scope>runtime</scope>
                 </dependency>
             </dependencies>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 

@@ -36,7 +36,7 @@
 
 <div class="modal fade" tabindex="-1" id="editRow">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div style="width: 600px" class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="modalTitle"></h4>
                 <button type="button" class="close" data-dismiss="modal" onclick="closeNoty()">&times;</button>
