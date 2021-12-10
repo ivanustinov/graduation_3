@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.ustinov.voting.model.User;
@@ -20,6 +21,7 @@ import static ru.ustinov.voting.web.user.ProfileRestController.REST_URL;
 import static ru.ustinov.voting.web.user.UserTestData.USER_ID;
 import static ru.ustinov.voting.web.user.UserTestData.user;
 
+@ActiveProfiles({"h2"})
 class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Autowired
