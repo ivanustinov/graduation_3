@@ -36,7 +36,7 @@
 
 <div class="modal fade" tabindex="-1" id="editRow">
     <div class="modal-dialog">
-        <div style="width: 600px" class="modal-content">
+        <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="modalTitle"></h4>
                 <button type="button" class="close" data-dismiss="modal" onclick="closeNoty()">&times;</button>
@@ -45,8 +45,8 @@
                 <form id="detailsForm">
                     <input type="hidden" id="id" name="id">
                     <div class="form-group">
-                        <label for="name" class="col-form-label"><spring:message code="restaurant.name"/></label>
-                        <input type="text" id="name" name="name"/>
+                        <label for="name"  class="col-form-label"><spring:message code="restaurant.name"/></label>
+                        <input style="width: 400px" type="text" id="name" name="name"/>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeNoty()">

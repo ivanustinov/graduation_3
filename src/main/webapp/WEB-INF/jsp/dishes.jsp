@@ -75,7 +75,7 @@
                     </div>
                     <div class="form-group">
                         <label for="price" class="col-form-label"><spring:message code="dish.price"/></label>
-                        <input type="number" min="0.00" step="0.05" value="1.00" id="price" name="price"
+                        <input style="width: 100px" type="number" min="0.00" step="0.05" value="1.00" id="price" name="price"
                                placeholder="00.00">
                     </div>
                     <div class="modal-footer">
