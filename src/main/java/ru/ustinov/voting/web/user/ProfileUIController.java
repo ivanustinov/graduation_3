@@ -69,7 +69,7 @@ public class ProfileUIController extends AbstractUserController {
             return "profile";
         }
         User user = UserUtil.createNewFromTo(userTo);
-        super.create(user);
+        profileUIController.create(user);
         status.setComplete();
         return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
     }

@@ -2,6 +2,7 @@ package ru.ustinov.voting.web.user;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,10 @@ import java.util.EnumSet;
 @Slf4j
 @Tag(name = "Profile Controller")
 public class ProfileRestController extends AbstractUserController {
+
+    @Autowired
+    ProfileRestController profileRestController;
+
     static final String REST_URL = "/rest/profile";
 
     @GetMapping
@@ -38,7 +43,7 @@ public class ProfileRestController extends AbstractUserController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         log.info("register {}", userTo);
-        User created = prepareAndSave(UserUtil.createNewFromTo(userTo));
+        final User created = profileRestController.create(UserUtil.createNewFromTo(userTo));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);

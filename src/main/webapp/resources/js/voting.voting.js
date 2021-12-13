@@ -56,16 +56,20 @@ function successNoty(key, value) {
 function getVotingTime() {
     $.get(getVotingTimeUrl, function (data) {
         let leftMinutes = getLeftMinutes(data);
-        let number = checkTime(leftMinutes);
-        if (number === 0) {
-            return
+        if (leftMinutes === 0) {
+            renderRestultButton();
+            $('#background').css('background-color', '#dc1038');
+            $('#votingTime').html(getLeftMinutesAndHours(leftMinutes));
+        } else {
+            $('#votingTime').html(getLeftMinutesAndHours(leftMinutes));
+            let interval = setInterval(function () {
+                leftMinutes = checkTime(leftMinutes);
+                if (leftMinutes === 0) {
+                    clearInterval(interval);
+                }
+            }, 60000);
         }
-        let interval = setInterval(function () {
-            if (number === 0) {
-                clearInterval(interval);
-            }
-            number = checkTime(number);
-        }, 60000);
+
     });
 }
 
@@ -97,13 +101,13 @@ function getLeftMinutesAndHours(minutes) {
 }
 
 function checkTime(minutes) {
+    minutes -= 1;
     if (minutes === 0) {
         renderRestultButton();
         $('#background').css('background-color', '#dc1038');
-    } else {
-        minutes -= 1;
+        $('#votingTime').html(getLeftMinutesAndHours(minutes));
     }
-    $('#votingTime').html(getLeftMinutesAndHours(minutes));
+
     return minutes;
 }
 

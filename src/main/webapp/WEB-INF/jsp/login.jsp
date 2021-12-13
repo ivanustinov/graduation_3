@@ -45,7 +45,7 @@
             <a href="http://www.webjars.org/">WebJars</a>,
             <a href="http://datatables.net/">DataTables</a>,
             <a href="http://www.postgresql.org/">PostgreSQL</a>,
-            <a href="http://hsqldb.org/">HSQLDB</a>,
+            <a href="https://www.h2database.com/">H2</a>,
             <a href="https://junit.org/junit5/">JUnit 5</a>,
             <a href="http://hamcrest.org/JavaHamcrest/">Hamcrest</a>,
             <a href="https://assertj.github.io/doc/">AssertJ</a>,

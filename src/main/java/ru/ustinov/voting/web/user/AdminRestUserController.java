@@ -2,6 +2,7 @@ package ru.ustinov.voting.web.user;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,9 @@ import java.util.List;
 @Slf4j
 @Tag(name = "Admin User Controller")
 public class AdminRestUserController extends AbstractUserController {
+
+    @Autowired
+    private AdminRestUserController adminRestUserController;
 
     static final String REST_URL = "/rest/admin/users";
 
@@ -44,7 +48,7 @@ public class AdminRestUserController extends AbstractUserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user) {
-        final User created = super.create(user);
+        final User created = adminRestUserController.create(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();

@@ -2,6 +2,7 @@ package ru.ustinov.voting.web.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,6 +16,7 @@ import ru.ustinov.voting.repository.UserRepository;
 import ru.ustinov.voting.web.AbstractControllerTest;
 import ru.ustinov.voting.web.GlobalExceptionHandler;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -32,6 +34,9 @@ class AdminRestUserControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
@@ -67,6 +72,7 @@ class AdminRestUserControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(REST_URL + UserTestData.USER_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+        entityManager.clear();
         assertFalse(userRepository.findById(UserTestData.USER_ID).isPresent());
     }
 
@@ -96,7 +102,6 @@ class AdminRestUserControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
     void update() throws Exception {
         User updated = UserTestData.getUpdated();
-        updated.setId(null);
         perform(MockMvcRequestBuilders.put(REST_URL + UserTestData.USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(UserTestData.jsonWithPassword(updated, "newPass")))
@@ -141,6 +146,7 @@ class AdminRestUserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
+
 
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)

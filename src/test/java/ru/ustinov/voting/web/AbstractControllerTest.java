@@ -11,13 +11,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ustinov.voting.Profiles;
 
 //https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-//@ActiveProfiles(profiles = {"h2", "ru_date_format"})
+@ActiveProfiles(profiles = {Profiles.H2_DB, Profiles.RU_DATE_FORMAT})
 //@Import({MockConfigurer.class})
 //https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-testing-with-mock-environment
 public abstract class AbstractControllerTest {

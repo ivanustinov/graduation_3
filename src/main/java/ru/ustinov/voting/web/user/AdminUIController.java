@@ -1,6 +1,7 @@
 package ru.ustinov.voting.web.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class AdminUIController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createOrUpdate(@Valid User user) {
         if (user.isNew()) {
-            super.create(user);
+            adminUIController.create(user);
         } else {
             adminUIController.update(user, user.id());
         }
