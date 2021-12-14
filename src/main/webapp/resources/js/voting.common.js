@@ -3,7 +3,7 @@ let form;
 function makeEditable(datatableOpts) {
     let url = "";
     if (localeCode === "ru") {
-        url =  "//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json";
+        url =  "resources/js/plug-ins/ru.json";
     }
     ctx.datatableApi = $("#datatable").DataTable(
         // https://api.jquery.com/jquery.extend/#jQuery-extend-deep-target-object1-objectN
@@ -26,11 +26,11 @@ function makeEditable(datatableOpts) {
     // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
     $.ajaxSetup({cache: false});
 
-    // var token = $("meta[name='_csrf']").attr("content");
-    // var header = $("meta[name='_csrf_header']").attr("content");
-    // $(document).ajaxSend(function (e, xhr, options) {
-    //     xhr.setRequestHeader(header, token);
-    // });
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
 }
 
 function add() {

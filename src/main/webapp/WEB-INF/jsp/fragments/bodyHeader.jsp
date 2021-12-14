@@ -1,8 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark py-0">
     <div class="container">
@@ -48,8 +48,10 @@
                        data-toggle="dropdown">${pageContext.response.locale}</a>
                     <div class="dropdown-menu">
                         <c:set var="params" value="${requestScope['javax.servlet.forward.query_string']}"/>
-                        <c:set var="requestPath" value="${requestScope['javax.servlet.forward.request_uri'].concat('?')}"/>
-                        <c:set var="dsf" value="${params.contains('lang') ? params.split('lang')[0] : params.concat('&')}"/>
+                        <c:set var="requestPath"
+                               value="${requestScope['javax.servlet.forward.request_uri'].concat('?')}"/>
+                        <c:set var="dsf"
+                               value="${params.contains('lang') ? params.split('lang')[0] : params.concat('&')}"/>
                         <a class="dropdown-item" href="${requestPath.concat(dsf)}lang=en">English</a>
                         <a class="dropdown-item" href="${requestPath.concat(dsf)}lang=ru">Русский</a>
                     </div>

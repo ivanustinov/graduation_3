@@ -121,7 +121,7 @@ function getLastMenuDate(date) {
 function createLastMenuTable() {
     let url = "";
     if (localeCode === "ru") {
-        url = "//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json";
+        url = "resources/js/plug-ins/ru.json";
     }
     return $("#lastMenuTable").DataTable({
         "columns": [
