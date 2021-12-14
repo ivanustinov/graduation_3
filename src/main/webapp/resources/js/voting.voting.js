@@ -131,6 +131,7 @@ function createVotesDataTable() {
         },
         "ajax": {
             "url": my_votes,
+            "dataSrc": ""
         },
         "order": [
             [
