@@ -16,6 +16,8 @@ import ru.ustinov.voting.web.user.UserTestData;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -163,7 +165,8 @@ class VotingRestControllerTest extends AbstractControllerTest {
 
     private MockedStatic<LocalTime> fixCurrentTime(LocalTime fixedTime) {
         final MockedStatic<LocalTime> localTimeMockedStatic = Mockito.mockStatic(LocalTime.class);
-        localTimeMockedStatic.when(LocalTime::now).thenReturn(fixedTime);
+        final ZoneId zoneId = TimeZone.getDefault().toZoneId();
+        localTimeMockedStatic.when(() -> LocalTime.now(zoneId)).thenReturn(fixedTime);
         return localTimeMockedStatic;
     }
 

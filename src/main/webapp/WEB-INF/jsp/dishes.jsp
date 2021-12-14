@@ -4,9 +4,16 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://voting.ustinov.ru/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" import="java.time.LocalDate" %>
+<%@ page import="java.util.TimeZone" %>
+<%@ page import="java.util.Calendar" %>
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
+<%
+    final Calendar instance = Calendar.getInstance(request.getLocale());
+    final TimeZone timeZone = instance.getTimeZone();
+    request.setAttribute("dateNow", LocalDate.now(timeZone.toZoneId()));
+%>
 <body>
 <script>
     let dDate = "${fn:formatDate(date)}";
@@ -23,25 +30,24 @@
                 <span class="fa fa-arrow-left"></span>
                 <spring:message code="common.back"/>
             </button>
-            <button style="margin-right: 5px" class="btn btn-primary" onclick="add()">
-                <span class="fa fa-plus"></span>
-                <spring:message code="common.add"/>
-            </button>
-            <c:if test="${!date.isBefore(LocalDate.now())}">
+            <c:if test="${!date.isBefore(dateNow)}">
+                <button style="margin-right: 5px" class="btn btn-primary" onclick="add()">
+                    <span class="fa fa-plus"></span>
+                    <spring:message code="common.add"/>
+                </button>
                 <a href="delete_all_dishes?date=${fn:formatDate(date)}&restaurant_id=${restaurant.id}"
                    style="margin-right: 5px" class="btn btn-primary">
                     <span class="fa fa-remove"></span>
                     <spring:message code="common.delete_all"/>
                 </a>
+                <button class="btn btn-primary" onclick="getLastMenu()">
+                    <span class="fa fa-plus"></span>
+                    <spring:message code="dish.last"/>
+                </button>
             </c:if>
-            <button class="btn btn-primary" onclick="getLastMenu()">
-                <span class="fa fa-plus"></span>
-                <spring:message code="dish.last"/>
-            </button>
         </div>
-        <c:if test="${date.isBefore(LocalDate.now())}">
-            <h4 style="margin-top: 30px; margin-bottom: 20px" class="text-center"><spring:message
-                    code="dish.create_in_the_past"/></h4>
+        <c:if test="${date.isBefore(dateNow)}">
+            <h4 style="margin-top: 30px; margin-bottom: 20px" class="text-center"><spring:message code="dish.create_in_the_past"/></h4>
         </c:if>
         <h3 style="margin-top: 30px" class="text-center">"${restaurant.name}"
             <spring:message code="common.on"/> ${fn:formatDate(date)}</h3>

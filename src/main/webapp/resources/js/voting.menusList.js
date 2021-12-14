@@ -87,35 +87,23 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    "data":
-                        "date"
+                    "data": "date"
+                },
+                {
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderEditBtn
+                },
+                {
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderDeleteBtn
                 }
                 ,
                 {
-                    "orderable":
-                        false,
-                    "defaultContent":
-                        "",
-                    "render":
-                    renderEditBtn
-                }
-                ,
-                {
-                    "orderable":
-                        false,
-                    "defaultContent":
-                        "",
-                    "render":
-                    renderDeleteBtn
-                }
-                ,
-                {
-                    "orderable":
-                        false,
-                    "defaultContent":
-                        "",
-                    "render":
-                    renderCopyBtn
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderCopyBtn
                 }
             ],
             "order":
@@ -134,13 +122,8 @@ $(document).ready(function () {
         format: date_format,
         value: new Date().toISOString().substring(0, 10)
     });
-
     $.get(getVotingTimeUrl, function (data) {
-        $('#time').datetimepicker({
-            datepicker: false,
-            format: 'H:i',
-            value: data
-        })
+        $('#time').val(data);
     });
 })
 ;

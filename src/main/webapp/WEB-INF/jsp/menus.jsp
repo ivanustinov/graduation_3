@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" import="java.time.LocalDate" %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.TimeZone" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -11,7 +13,9 @@
 <script> let dDate = '${fn:formatDate(date)}'</script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <%
-    request.setAttribute("dateNow", LocalDate.now());
+    final Calendar instance = Calendar.getInstance(request.getLocale());
+    final TimeZone timeZone = instance.getTimeZone();
+    request.setAttribute("dateNow", LocalDate.now(timeZone.toZoneId()));
 %>
 <div class="jumbotron pt-4">
     <div class="container">
