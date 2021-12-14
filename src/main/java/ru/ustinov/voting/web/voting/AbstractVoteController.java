@@ -14,6 +14,7 @@ import ru.ustinov.voting.web.SecurityUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * //TODO add comments.
@@ -55,9 +56,9 @@ public class AbstractVoteController {
         voteService.setVotingTime(time);
     }
 
-    public Vote vote(User user, int restaurant_id) {
+    public Vote vote(User user, int restaurant_id, TimeZone timeZone) {
         log.info("user {} is voting for restaurant {}", user.getName(), restaurant_id);
-        return voteService.vote(user, restaurant_id);
+        return voteService.vote(user, restaurant_id, timeZone);
     }
 
 }

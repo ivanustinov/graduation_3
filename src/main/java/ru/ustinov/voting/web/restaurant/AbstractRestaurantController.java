@@ -73,9 +73,9 @@ public abstract class AbstractRestaurantController {
     }
 
     @Cacheable(value = "result")
-    public RestaurantTo getResult(LocalDate date) {
+    public RestaurantTo getResult(LocalDate date, LocalTime time) {
         log.info("get voting result on date {} for user {}", date,  SecurityUtil.authEmail());
-        return service.getResult(date);
+        return service.getResult(date, time);
     }
 
     @CacheEvict(value = {"restaurants", "result"}, allEntries = true)

@@ -13,6 +13,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.TimeZone;
 
 
 /**
@@ -43,9 +44,9 @@ public class VotingUIController extends AbstractVoteController {
     }
 
     @PostMapping
-    public Vote vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
+    public Vote vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id, TimeZone timeZone) {
         final User user = authUser.getUser();
-        return super.vote(user, restaurant_id);
+        return super.vote(user, restaurant_id, timeZone);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

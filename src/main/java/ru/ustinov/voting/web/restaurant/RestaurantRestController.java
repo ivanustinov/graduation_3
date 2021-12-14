@@ -19,7 +19,10 @@ import ru.ustinov.voting.web.AuthUser;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.TimeZone;
 
 import static ru.ustinov.voting.util.validation.ValidationUtil.checkNew;
 
@@ -62,8 +65,9 @@ public class RestaurantRestController extends AbstractRestaurantController {
     }
 
     @GetMapping("/rest/profile/result")
-    public RestaurantTo getResult() {
-        return super.getResult(LocalDate.now());
+    public RestaurantTo getResult(TimeZone timeZone) {
+        final ZoneId zoneId = timeZone.toZoneId();
+        return super.getResult(LocalDate.now(zoneId), LocalTime.now(zoneId));
     }
 
     @Override

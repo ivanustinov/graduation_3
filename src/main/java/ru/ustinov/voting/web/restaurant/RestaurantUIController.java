@@ -13,7 +13,10 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * //TODO add comments.
@@ -53,8 +56,9 @@ public class RestaurantUIController extends AbstractRestaurantController {
     }
 
     @GetMapping("/profile/result")
-    public RestaurantTo getResult() {
-        return super.getResult(LocalDate.now());
+    public RestaurantTo getResult(TimeZone timeZone) {
+        final ZoneId zoneId = timeZone.toZoneId();
+        return super.getResult(LocalDate.now(zoneId), LocalTime.now(zoneId));
     }
 
     @DeleteMapping(REST_URL + "/{id}")

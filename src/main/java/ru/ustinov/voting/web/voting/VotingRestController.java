@@ -19,6 +19,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
@@ -55,9 +56,9 @@ public class VotingRestController extends AbstractVoteController{
     }
 
     @PostMapping
-    public ResponseEntity<Vote> vote(@AuthenticationPrincipal @ApiIgnore AuthUser authUser, @RequestParam int restaurant_id) {
+    public ResponseEntity<Vote> vote(@AuthenticationPrincipal @ApiIgnore AuthUser authUser, @RequestParam int restaurant_id, TimeZone timeZone) {
         final User user = authUser.getUser();
-        final Vote vote = super.vote(user, restaurant_id);
+        final Vote vote = super.vote(user, restaurant_id, timeZone);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(vote.getId()).toUri();

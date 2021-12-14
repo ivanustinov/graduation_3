@@ -15,6 +15,9 @@ import ru.ustinov.voting.repository.VoteRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.TimeZone;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
@@ -41,11 +44,12 @@ public class VoteService {
 
     private LocalTime votingTime = LocalTime.of(12, 0);
 
+
     @Transactional
-    public Vote vote(User user, int restaurant_id) {
-        final LocalTime time = LocalTime.now();
+    public Vote vote(User user, int restaurant_id, TimeZone timeZone) {
+        final LocalTime time = LocalTime.now(timeZone.toZoneId());
         final Restaurant restaurant = restaurantRepository.getById(restaurant_id);
-        final LocalDate date = LocalDate.now();
+        final LocalDate date = LocalDate.now(timeZone.toZoneId());
         Vote vote = voteRepository.getVoteByUserAndDate(user, date);
         if (time.isBefore(votingTime)) {
             if (vote == null) {

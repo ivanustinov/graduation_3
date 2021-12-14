@@ -54,8 +54,8 @@ public class RestaurantService {
     }
 
     @Transactional
-    public RestaurantTo getResult(LocalDate date) {
-        checkResultTime();
+    public RestaurantTo getResult(LocalDate date, LocalTime time) {
+        checkResultTime(time);
         final List<Restaurant> withDishes = getWithDishes(date, false);
         final List<Vote> voteByDate = voteRepository.getVotesByDate(date);
         if (voteByDate.isEmpty()) {
@@ -70,19 +70,14 @@ public class RestaurantService {
         return Util.getEntity(restaurant, "Today no result");
     }
 
-    private void checkResultTime() {
-        final LocalTime votingTime = voteService.getVotingTime();
-        if ((LocalTime.now().isBefore(votingTime))) {
+    private void checkResultTime(LocalTime time) {
+        if (time.isBefore(voteService.getVotingTime())) {
             throw new AppException(HttpStatus.BAD_REQUEST, ErrorAttributeOptions.of(MESSAGE), EXCEPTION_GETTING_RESULT_BEFORE_VOTING_TIME_LEFT);
         }
     }
 
     public Restaurant getRestaurant(int restaurant_id) {
         return Util.getEntity(restaurantRepository.get(restaurant_id), "restaurant.unexisting", String.valueOf(restaurant_id));
-    }
-
-    public Restaurant getRestaurantByName(String restaurant_name) {
-        return Util.getEntity(restaurantRepository.getRestaurantByName(restaurant_name), "restaurant.unexisting", String.valueOf(restaurant_name));
     }
 
     public static RestaurantTo createTo(Restaurant restaurant, List<Vote> votes) {
