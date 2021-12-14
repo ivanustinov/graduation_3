@@ -78,39 +78,53 @@ $(document).ready(function () {
                         let ro = '';
                         $.each(data, function (key, value) {
                             if (key === (data.length - 1)) {
-                                ro += ("<a href=dishes_by_name/" + value + "?date=" + row.date + ">" + value + "</a>");
+                                ro += ("<a href=dishes/" + value.id + "?date=" + row.date + ">" + value.name + "</a>");
                             } else {
-                                ro += ("<a href=dishes_by_name/" + value + "?date=" + row.date + ">" + value + "</a>" + ', ');
+                                ro += ("<a href=dishes/" + value.id + "?date=" + row.date + ">" + value.name + "</a>" + ', ');
                             }
                         });
                         return ro;
                     }
                 },
                 {
-                    "data": "date"
-                },
+                    "data":
+                        "date"
+                }
+                ,
                 {
-                    "orderable": false,
-                    "defaultContent": "",
-                    "render": renderEditBtn
-                },
+                    "orderable":
+                        false,
+                    "defaultContent":
+                        "",
+                    "render":
+                    renderEditBtn
+                }
+                ,
                 {
-                    "orderable": false,
-                    "defaultContent": "",
-                    "render": renderDeleteBtn
-                },
+                    "orderable":
+                        false,
+                    "defaultContent":
+                        "",
+                    "render":
+                    renderDeleteBtn
+                }
+                ,
                 {
-                    "orderable": false,
-                    "defaultContent": "",
-                    "render": renderCopyBtn
+                    "orderable":
+                        false,
+                    "defaultContent":
+                        "",
+                    "render":
+                    renderCopyBtn
                 }
             ],
-            "order": [
+            "order":
                 [
-                    1,
-                    "desc"
+                    [
+                        1,
+                        "desc"
+                    ]
                 ]
-            ]
         }
     );
     var date_format = (dateFormat === "ru_date_format" ? 'd.m.Y' : 'Y-m-d');
@@ -128,4 +142,5 @@ $(document).ready(function () {
             value: data
         })
     });
-});
+})
+;

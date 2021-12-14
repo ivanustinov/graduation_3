@@ -27,7 +27,6 @@ import java.util.List;
 //        property = "name")
 public class Restaurant extends NamedEntity {
 
-
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("name ASC")

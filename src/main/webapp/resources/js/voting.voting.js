@@ -26,7 +26,7 @@ function getResult() {
         $('#restaurant_name').html(data.name);
         $('#count').html(data.countVotes)
         $.each(data.dishes, function (index, dish) {
-            $('#dishes').append($('<li>', {html: dish.name + ' ' + dish.price}));
+            $('#dishes').append($('<li>', {html: dish.name + ' ' + dish.price + i18n['dish.rubles']}));
         });
     }).done(function () {
         $('#result').modal();
@@ -112,6 +112,10 @@ function checkTime(minutes) {
 }
 
 function createVotesDataTable() {
+    let url = "";
+    if (localeCode === "ru") {
+        url = "//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json";
+    }
     $.fn.dataTable.moment('DD.MM.YYYY');
     return $("#my_votes").DataTable({
         "columns": [
@@ -122,6 +126,9 @@ function createVotesDataTable() {
                 "data": "date",
             },
         ],
+        "language": {
+            "url": url
+        },
         "ajax": {
             "url": my_votes,
             "dataSrc": ""
@@ -154,17 +161,5 @@ $(function () {
             voted = data.restaurant.id;
             $("#" + voted).css('background-color', '#1b47d7');
         }
-    });
-
-    $(document).ajaxError(function (event, jqXHR, options, jsExc) {
-        failNoty(jqXHR);
-    });
-    // solve problem with cache in IE: https://stackoverflow.com/a/4303862/548473
-    $.ajaxSetup({cache: false});
-
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
-    $(document).ajaxSend(function (e, xhr, options) {
-        xhr.setRequestHeader(header, token);
     });
 });

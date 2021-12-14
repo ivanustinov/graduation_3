@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import ru.ustinov.voting.model.Restaurant;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MenusTo {
 
-    private List<String> restaurants;
+    private List<Restaurant> restaurants;
 
     private LocalDate date;
 }

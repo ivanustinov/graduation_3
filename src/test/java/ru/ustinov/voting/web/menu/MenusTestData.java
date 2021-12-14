@@ -17,14 +17,10 @@ import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
  */
 public class MenusTestData {
 
-    public static final MatcherFactory.Matcher<MenusTo> MENUS_TO_MATCHER = MatcherFactory.usingEqualsComparator(MenusTo.class);
+    public static final MatcherFactory.Matcher<MenusTo> MENUS_TO_MATCHER = MatcherFactory.usingRecurciveIgnoringFieldsComparator(MenusTo.class, "restaurants.dishes");
 
-    public static final String HARBIN_NAME = RESTAURANT_HARBIN.getName();
-    public static final String CI_NAME = RESTAURANT_CI.getName();
-    public static final String HANOY_NAME = RESTAURANT_HANOY.getName();
+    public static final MenusTo MENUS_TO_2015_04_16 = new MenusTo(List.of(RESTAURANT_CI, RESTAURANT_HANOY, RESTAURANT_HARBIN), LocalDate.of(2015, 4, 16));
+    public static final MenusTo MENUS_TO_NOW = new MenusTo(List.of(RESTAURANT_CI, RESTAURANT_HARBIN), LocalDate.now());
 
-    public static final MenusTo MENUS_TO_2015_04_16 = new MenusTo(List.of(CI_NAME, HANOY_NAME, HARBIN_NAME), LocalDate.of(2015, 4, 16));
-    public static final MenusTo MENUS_TO_NOW = new MenusTo(List.of(CI_NAME, HARBIN_NAME), LocalDate.now());
-
-    public static final MenusTo MENUS_TO_COPIED = new MenusTo(List.of(CI_NAME, HARBIN_NAME), LocalDate.now().plusDays(1));
+    public static final MenusTo MENUS_TO_COPIED = new MenusTo(List.of(RESTAURANT_CI, RESTAURANT_HARBIN), LocalDate.now().plusDays(1));
 }

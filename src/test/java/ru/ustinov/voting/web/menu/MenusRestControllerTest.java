@@ -13,13 +13,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.ustinov.voting.web.menu.MenusTestData.*;
 import static ru.ustinov.voting.web.user.UserTestData.ADMIN_MAIL;
 
 /**
- * //TODO add comments.
  *
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
  * @version 1.0
@@ -36,7 +36,8 @@ class MenusRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(MenusRestController.REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MenusTestData.MENUS_TO_MATCHER.contentJson(MENUS_TO_NOW, MENUS_TO_2015_04_16));
+                .andExpect(MenusTestData.MENUS_TO_MATCHER.contentJson(MENUS_TO_NOW, MENUS_TO_2015_04_16))
+                .andDo(print());
     }
 
     @Test

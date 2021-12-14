@@ -86,13 +86,6 @@ public class RootControlller {
         return "dishes";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(value = "/dishes_by_name/{restaurant_name}")
-    public String getDishesByNameAndDate(ModelMap modelMap, @PathVariable String restaurant_name, @ModelAttribute("date") LocalDate date) {
-        modelMap.addAttribute("restaurant", restaurantService.getRestaurantByName(restaurant_name));
-        return "dishes";
-    }
-
     @GetMapping("/login")
     public String login() {
         return "login";

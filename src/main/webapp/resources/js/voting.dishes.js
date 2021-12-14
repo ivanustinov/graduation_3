@@ -119,7 +119,11 @@ function getLastMenuDate(date) {
 }
 
 function createLastMenuTable() {
-    return  $("#lastMenuTable").DataTable({
+    let url = "";
+    if (localeCode === "ru") {
+        url = "//cdn.datatables.net/plug-ins/1.11.3/i18n/ru.json";
+    }
+    return $("#lastMenuTable").DataTable({
         "columns": [
             {
                 "data": "name"
@@ -133,6 +137,9 @@ function createLastMenuTable() {
                 }
             },
         ],
+        "language": {
+            "url": url
+        },
         "bPaginate": false,
         "searching": false,
         "infoEmpty": false,

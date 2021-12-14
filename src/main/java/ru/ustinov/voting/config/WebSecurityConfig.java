@@ -102,11 +102,6 @@ public class WebSecurityConfig {
     }
 
 
-//    @Bean
-//    static SessionInformationExpiredStrategy sessionInformationExpiredStrategy() {
-//        return new CustomSessionInformationExpiredStrategy("/login");
-//    }
-
     @Order(3)
     @Configuration
     public static class UISecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {

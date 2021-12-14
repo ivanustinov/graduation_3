@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ustinov.voting.model.Dish;
 import ru.ustinov.voting.repository.DishRepository;
+import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.to.MenusTo;
 
 import java.time.LocalDate;
@@ -26,10 +27,12 @@ public class MenuServise {
 
     private DishServise dishServise;
 
+    private RestaurantRepository restaurantRepository;
+
     @Transactional
     public List<MenusTo> getAll() {
         final List<LocalDate> dates = dishRepository.getDates();
-        return dates.stream().map(date -> new MenusTo(dishRepository.getRestaurants(date), date)).toList();
+        return dates.stream().map(date -> new MenusTo(restaurantRepository.getRestaurantsByDate(date), date)).toList();
     }
 
     public void delete(LocalDate date) {

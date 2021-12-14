@@ -25,7 +25,7 @@
         <table class="table table-striped" id="datatable">
             <thead>
             <tr>
-                <th><spring:message code="restaurants.title"/></th>
+                <th><spring:message code="restaurant.one"/></th>
                 <th><spring:message code="common.edit"/></th>
                 <th><spring:message code="common.delete"/></th>
             </tr>

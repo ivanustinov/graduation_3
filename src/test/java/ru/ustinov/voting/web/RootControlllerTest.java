@@ -92,17 +92,6 @@ class RootControlllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getDishesByName() throws Exception {
-        perform(MockMvcRequestBuilders.get("/dishes_by_name/" + RESTAURANT_HARBIN.getName())
-                .with(userAuth(admin))
-                .param("date", DateFormatter.format(LocalDate.now())))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("dishes"))
-                .andExpect(forwardedUrl("/WEB-INF/jsp/dishes.jsp"));
-    }
-
-    @Test
     void deleteAll() throws Exception {
         final String dateFormatted = DateFormatter.format(LocalDate.now());
         perform(MockMvcRequestBuilders.get("/delete_all_dishes")

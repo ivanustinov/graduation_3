@@ -35,6 +35,9 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
     @Query("SELECT r FROM Restaurant r join r.dishes d on d.date = :date ORDER BY r.name")
     List<Restaurant> getWithDishes(LocalDate date);
 
+    @Query("SELECT distinct r FROM Restaurant r join r.dishes d on d.date = :date ORDER BY r.name")
+    List<Restaurant> getRestaurantsByDate(LocalDate date);
+
     @Query("select r from Restaurant r left join r.dishes d on d.date =:date where d.name is null")
     List<Restaurant> getWithoutDishes(LocalDate date);
 

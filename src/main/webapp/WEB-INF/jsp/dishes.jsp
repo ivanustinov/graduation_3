@@ -12,8 +12,8 @@
     let dDate = "${fn:formatDate(date)}";
     let restaurant_id = '${restaurant.id}'
 </script>
-<script src="resources/js/voting.common.js"></script>
-<script src="resources/js/voting.dishes.js" defer></script>
+<script type="text/javascript" src="resources/js/voting.common.js" defer></script>
+<script type="text/javascript" src="resources/js/voting.dishes.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">
@@ -43,7 +43,7 @@
             <h4 style="margin-top: 30px; margin-bottom: 20px" class="text-center"><spring:message
                     code="dish.create_in_the_past"/></h4>
         </c:if>
-        <h3 style="margin-top: 30px" class="text-center">${restaurant.name}
+        <h3 style="margin-top: 30px" class="text-center">"${restaurant.name}"
             <spring:message code="common.on"/> ${fn:formatDate(date)}</h3>
         <table class="table table-striped" id="datatable">
             <thead>

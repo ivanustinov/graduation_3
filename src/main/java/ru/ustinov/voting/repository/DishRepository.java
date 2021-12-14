@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ustinov.voting.model.Dish;
+import ru.ustinov.voting.model.Restaurant;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,8 +57,8 @@ public interface DishRepository extends BaseRepository<Dish> {
     @Query("select max(d.date) from Dish d where d.restaurant.id =:restaurant_id and d.date <:date")
     LocalDate getLastMenuDate(int restaurant_id, LocalDate date);
 
-    @Query("SELECT distinct d.restaurant.name from Dish d where d.date =:date")
-    List<String> getRestaurants(LocalDate date);
+    @Query("SELECT d.restaurant from Dish d where d.date =:date")
+    List<Restaurant> getRestaurants(LocalDate date);
 
     @Query("select d from Dish d where d.date =(select max(d.date) from Dish d where d.restaurant.id =:restaurant_id and d.date <:date) and d.restaurant.id =:restaurant_id order by d.name")
     List<Dish> getLastMenu(int restaurant_id, LocalDate date);
