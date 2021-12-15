@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.voting;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ import java.util.TimeZone;
  * @version 1.0
  * @since 25.10.2021
  */
-@ApiIgnore
+@Hidden
 @RestController
 @RequestMapping(value = VotingUIController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VotingUIController extends AbstractVoteController {

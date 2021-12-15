@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.restaurant;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,7 +26,7 @@ import java.util.TimeZone;
  * @version 1.0
  * @since 20.10.2021
  */
-@ApiIgnore
+@Hidden
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantUIController extends AbstractRestaurantController {

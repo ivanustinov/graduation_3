@@ -21,7 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = DishRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-@AllArgsConstructor
 @Tag(name = "Dish Controller")
 public class DishRestController extends AbstractDishController {
 

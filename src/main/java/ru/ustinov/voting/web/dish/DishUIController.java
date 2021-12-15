@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.dish;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ import java.util.List;
  * @version 1.0
  * @since 22.10.2021
  */
-@ApiIgnore
+@Hidden
 @RestController
 @RequestMapping(value = "/admin/dishes/{restaurant_id}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DishUIController extends AbstractDishController {

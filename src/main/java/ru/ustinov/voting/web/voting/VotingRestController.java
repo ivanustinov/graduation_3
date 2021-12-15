@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.voting;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -45,13 +46,13 @@ public class VotingRestController extends AbstractVoteController{
     }
 
     @GetMapping("/voting_time")
-    public LocalTime getVotingTime(@AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
+    public @Schema(type ="string")LocalTime getVotingTime(@AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
         return super.getVotingTime(authUser.getUser());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/set_time")
-    public void setTime(@NonNull @RequestParam LocalTime time) {
+    public void setTime(@NonNull @Schema(type ="string") @RequestParam LocalTime time) {
         super.setTime(time);
     }
 

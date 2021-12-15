@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.user;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import java.util.List;
  * @version 1.0
  * @since 11.10.2021
  */
-@ApiIgnore
+@Hidden
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUIController extends AbstractUserController {

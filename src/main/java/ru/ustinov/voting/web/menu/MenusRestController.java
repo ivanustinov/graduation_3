@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.menu;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import static ru.ustinov.voting.web.menu.MenusRestController.REST_URL;
  * @version 1.0
  * @since 17.11.2021
  */
+@Tag(name = "Menu Controller")
 @RestController
 @RequestMapping(value = REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MenusRestController extends AbstractMenusController {

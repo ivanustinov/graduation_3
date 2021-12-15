@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.user;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +27,7 @@ import javax.validation.Valid;
  * @version 1.0
  * @since 12.10.2021
  */
-@ApiIgnore
+@Hidden
 @Controller
 @RequestMapping("/profile")
 public class ProfileUIController extends AbstractUserController {
