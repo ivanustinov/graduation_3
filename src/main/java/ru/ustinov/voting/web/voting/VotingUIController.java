@@ -6,14 +6,22 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.web.AuthUser;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -45,9 +53,9 @@ public class VotingUIController extends AbstractVoteController {
     }
 
     @PostMapping
-    public Vote vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id, TimeZone timeZone) {
+    public Vote vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
         final User user = authUser.getUser();
-        return super.vote(user, restaurant_id, timeZone);
+        return super.vote(user, restaurant_id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

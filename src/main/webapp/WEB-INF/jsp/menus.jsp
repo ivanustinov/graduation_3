@@ -13,9 +13,7 @@
 <script> let dDate = '${fn:formatDate(date)}'</script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <%
-    final Calendar instance = Calendar.getInstance(request.getLocale());
-    final TimeZone timeZone = instance.getTimeZone();
-    request.setAttribute("dateNow", LocalDate.now(timeZone.toZoneId()));
+    request.setAttribute("dateNow", LocalDate.now());
 %>
 <div class="jumbotron pt-4">
     <div class="container">

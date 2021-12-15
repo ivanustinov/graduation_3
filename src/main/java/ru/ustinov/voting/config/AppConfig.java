@@ -17,9 +17,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -29,8 +26,10 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import ru.ustinov.voting.web.formatter.DateFormatter;
 import ru.ustinov.voting.web.json.JsonUtil;
 
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.TimeZone;
 
 @Configuration
 @Slf4j
@@ -75,6 +74,14 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     public DateFormatter dateFormatter() {
         return new DateFormatter(env);
+    }
+
+    @Bean
+    public TimeZone localTimeZone() {
+        TimeZone defaultTimeZone = TimeZone.getTimeZone("Europe/Moscow");
+        TimeZone.setDefault(defaultTimeZone);
+        log.info("Spring boot application running in Moscow timezone :" + LocalTime.now());
+        return defaultTimeZone;
     }
 
     @Bean

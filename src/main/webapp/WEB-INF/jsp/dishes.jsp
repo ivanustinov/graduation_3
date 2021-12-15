@@ -10,9 +10,7 @@
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 <%
-    final Calendar instance = Calendar.getInstance(request.getLocale());
-    final TimeZone timeZone = instance.getTimeZone();
-    request.setAttribute("dateNow", LocalDate.now(timeZone.toZoneId()));
+    request.setAttribute("dateNow", LocalDate.now());
 %>
 <body>
 <script>

@@ -57,9 +57,8 @@ public class RestaurantUIController extends AbstractRestaurantController {
     }
 
     @GetMapping("/profile/result")
-    public RestaurantTo getResult(TimeZone timeZone) {
-        final ZoneId zoneId = timeZone.toZoneId();
-        return super.getResult(LocalDate.now(zoneId), LocalTime.now(zoneId));
+    public RestaurantTo getResult() {
+        return super.getResult(LocalDate.now(), LocalTime.now());
     }
 
     @DeleteMapping(REST_URL + "/{id}")

@@ -56,9 +56,9 @@ public class AbstractVoteController {
         voteService.setVotingTime(time);
     }
 
-    public Vote vote(User user, int restaurant_id, TimeZone timeZone) {
+    public Vote vote(User user, int restaurant_id) {
         log.info("user {} is voting for restaurant {}", user.getName(), restaurant_id);
-        return voteService.vote(user, restaurant_id, timeZone);
+        return voteService.vote(user, restaurant_id);
     }
 
 }

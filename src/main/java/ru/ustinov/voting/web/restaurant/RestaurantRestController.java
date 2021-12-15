@@ -65,9 +65,8 @@ public class RestaurantRestController extends AbstractRestaurantController {
     }
 
     @GetMapping("/rest/profile/result")
-    public RestaurantTo getResult(TimeZone timeZone) {
-        final ZoneId zoneId = timeZone.toZoneId();
-        return super.getResult(LocalDate.now(zoneId), LocalTime.now(zoneId));
+    public RestaurantTo getResult() {
+        return super.getResult(LocalDate.now(), LocalTime.now());
     }
 
     @Override

@@ -45,8 +45,8 @@ public class RootControlller {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/voting")
-    public String voting(ModelMap modelMap) {
-        modelMap.addAttribute("restaurants", restaurantService.getWithDishes(LocalDate.now(), true));
+    public String voting(ModelMap modelMap, TimeZone timeZone) {
+        modelMap.addAttribute("restaurants", restaurantService.getWithDishes(LocalDate.now(timeZone.toZoneId()), true));
         return "voting";
     }
 
