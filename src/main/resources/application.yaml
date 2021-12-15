@@ -49,7 +49,7 @@ spring:
 #    basename: app
 
   profiles:
-    active: ru_date_format, postgres
+    active: ru_date_format, heroku
 
 logging:
   level:
