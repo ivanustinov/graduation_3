@@ -1,5 +1,7 @@
 const userAjaxUrl = "admin/menusList/";
 const timeVotingUrl = "voting/set_time"
+const timeZoneVotingUrl = "voting/time_zone"
+const currentTimeZoneVotingUrl = "voting/current_time_zone"
 const getVotingTimeUrl = "voting/voting_time"
 
 // https://stackoverflow.com/a/5064235/548473
@@ -62,6 +64,28 @@ function setTime() {
     });
 }
 
+function setTimeZone() {
+    $.post({
+            url: timeZoneVotingUrl,
+            data: {timeZone: $('#timeZone').val()}
+        }
+    ).done(function () {
+        successNoty("voting.time_zone_enabled");
+    });
+}
+
+function getTimeZones() {
+    $.get(timeZoneVotingUrl).done(function (data) {
+        $('#timeZone>option').detach();
+        $.each(data, function (index, value) {
+            $('#timeZone').append($('<option>', {html: value}));
+        });
+    });
+    $.get(currentTimeZoneVotingUrl).done(function (data) {
+        $(`#timeZone option:contains("${data}")`).prop('selected', true);
+    });
+}
+
 function createMenu() {
     let date = $('#date').val();
     $('#dateform').attr('action', 'menus?' + date)
@@ -115,6 +139,9 @@ $(document).ready(function () {
                 ]
         }
     );
+    $.get(getVotingTimeUrl, function (data) {
+        $('#time').val(data);
+    });
     var date_format = (dateFormat === "ru_date_format" ? 'd.m.Y' : 'Y-m-d');
     $.datetimepicker.setLocale(localeCode);
     $('#date').datetimepicker({
@@ -122,8 +149,5 @@ $(document).ready(function () {
         format: date_format,
         value: new Date().toISOString().substring(0, 10)
     });
-    $.get(getVotingTimeUrl, function (data) {
-        $('#time').val(data);
-    });
-})
-;
+    getTimeZones();
+});

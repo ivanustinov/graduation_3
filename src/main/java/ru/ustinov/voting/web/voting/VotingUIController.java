@@ -1,7 +1,11 @@
 package ru.ustinov.voting.web.voting;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,10 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 
 /**
@@ -56,6 +57,24 @@ public class VotingUIController extends AbstractVoteController {
     public Vote vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
         final User user = authUser.getUser();
         return super.vote(user, restaurant_id);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/time_zone")
+    public void setTimezone(String timeZone) {
+        TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/time_zone")
+    public Set<String> getTimezone() {
+        return ZoneId.getAvailableZoneIds();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/current_time_zone")
+    public TimeZone getCurrentTimezone() {
+        return TimeZone.getDefault();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

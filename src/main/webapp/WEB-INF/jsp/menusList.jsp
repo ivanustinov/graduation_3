@@ -18,24 +18,42 @@
     <div class="container">
         <div class="card-body pb-0">
             <div class="row justify-content-end">
-                <div class="col-4 form-inline my-2">
-                    <form id="dateform">
-                        <label style="justify-content: left" for="date"><spring:message code="menu.date"/></label>
-                        <input style="margin-right: 5px;" class="form-control" name="date" id="date"/>
-                        <button class="btn btn-info mr-1" onclick="createMenu()">
-                            <span class="fa fa-plus"></span>
-                            <spring:message code="common.add"/>
+                <div class="col-4">
+                    <label class="myLabel" for="timeZone"><spring:message
+                            code="voting.time_zone"/></label>
+                    <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
+                        <select style="margin-right: 5px; width: 80%" class="form-control" name="timeZone"
+                                id="timeZone"></select>
+                        <button class="btn btn-info mr-1" onclick="setTimeZone()">
+                            <span class="fa fa-check"></span>
+                            <%--                        <spring:message code="common.establish"/>--%>
                         </button>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <form id="dateform">
+                        <label class="myLabel" for="date"><spring:message
+                                code="menu.date"/></label>
+                        <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
+                            <input style="margin-right: 5px; width: 50%" class="form-control" name="date" id="date"/>
+                            <button class="btn btn-info mr-1" onclick="createMenu()">
+                                <span class="fa fa-plus"></span>
+                                <spring:message code="common.add"/>
+                            </button>
+                        </div>
                     </form>
                 </div>
-                <div class="col-4 form-inline my-2">
+                <div class="col-3">
                     <div style="margin-block-end: 1em">
-                        <label style="justify-content: left" for="time"><spring:message code="voting.time"/></label>
-                        <input style="margin-right: 5px;" class="form-control" type="time" name="time" id="time"/>
-                        <button class="btn btn-info mr-1" onclick="setTime()">
-                            <span class="fa fa-check"></span>
-                            <spring:message code="common.establish"/>
-                        </button
+                        <label class="myLabel" for="time"><spring:message
+                                code="voting.time"/></label>
+                        <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
+                            <input style="margin-right: 5px;" class="form-control" type="time" name="time" id="time"/>
+                            <button class="btn btn-info mr-1" onclick="setTime()">
+                                <span class="fa fa-check"></span>
+                                <%--                            <spring:message code="common.establish"/>--%>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,6 +70,21 @@
             </tr>
             </thead>
         </table>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="editRow">
+    <div class="modal-dialog">
+        <div style="width: 600px" class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalTitle"></h4>
+                <button type="button" class="close" data-dismiss="modal" onclick="closeNoty()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="detailsForm">
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 <jsp:include page="fragments/footer.jsp"/>

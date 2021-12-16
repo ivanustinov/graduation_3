@@ -80,12 +80,10 @@ body {
     align-items: center;
 }
 
-.form-inline label {
+.myLabel {
+    text-align: right;
     display: block;
-}
-
-.justify-content-end {
-    justify-content: flex-end !important;
+    font-size: 5px;
 }
 
 .footer {
