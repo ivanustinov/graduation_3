@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ustinov.voting.model.Restaurant;
-import ru.ustinov.voting.to.RestaurantTo;
 
 import java.time.LocalDate;
 import java.util.List;

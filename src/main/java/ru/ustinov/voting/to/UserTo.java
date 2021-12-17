@@ -3,7 +3,6 @@ package ru.ustinov.voting.to;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import ru.ustinov.voting.HasEmail;
 import ru.ustinov.voting.util.validation.NoHtml;
 

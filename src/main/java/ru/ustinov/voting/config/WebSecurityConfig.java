@@ -16,12 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.session.*;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import ru.ustinov.voting.model.Role;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.repository.UserRepository;
@@ -43,6 +40,26 @@ public class WebSecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
+    static MySimpleUrlAuthantication mySimpleUrlAuthantication() {
+        return new MySimpleUrlAuthantication();
+    }
+
+    @Bean
+    public static SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    @Bean
+    public static CompositeSessionAuthenticationStrategy concurrentSession() {
+        ConcurrentSessionControlAuthenticationStrategy concurrentAuthenticationStrategy = new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry());
+        List<SessionAuthenticationStrategy> delegateStrategies = new ArrayList<>();
+        delegateStrategies.add(concurrentAuthenticationStrategy);
+        delegateStrategies.add(new SessionFixationProtectionStrategy());
+        delegateStrategies.add(new RegisterSessionAuthenticationStrategy(sessionRegistry()));
+        return new CompositeSessionAuthenticationStrategy(delegateStrategies);
+    }
+
+    @Bean
     public UserDetailsService userDetailsService() {
         return email -> {
             log.debug("Authenticating '{}'", email);
@@ -52,17 +69,16 @@ public class WebSecurityConfig {
         };
     }
 
+//    @Bean
+//    public HttpSessionEventPublisher httpSessionEventPublisher() {
+//        return new HttpSessionEventPublisher();
+//    }
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService())
                 .passwordEncoder(PASSWORD_ENCODER);
     }
-
-    @Bean
-    static MySimpleUrlAuthantication mySimpleUrlAuthantication() {
-        return new MySimpleUrlAuthantication();
-    }
-
 
     @Order(2)
     @Configuration
@@ -80,27 +96,6 @@ public class WebSecurityConfig {
                     .and().csrf().disable();
         }
     }
-
-//    @Bean
-//    public HttpSessionEventPublisher httpSessionEventPublisher() {
-//        return new HttpSessionEventPublisher();
-//    }
-
-    @Bean
-    public static SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }
-
-    @Bean
-    public static CompositeSessionAuthenticationStrategy concurrentSession() {
-        ConcurrentSessionControlAuthenticationStrategy concurrentAuthenticationStrategy = new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry());
-        List<SessionAuthenticationStrategy> delegateStrategies = new ArrayList<>();
-        delegateStrategies.add(concurrentAuthenticationStrategy);
-        delegateStrategies.add(new SessionFixationProtectionStrategy());
-        delegateStrategies.add(new RegisterSessionAuthenticationStrategy(sessionRegistry()));
-        return new CompositeSessionAuthenticationStrategy(delegateStrategies);
-    }
-
 
     @Order(3)
     @Configuration

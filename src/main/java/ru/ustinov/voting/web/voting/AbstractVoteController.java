@@ -1,15 +1,11 @@
 package ru.ustinov.voting.web.voting;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.service.VoteService;
-import ru.ustinov.voting.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -54,6 +50,16 @@ public class AbstractVoteController {
     public void setTime(LocalTime time) {
         log.info("establish voting time to {}", time);
         voteService.setVotingTime(time);
+    }
+
+    public TimeZone getTimeZone() {
+        log.info("get default time zone");
+        return TimeZone.getDefault();
+    }
+
+    public void setTimeZone(String timeZone) {
+        log.info("establish default time zone to {}", timeZone);
+        TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
     }
 
     public Vote vote(User user, int restaurant_id) {

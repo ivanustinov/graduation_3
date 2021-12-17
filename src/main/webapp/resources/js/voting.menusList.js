@@ -76,14 +76,15 @@ function setTimeZone() {
 
 function getTimeZones() {
     $.get(timeZoneVotingUrl).done(function (data) {
-        $('#timeZone>option').detach();
         $.each(data, function (index, value) {
             $('#timeZone').append($('<option>', {html: value}));
         });
+        $.get(currentTimeZoneVotingUrl).done(function (data) {
+            $(`#timeZone option:contains("${data}")`).prop('selected', true);
+        });
     });
-    $.get(currentTimeZoneVotingUrl).done(function (data) {
-        $(`#timeZone option:contains("${data}")`).prop('selected', true);
-    });
+
+
 }
 
 function createMenu() {

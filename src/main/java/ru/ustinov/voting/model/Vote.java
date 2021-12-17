@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
- *
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
  * @version 1.0
  * @since 01.09.2021
@@ -32,7 +31,7 @@ public class Vote extends BaseEntity {
     private Restaurant restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey=@ForeignKey(
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(
             foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL"))
     @JsonIgnoreProperties({"roles"})
     @ToString.Exclude

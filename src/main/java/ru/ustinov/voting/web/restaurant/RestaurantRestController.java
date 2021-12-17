@@ -2,27 +2,19 @@ package ru.ustinov.voting.web.restaurant;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.to.RestaurantTo;
-import ru.ustinov.voting.web.AuthUser;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.List;
-import java.util.TimeZone;
 
 import static ru.ustinov.voting.util.validation.ValidationUtil.checkNew;
 

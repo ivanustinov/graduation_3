@@ -54,7 +54,7 @@ body {
 }
 
 .mycard {
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .mybutton {

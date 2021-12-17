@@ -8,7 +8,6 @@ import ru.ustinov.voting.model.Restaurant;
 import java.util.List;
 
 /**
- *
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
  * @version 1.0
  * @since 18.09.2021

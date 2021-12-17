@@ -1,15 +1,10 @@
 package ru.ustinov.voting.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.format.annotation.DateTimeFormat;
-import ru.ustinov.voting.web.formatter.PriceDeserializer;
 import ru.ustinov.voting.web.formatter.PriceFormatter;
 
 import javax.persistence.*;

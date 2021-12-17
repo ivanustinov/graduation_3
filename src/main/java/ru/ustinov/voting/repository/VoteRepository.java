@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.xml.crypto.Data;
 import java.time.LocalDate;
 import java.util.List;
 

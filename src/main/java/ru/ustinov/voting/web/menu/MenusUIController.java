@@ -5,13 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.ustinov.voting.to.MenusTo;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.time.LocalDate;
 import java.util.List;
 
 /**
- *
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
  * @version 1.0
  * @since 25.10.2021
@@ -19,7 +17,7 @@ import java.util.List;
 @Hidden
 @RestController
 @RequestMapping(value = "/admin/menusList", produces = MediaType.APPLICATION_JSON_VALUE)
-public class MenusUIController extends AbstractMenusController{
+public class MenusUIController extends AbstractMenusController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -16,7 +16,6 @@ import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.to.UserTo;
 import ru.ustinov.voting.util.UserUtil;
 import ru.ustinov.voting.web.AuthUser;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 

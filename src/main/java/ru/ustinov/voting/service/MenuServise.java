@@ -9,7 +9,6 @@ import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.to.MenusTo;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -47,7 +46,7 @@ public class MenuServise {
         final List<Dish> dishesByDate = dishRepository.getDishesByDate(date);
         dishesByDate.forEach(dish -> {
             final Dish dish1 = new Dish(null, dish.getName(), newDate, dish.getPrice());
-             dishServise.save(dish1, dish.getRestaurant().getId());
+            dishServise.save(dish1, dish.getRestaurant().getId());
         });
     }
 }

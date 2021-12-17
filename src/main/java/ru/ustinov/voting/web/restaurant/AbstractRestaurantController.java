@@ -1,27 +1,18 @@
 package ru.ustinov.voting.web.restaurant;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import ru.ustinov.voting.error.AppException;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.service.RestaurantService;
-import ru.ustinov.voting.service.VoteService;
 import ru.ustinov.voting.to.RestaurantTo;
 import ru.ustinov.voting.util.validation.Util;
 import ru.ustinov.voting.web.SecurityUtil;
-import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -64,7 +55,7 @@ public abstract class AbstractRestaurantController {
 
     public List<Restaurant> getWithDishes(LocalDate date, boolean needCache) {
         log.info("get all restaurants with dishes on {} for user {}", date, SecurityUtil.authEmail());
-        return service.getWithDishes(date,  needCache);
+        return service.getWithDishes(date, needCache);
     }
 
     public List<Restaurant> getWithoutDishes(LocalDate date) {
@@ -74,7 +65,7 @@ public abstract class AbstractRestaurantController {
 
     @Cacheable(value = "result")
     public RestaurantTo getResult(LocalDate date, LocalTime time) {
-        log.info("get voting result on date {} for user {}", date,  SecurityUtil.authEmail());
+        log.info("get voting result on date {} for user {}", date, SecurityUtil.authEmail());
         return service.getResult(date, time);
     }
 

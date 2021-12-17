@@ -13,7 +13,6 @@ import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.repository.DishRepository;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.util.validation.Util;
-import ru.ustinov.voting.util.validation.ValidationUtil;
 
 import java.time.LocalDate;
 import java.util.List;

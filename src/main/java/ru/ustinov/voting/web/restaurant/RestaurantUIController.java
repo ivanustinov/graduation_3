@@ -1,23 +1,17 @@
 package ru.ustinov.voting.web.restaurant;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.to.RestaurantTo;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * //TODO add comments.
@@ -31,10 +25,9 @@ import java.util.TimeZone;
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantUIController extends AbstractRestaurantController {
 
+    public static final String REST_URL = "/admin/restaurants";
     @Autowired
     private RestaurantUIController restaurantUIController;
-
-    public static final String REST_URL = "/admin/restaurants";
 
     @GetMapping(REST_URL + "/{id}")
     public Restaurant get(@PathVariable int id) {

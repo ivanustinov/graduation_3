@@ -2,19 +2,13 @@ package ru.ustinov.voting.web.dish;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import ru.ustinov.voting.error.AppException;
-import ru.ustinov.voting.error.NotFoundException;
 import ru.ustinov.voting.model.Dish;
 import ru.ustinov.voting.repository.DishRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.service.DishServise;
 import ru.ustinov.voting.util.validation.Util;
-import ru.ustinov.voting.util.validation.ValidationUtil;
 import ru.ustinov.voting.web.SecurityUtil;
 
 import java.time.LocalDate;
@@ -22,9 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 import static ru.ustinov.voting.util.validation.ValidationUtil.checkNew;
-import static ru.ustinov.voting.util.validation.ValidationUtil.checkNotFoundWithId;
 
 /**
  * //TODO add comments.

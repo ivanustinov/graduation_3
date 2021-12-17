@@ -93,7 +93,7 @@ public abstract class AbstractUserController {
         final User user = Util.getEntity(repository.get(id), "error.entityWithIdNotFound", String.valueOf(id));
         final List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
         final List<AuthUser> authUsers = allPrincipals.stream()
-                        .map(o -> (AuthUser) o).filter(authUser -> authUser.getUser().getEmail().equals(user.getEmail())).toList();
+                .map(o -> (AuthUser) o).filter(authUser -> authUser.getUser().getEmail().equals(user.getEmail())).toList();
         if (!authUsers.isEmpty()) {
             final List<SessionInformation> allSessions = sessionRegistry.getAllSessions(authUsers.get(0), false);
             for (SessionInformation allSession : allSessions) {

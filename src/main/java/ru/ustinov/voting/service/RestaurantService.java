@@ -1,10 +1,8 @@
 package ru.ustinov.voting.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +18,6 @@ import ru.ustinov.voting.web.formatter.DateFormatter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +44,10 @@ public class RestaurantService {
 
     private final VoteService voteService;
 
+    public static RestaurantTo createTo(Restaurant restaurant, List<Vote> votes) {
+        int countVotes = votes == null ? 0 : votes.size();
+        return new RestaurantTo(restaurant, countVotes);
+    }
 
     @Cacheable(cacheNames = "restaurants", condition = "#needCache")
     public List<Restaurant> getWithDishes(LocalDate date, boolean needCache) {
@@ -78,11 +79,6 @@ public class RestaurantService {
 
     public Restaurant getRestaurant(int restaurant_id) {
         return Util.getEntity(restaurantRepository.get(restaurant_id), "restaurant.unexisting", String.valueOf(restaurant_id));
-    }
-
-    public static RestaurantTo createTo(Restaurant restaurant, List<Vote> votes) {
-        int countVotes = votes == null ? 0 : votes.size();
-        return new RestaurantTo(restaurant, countVotes);
     }
 
 }

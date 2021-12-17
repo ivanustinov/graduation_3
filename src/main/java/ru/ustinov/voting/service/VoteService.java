@@ -13,8 +13,8 @@ import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
 
-import java.time.*;
-import java.util.TimeZone;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
@@ -33,14 +33,12 @@ public class VoteService {
     private final VoteRepository voteRepository;
 
     private final RestaurantRepository restaurantRepository;
+    private LocalTime votingTime = LocalTime.of(12, 0);
 
     public VoteService(VoteRepository voteRepository, RestaurantRepository restaurantRepository) {
         this.voteRepository = voteRepository;
         this.restaurantRepository = restaurantRepository;
     }
-
-    private LocalTime votingTime = LocalTime.of(12, 0);
-
 
     @Transactional
     public Vote vote(User user, int restaurant_id) {

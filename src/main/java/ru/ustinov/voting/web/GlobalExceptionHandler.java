@@ -11,20 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.ustinov.voting.error.AppException;
-import ru.ustinov.voting.error.NotFoundException;
 import ru.ustinov.voting.util.validation.ValidationUtil;
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 

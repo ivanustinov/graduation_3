@@ -52,7 +52,7 @@ public class User extends NamedEntity implements HasEmail, HasId, Serializable {
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id") //https://stackoverflow.com/a/62848296/548473
-    @OnDelete(action= OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
 
@@ -61,7 +61,7 @@ public class User extends NamedEntity implements HasEmail, HasId, Serializable {
     }
 
     public User(Integer id, String name, String email, String password, Role role, Role... roles) {
-        this(id, name, email, password,  EnumSet.of(role, roles));
+        this(id, name, email, password, EnumSet.of(role, roles));
     }
 
     public User(Integer id, String name, String email, String password, Collection<Role> roles) {

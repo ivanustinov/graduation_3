@@ -16,7 +16,6 @@ import ru.ustinov.voting.web.user.UserTestData;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -116,6 +115,24 @@ class VotingRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void setTimeZone() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + "/time_zone")
+                .param("timeZone", "Asia/Yekaterinburg"))
+                .andDo(print());
+        assertEquals("Asia/Yekaterinburg", TimeZone.getDefault().toZoneId().getId());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void getDefaultTimeZone() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "/current_time_zone"))
+                .andExpect(result -> assertThat(TimeZone.getDefault())
+                        .isEqualTo(JsonUtil.readValue(result.getResponse().getContentAsString(), TimeZone.class)))
+                .andDo(print());
+    }
+
+    @Test
     void voteTwiceBeforeVotingTimeIsUp() throws Exception {
         final LocalTime votingTime = voteService.getVotingTime();
         final MockedStatic<LocalTime> localTimeMockedStatic = fixCurrentTime(votingTime.minusMinutes(30));
@@ -165,8 +182,7 @@ class VotingRestControllerTest extends AbstractControllerTest {
 
     private MockedStatic<LocalTime> fixCurrentTime(LocalTime fixedTime) {
         final MockedStatic<LocalTime> localTimeMockedStatic = Mockito.mockStatic(LocalTime.class);
-        final ZoneId zoneId = TimeZone.getDefault().toZoneId();
-        localTimeMockedStatic.when(() -> LocalTime.now(zoneId)).thenReturn(fixedTime);
+        localTimeMockedStatic.when(LocalTime::now).thenReturn(fixedTime);
         return localTimeMockedStatic;
     }
 

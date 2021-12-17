@@ -26,8 +26,20 @@
                                 id="timeZone"></select>
                         <button class="btn btn-info mr-1" onclick="setTimeZone()">
                             <span class="fa fa-check"></span>
-                            <%--                        <spring:message code="common.establish"/>--%>
                         </button>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div style="margin-block-end: 1em">
+                        <label class="myLabel" for="time"><spring:message
+                                code="voting.time"/></label>
+                        <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
+                            <input style="margin-right: 5px;" class="form-control" type="time" name="time" id="time"/>
+                            <button class="btn btn-info mr-1" onclick="setTime()">
+                                <span class="fa fa-check"></span>
+                                <%--                            <spring:message code="common.establish"/>--%>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="col-3">
@@ -42,19 +54,6 @@
                             </button>
                         </div>
                     </form>
-                </div>
-                <div class="col-3">
-                    <div style="margin-block-end: 1em">
-                        <label class="myLabel" for="time"><spring:message
-                                code="voting.time"/></label>
-                        <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
-                            <input style="margin-right: 5px;" class="form-control" type="time" name="time" id="time"/>
-                            <button class="btn btn-info mr-1" onclick="setTime()">
-                                <span class="fa fa-check"></span>
-                                <%--                            <spring:message code="common.establish"/>--%>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

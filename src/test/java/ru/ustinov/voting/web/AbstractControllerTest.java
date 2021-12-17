@@ -18,7 +18,7 @@ import ru.ustinov.voting.Profiles;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@ActiveProfiles(profiles = {Profiles.H2_DB, Profiles.RU_DATE_FORMAT})
+@ActiveProfiles(profiles = {Profiles.H2_DB, Profiles.RU_DATE_FORMAT, "test"})
 //@Import({MockConfigurer.class})
 //https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-testing-with-mock-environment
 public abstract class AbstractControllerTest {

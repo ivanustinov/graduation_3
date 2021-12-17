@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- *
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
  * @version 1.0
  * @since 17.11.2021
