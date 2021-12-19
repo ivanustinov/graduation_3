@@ -21,7 +21,7 @@ import static ru.ustinov.voting.web.user.UserTestData.*;
  */
 public class VoteTestData {
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory
-            .usingIgnoringFieldsComparator(Vote.class, "id", "user", "restaurant.name", "restaurant.dishes");
+            .usingIgnoringFieldsComparator(Vote.class, "id", "user.password", "user.roles", "restaurant.name", "restaurant.dishes");
 
     public static final int VOTE_ID = 1;
     public static LocalDate now = now();
@@ -29,9 +29,7 @@ public class VoteTestData {
     public static final Vote voteUserHarbinNow = new Vote(VOTE_ID, RESTAURANT_HARBIN, user, now);
     public static final Vote voteAdminHarbinNow = new Vote(VOTE_ID + 1, RESTAURANT_HARBIN, admin, now);
     public static final Vote voteUserCi_20150416 = new Vote(VOTE_ID + 2, RESTAURANT_CI, user, of(2015, Month.APRIL, 16));
-    public static final Vote voteAdminCi_201501416 = new Vote(VOTE_ID + 3, RESTAURANT_CI, admin, of(2015, Month.APRIL, 16));
-    public static final Vote voteUser_2HarbinNow = new Vote(VOTE_ID + 4, RESTAURANT_HARBIN, user_2, now);
-    public static final Vote voteUser_2HanoyNow = new Vote(VOTE_ID + 5, RESTAURANT_HANOY, user_2, now);
+    public static final Vote voteUser_HanoyNow = new Vote(VOTE_ID + 5, RESTAURANT_HANOY, user, now);
 
     public static final List<Vote> HARBIN_VOTES_NOW = Stream.of(voteUserHarbinNow, voteAdminHarbinNow).sorted(Comparator.comparing(vote -> vote.getId())).toList();
     public static final List<Vote> USER_VOTES = Stream.of(voteUserHarbinNow, voteUserCi_20150416).sorted(Comparator.comparing(Vote::getDate).reversed()).toList();

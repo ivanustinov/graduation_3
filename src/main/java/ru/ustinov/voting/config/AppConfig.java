@@ -30,6 +30,7 @@ import ru.ustinov.voting.web.json.JsonUtil;
 
 import javax.annotation.PostConstruct;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -46,10 +47,13 @@ public class AppConfig implements WebMvcConfigurer {
     @Autowired
     private Environment env;
 
-    @PostConstruct
-    public void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Moscow"));
+    @Bean
+    @Profile("heroku")
+    public TimeZone defaultTimeZone() {
+        final TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
+        TimeZone.setDefault(timeZone);
         log.info("Spring boot application running in Moscow timezone :" + LocalTime.now());
+        return TimeZone.getDefault();
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")

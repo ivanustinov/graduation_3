@@ -33,6 +33,7 @@ public class VoteService {
     private final VoteRepository voteRepository;
 
     private final RestaurantRepository restaurantRepository;
+
     private LocalTime votingTime = LocalTime.of(12, 0);
 
     public VoteService(VoteRepository voteRepository, RestaurantRepository restaurantRepository) {
@@ -45,17 +46,17 @@ public class VoteService {
         final LocalTime time = LocalTime.now();
         final Restaurant restaurant = restaurantRepository.getById(restaurant_id);
         final LocalDate date = LocalDate.now();
-        Vote vote = voteRepository.getVoteByUserAndDate(user, date);
         if (time.isBefore(votingTime)) {
+            Vote vote = voteRepository.getVoteByUserAndDate(user, date);
             if (vote == null) {
                 vote = new Vote(restaurant, user, date);
             } else {
                 vote.setRestaurant(restaurant);
             }
+            return voteRepository.save(vote);
         } else {
             throw new AppException(HttpStatus.CONFLICT, ErrorAttributeOptions.of(MESSAGE),
                     EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP);
         }
-        return voteRepository.save(vote);
     }
 }

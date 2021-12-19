@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import static java.math.BigDecimal.valueOf;
 import static java.time.LocalDate.now;
+import static ru.ustinov.voting.web.user.UserTestData.user;
 import static ru.ustinov.voting.web.user.UserTestData.user_2;
 import static ru.ustinov.voting.web.voting.VoteTestData.HARBIN_VOTES_NOW;
 import static ru.ustinov.voting.web.voting.VoteTestData.VOTE_ID;
@@ -52,9 +53,7 @@ public class RestaurantTestData {
     public static final List<Restaurant> RESTAURANTS = Stream.of(RESTAURANT_CI, RESTAURANT_HARBIN, RESTAURANT_HANOY)
             .sorted(Comparator.comparing(Restaurant::getName)).toList();
 
-    public static final Vote VOTE_USER_2_HARBIN_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HARBIN, user_2, now());
-
-    public static final Vote VOTE_USER_2_HANOY_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HANOY, user_2, now());
+    public static final Vote VOTE_USER_HANOY_NOW = new Vote(VOTE_ID + 4, RESTAURANT_HANOY, user, now());
 
     public static final int DISH_ID = 1;
 

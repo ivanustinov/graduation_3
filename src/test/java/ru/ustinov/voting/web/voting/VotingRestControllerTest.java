@@ -11,11 +11,11 @@ import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.service.VoteService;
 import ru.ustinov.voting.web.AbstractControllerTest;
 import ru.ustinov.voting.web.json.JsonUtil;
-import ru.ustinov.voting.web.user.UserTestData;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.ustinov.voting.service.VoteService.EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP;
-import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
 import static ru.ustinov.voting.web.restaurant.RestaurantTestData.NOT_FOUND;
+import static ru.ustinov.voting.web.restaurant.RestaurantTestData.*;
 import static ru.ustinov.voting.web.user.UserTestData.*;
 import static ru.ustinov.voting.web.voting.VoteTestData.*;
 
@@ -34,7 +34,7 @@ import static ru.ustinov.voting.web.voting.VoteTestData.*;
  * @since 06.09.2021
  */
 
-@WithUserDetails(USER_2_MAIL)
+@WithUserDetails(USER_MAIL)
 class VotingRestControllerTest extends AbstractControllerTest {
 
     @Autowired
@@ -53,7 +53,6 @@ class VotingRestControllerTest extends AbstractControllerTest {
     public static final LocalTime TIME = LocalTime.of(11, 0);
 
     @Test
-    @WithUserDetails(value = UserTestData.USER_MAIL)
     void getMyVoteToday() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
@@ -63,7 +62,6 @@ class VotingRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = UserTestData.USER_MAIL)
     void getMyVotes() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "my-votes"))
                 .andExpect(status().isOk())
@@ -133,51 +131,18 @@ class VotingRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void voteTwiceBeforeVotingTimeIsUp() throws Exception {
+    void voteTwice() throws Exception {
         final LocalTime votingTime = voteService.getVotingTime();
-        final MockedStatic<LocalTime> localTimeMockedStatic = fixCurrentTime(votingTime.minusMinutes(30));
-        try (localTimeMockedStatic) {
-            perform(MockMvcRequestBuilders.post(REST_URL)
-                    .param("restaurant_id", String.valueOf(RESTAURAUNT_HARBIN_ID)))
-                    .andExpect(status().isCreated())
-                    .andExpect(VOTE_MATCHER.contentJson(voteUser_2HarbinNow))
-                    .andDo(print());
-        }
-        entityManager.clear();
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
         final MockedStatic<LocalTime> localTimeMockedStaticAnother = fixCurrentTime(votingTime.minusMinutes(15));
         try (localTimeMockedStaticAnother) {
             perform(MockMvcRequestBuilders.post(REST_URL)
                     .param("restaurant_id", String.valueOf(RESTAURANT_HANOY.id())))
-                    .andExpect(VOTE_MATCHER.contentJson(voteUser_2HanoyNow))
+                    .andExpect(VOTE_MATCHER.contentJson(voteUser_HanoyNow))
                     .andDo(print());
         }
         entityManager.flush();
         entityManager.clear();
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HANOY_NOW);
-    }
-
-    @Test
-    void voteTwiceBeforeAndAfterVotingTimeIsUp() throws Exception {
-        final LocalTime votingTime = voteService.getVotingTime();
-        final MockedStatic<LocalTime> localTimeMockedStatic = fixCurrentTime(votingTime.minusMinutes(10));
-        try (localTimeMockedStatic) {
-            perform(MockMvcRequestBuilders.post(REST_URL)
-                    .param("restaurant_id", String.valueOf(RESTAURAUNT_HARBIN_ID)))
-                    .andExpect(status().isCreated())
-                    .andDo(print());
-        }
-        entityManager.clear();
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
-        final MockedStatic<LocalTime> localTimeMockedStatic1 = fixCurrentTime(votingTime.plusMinutes(10));
-        try (localTimeMockedStatic1) {
-            perform(MockMvcRequestBuilders.post(REST_URL)
-                    .param("restaurant_id", String.valueOf(RESTAURANT_HANOY.id())))
-                    .andExpect(status().isConflict())
-                    .andDo(print())
-                    .andExpect(jsonPath("$.message").value(messageSourceAccessor.getMessage(EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP)));
-        }
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user_2, DATE), VOTE_USER_2_HARBIN_NOW);
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user, DATE), VOTE_USER_HANOY_NOW);
     }
 
     private MockedStatic<LocalTime> fixCurrentTime(LocalTime fixedTime) {
