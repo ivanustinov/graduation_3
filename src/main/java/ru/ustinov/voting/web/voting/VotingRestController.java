@@ -1,6 +1,9 @@
 package ru.ustinov.voting.web.voting;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -44,19 +47,22 @@ public class VotingRestController extends AbstractVoteController {
         return super.getVotes(authUser.getUser());
     }
 
+
+    @ApiResponse(content = @Content(mediaType = "application/json",
+                    schema = @Schema(format = "hh:mm:ss")))
     @GetMapping("/voting_time")
-    public @Schema(type = "string")
-    LocalTime getVotingTime(@AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
+    public LocalTime getVotingTime(@AuthenticationPrincipal @ApiIgnore AuthUser authUser) {
         return super.getVotingTime(authUser.getUser());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/set_time")
-    public void setTime(@NonNull @Schema(type = "string") @RequestParam LocalTime time) {
+    public void setTime(@NonNull @Parameter(schema = @Schema(format = "hh:mm"))  @RequestParam LocalTime time) {
         super.setTime(time);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @ApiResponse(content = @Content(schema = @Schema(type = "string")))
     @GetMapping("/current_time_zone")
     public TimeZone getTimeZone() {
         return super.getTimeZone();
