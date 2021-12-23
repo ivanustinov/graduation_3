@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class PriceFormatter extends JsonSerializer<BigDecimal> {
 
     public static String formatPrice(BigDecimal price) {
-        Pattern pattern = Pattern.compile("\\.{1}[1-9]{1}");
+        Pattern pattern = Pattern.compile("\\.{1}[1-9]");
         Matcher matcher = pattern.matcher(price.toString());
         if (matcher.find()) {
             return price.toString();

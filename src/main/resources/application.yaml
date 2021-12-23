@@ -90,20 +90,22 @@ spring:
       on-profile: heroku
 
   datasource:
-    url: jdbc:postgresql://ec2-34-251-245-108.eu-west-1.compute.amazonaws.com:5432/d88j3eaq7e0b5a
-    username: knsylsqaplqkzo
-    password: b7a78da2f97a724942fc72170b84398054fad19e2f1b10e558bd38ae73383d49
+    url: jdbc:postgresql://ec2-52-49-23-139.eu-west-1.compute.amazonaws.com:5432/dcfkcrs5bs4r4o
+    username: hssojihqmfgoce
+    password: ef9c251cb9aa03c0befb4c85e77bf41c09980b8b1c173ff87efb4e52ccea1c2d
 
   jpa:
     show-sql: false
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       #  http://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#configurations
       hibernate:
         format_sql: false
         use_sql_comments: false
+
+    database: postgresql
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 ---

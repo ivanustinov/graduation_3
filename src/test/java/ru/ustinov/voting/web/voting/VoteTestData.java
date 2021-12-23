@@ -21,7 +21,7 @@ import static ru.ustinov.voting.web.user.UserTestData.*;
  */
 public class VoteTestData {
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory
-            .usingIgnoringFieldsComparator(Vote.class, "id", "user.password", "user.roles", "restaurant.name", "restaurant.dishes");
+            .usingIgnoringFieldsComparator(Vote.class, "id", "user.name", "user.password", "user.roles", "restaurant.name", "restaurant.dishes");
 
     public static final int VOTE_ID = 1;
     public static LocalDate now = now();

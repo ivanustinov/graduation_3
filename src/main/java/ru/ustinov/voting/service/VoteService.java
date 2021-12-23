@@ -34,7 +34,7 @@ public class VoteService {
 
     private final RestaurantRepository restaurantRepository;
 
-    private LocalTime votingTime = LocalTime.of(12, 0);
+    private LocalTime votingTime = LocalTime.of(17, 0);
 
     public VoteService(VoteRepository voteRepository, RestaurantRepository restaurantRepository) {
         this.voteRepository = voteRepository;

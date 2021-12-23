@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.voting;
 
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -7,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import ru.ustinov.voting.model.Restaurant;
+import ru.ustinov.voting.model.User;
+import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.VoteRepository;
 import ru.ustinov.voting.service.VoteService;
 import ru.ustinov.voting.web.AbstractControllerTest;
@@ -133,16 +139,24 @@ class VotingRestControllerTest extends AbstractControllerTest {
     @Test
     void voteTwice() throws Exception {
         final LocalTime votingTime = voteService.getVotingTime();
-        final MockedStatic<LocalTime> localTimeMockedStaticAnother = fixCurrentTime(votingTime.minusMinutes(15));
-        try (localTimeMockedStaticAnother) {
+//        final MockedStatic<LocalTime> localTimeMockedStaticAnother = fixCurrentTime(votingTime.minusMinutes(15));
+//        try (localTimeMockedStaticAnother) {
+        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user, DATE), voteUserHarbinNow);
             perform(MockMvcRequestBuilders.post(REST_URL)
                     .param("restaurant_id", String.valueOf(RESTAURANT_HANOY.id())))
                     .andExpect(VOTE_MATCHER.contentJson(voteUser_HanoyNow))
                     .andDo(print());
-        }
-        entityManager.flush();
-        entityManager.clear();
-        VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user, DATE), VOTE_USER_HANOY_NOW);
+//        }
+        final Vote voteByUserAndDate = voteRepository.getVoteByUserAndDate(user, DATE);
+        final Object unproxy = Hibernate.unproxy(voteByUserAndDate.getRestaurant());
+        voteByUserAndDate.setRestaurant((Restaurant) unproxy);
+        VOTE_MATCHER.assertMatch(voteByUserAndDate, voteUser_HanoyNow);
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Vote getVote(User user, LocalDate date) {
+        return voteRepository.getVoteByUserAndDate(user, date);
     }
 
     private MockedStatic<LocalTime> fixCurrentTime(LocalTime fixedTime) {

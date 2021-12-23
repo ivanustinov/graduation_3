@@ -19,7 +19,7 @@ import static ru.ustinov.voting.web.user.UserTestData.*;
  * @version 1.0
  * @since 10.12.2021
  */
-@ActiveProfiles(profiles = {HEROKU})
+@ActiveProfiles(profiles = {HEROKU}, inheritProfiles = false)
 public class HerokuRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AdminRestUserController.REST_URL + '/';

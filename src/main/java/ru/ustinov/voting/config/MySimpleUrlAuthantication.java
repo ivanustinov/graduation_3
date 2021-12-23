@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * //TODO add comments.
  *
  * @author Ivan Ustinov(ivanustinov1985@yandex.ru)
  * @version 1.0
