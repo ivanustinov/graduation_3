@@ -41,7 +41,7 @@ import java.util.TimeZone;
 @EnableCaching
 public class AppConfig implements WebMvcConfigurer {
 
-    @Value("file:///#{systemEnvironment[VOTING_ROOT]}/config/messages/app")
+    @Value("file:config/messages/app")
     private String name;
 
     @Autowired
@@ -60,6 +60,7 @@ public class AppConfig implements WebMvcConfigurer {
     @Profile("!test")
     Server h2Server() throws SQLException {
         log.info("Start H2 TCP server");
+        log.info(name);
         return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
     }
 

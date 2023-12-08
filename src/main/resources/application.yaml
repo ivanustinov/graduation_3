@@ -49,12 +49,12 @@ spring:
 #    basename: app
 
   profiles:
-    active: ru_date_format, heroku
+    active: ru_date_format, postgres
 
 logging:
   level:
     root: WARN
-    ru.ustinov.voting: DEBUG
+    ru.ustinov.voting: INFO
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 #    org.springframework.security: DEBUG
 #    org.springframework.orm.jpa: DEBUG
