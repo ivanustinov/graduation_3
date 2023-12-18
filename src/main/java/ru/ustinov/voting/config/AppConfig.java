@@ -28,9 +28,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import ru.ustinov.voting.web.formatter.DateFormatter;
 import ru.ustinov.voting.web.json.JsonUtil;
 
-import javax.annotation.PostConstruct;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;

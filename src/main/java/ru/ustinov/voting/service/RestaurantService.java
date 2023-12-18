@@ -17,6 +17,7 @@ import ru.ustinov.voting.util.validation.Util;
 import ru.ustinov.voting.web.formatter.DateFormatter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
@@ -55,12 +56,12 @@ public class RestaurantService {
     }
 
     @Transactional
-    public RestaurantTo getResult(LocalDate date, LocalTime time) {
-        checkResultTime(time);
-        final List<Restaurant> withDishes = getWithDishes(date, false);
-        final List<Vote> voteByDate = voteRepository.getVotesByDate(date);
+    public RestaurantTo getResult(LocalDateTime dateTime) {
+        checkResultTime(dateTime.toLocalTime());
+        final List<Restaurant> withDishes = getWithDishes(dateTime.toLocalDate(), false);
+        final List<Vote> voteByDate = voteRepository.getVotesByDate(dateTime.toLocalDate());
         if (voteByDate.isEmpty()) {
-            throw new NotFoundException("voting.no_votes", DateFormatter.format(date));
+            throw new NotFoundException("voting.no_votes", DateFormatter.format(dateTime.toLocalDate()));
         }
         final Map<Integer, List<Vote>> votes = voteByDate.stream().collect(
                 Collectors.groupingBy((Vote vote) -> vote.getRestaurant().getId(), Collectors.toList()));

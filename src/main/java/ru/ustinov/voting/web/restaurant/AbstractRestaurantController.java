@@ -14,6 +14,7 @@ import ru.ustinov.voting.util.validation.Util;
 import ru.ustinov.voting.web.SecurityUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -64,9 +65,9 @@ public abstract class AbstractRestaurantController {
     }
 
     @Cacheable(value = "result")
-    public RestaurantTo getResult(LocalDate date, LocalTime time) {
-        log.info("get voting result on date {} for user {}", date, SecurityUtil.authEmail());
-        return service.getResult(date, time);
+    public RestaurantTo getResult(LocalDateTime dateTime) {
+        log.info("get voting result on date {} for user {}", dateTime, SecurityUtil.authEmail());
+        return service.getResult(dateTime);
     }
 
     @CacheEvict(value = {"restaurants", "result"}, allEntries = true)

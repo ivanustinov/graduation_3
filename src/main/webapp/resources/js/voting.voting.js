@@ -56,12 +56,11 @@ function successNoty(key, value) {
 function getVotingTime() {
     $.get(getVotingTimeUrl, function (data) {
         let leftMinutes = getLeftMinutes(data);
+        $('#votingTime').html(getLeftMinutesAndHours(leftMinutes));
         if (leftMinutes === 0) {
             renderRestultButton();
             $('#background').css('background-color', '#dc1038');
-            $('#votingTime').html(getLeftMinutesAndHours(leftMinutes));
         } else {
-            $('#votingTime').html(getLeftMinutesAndHours(leftMinutes));
             let interval = setInterval(function () {
                 leftMinutes = checkTime(leftMinutes);
                 if (leftMinutes === 0) {
@@ -105,9 +104,8 @@ function checkTime(minutes) {
     if (minutes === 0) {
         renderRestultButton();
         $('#background').css('background-color', '#dc1038');
-        $('#votingTime').html(getLeftMinutesAndHours(minutes));
     }
-
+    $('#votingTime').html(getLeftMinutesAndHours(minutes));
     return minutes;
 }
 

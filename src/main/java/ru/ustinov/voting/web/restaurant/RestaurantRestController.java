@@ -13,6 +13,7 @@ import ru.ustinov.voting.to.RestaurantTo;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class RestaurantRestController extends AbstractRestaurantController {
 
     @GetMapping("/rest/profile/result")
     public RestaurantTo getResult() {
-        return super.getResult(LocalDate.now(), LocalTime.now());
+        return super.getResult(LocalDateTime.now());
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.VoteRepository;
+import ru.ustinov.voting.service.Scheduler;
 import ru.ustinov.voting.service.VoteService;
 
 import java.time.LocalDate;
@@ -24,6 +25,9 @@ public class AbstractVoteController {
 
     @Autowired
     private VoteService voteService;
+
+    @Autowired
+    private Scheduler scheduler;
 
     @Autowired
     private VoteRepository voteRepository;
@@ -50,6 +54,7 @@ public class AbstractVoteController {
     public void setTime(LocalTime time) {
         log.info("establish voting time to {}", time);
         voteService.setVotingTime(time);
+        scheduler.onChangeVotingTime(time);
     }
 
     public TimeZone getTimeZone() {
