@@ -11,7 +11,7 @@
     <groupId>ru.ustinov</groupId>
     <artifactId>voting</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>Voting Manager</name>
     <description>Choose your restaurant for lunch</description>

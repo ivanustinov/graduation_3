@@ -39,7 +39,7 @@ import java.util.TimeZone;
 @EnableCaching
 public class AppConfig implements WebMvcConfigurer {
 
-    @Value("file:config/messages/app")
+    @Value("file:#{systemEnvironment[VOTING_ROOT]}/config/messages/app")
     private String name;
 
     @Autowired

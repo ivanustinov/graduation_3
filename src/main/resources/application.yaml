@@ -72,7 +72,7 @@ sendMails:
 
 server:
   servlet:
-    context-path: /api
+    context-path: /voting
 
 ---
 spring:
@@ -81,12 +81,20 @@ spring:
       on-profile: postgres
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/voting
-    username: user
-    password: password
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      data-locations: classpath:data.sql
+#      schema-locations: classpath:db/postgres_init.sql
+      mode: always
 ---
 spring:
   config:
