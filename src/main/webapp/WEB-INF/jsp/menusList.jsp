@@ -29,6 +29,13 @@
                         </button>
                     </div>
                 </div>
+                <div class="col-2">
+                    <label class="myLabel" for="current_time"><spring:message
+                            code="voting.current_time"/></label>
+                    <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
+                        <span style="width: 41%" class="form-control" id="current_time"></span>
+                    </div>
+                </div>
                 <div class="col-3">
                     <div style="margin-block-end: 1em">
                         <label class="myLabel" for="time"><spring:message

@@ -2,6 +2,7 @@ package ru.ustinov.voting.web.voting;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,11 +12,12 @@ import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.web.AuthUser;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 
 /**
@@ -45,6 +47,17 @@ public class VotingUIController extends AbstractVoteController {
         return super.getVotingTime(authUser.getUser());
     }
 
+    @GetMapping("/voting_time_left")
+    public Long getLeftVotingTime(@AuthenticationPrincipal AuthUser authUser) {
+        final LocalTime votingTime = super.getVotingTime(authUser.getUser());
+        final LocalTime now = LocalTime.now();
+        final long minuteDifference = now.until(votingTime, ChronoUnit.MINUTES);
+        if (minuteDifference < 0) {
+            return 0L;
+        }
+        return minuteDifference;
+    }
+
     @PostMapping
     public Vote vote(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurant_id) {
         final User user = authUser.getUser();
@@ -54,13 +67,20 @@ public class VotingUIController extends AbstractVoteController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/time_zone")
     public Set<String> getTimezone() {
-        return ZoneId.getAvailableZoneIds();
+        return ZoneId.getAvailableZoneIds().stream().sorted().collect(TreeSet::new, Set::add, Set::addAll);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/time_zone")
-    public void setTimezone(String timeZone) {
+    public ResponseEntity<String> setTimezone(String timeZone) {
         super.setTimeZone(timeZone);
+        return ResponseEntity.ok("{\"currentTime\":\"" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) + "\"}");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/current_time")
+    public ResponseEntity<String> getCurrentTime() {
+        return ResponseEntity.ok("{\"currentTime\":\"" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) + "\"}");
     }
 
     @PreAuthorize("hasRole('ADMIN')")

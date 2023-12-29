@@ -1,6 +1,7 @@
 const userAjaxUrl = "admin/menusList/";
 const timeVotingUrl = "voting/set_time"
 const timeZoneVotingUrl = "voting/time_zone"
+const currentTimeUrl = "voting/current_time"
 const currentTimeZoneVotingUrl = "voting/current_time_zone"
 const getVotingTimeUrl = "voting/voting_time"
 
@@ -66,11 +67,17 @@ function setTime() {
 
 function setTimeZone() {
     $.post({
-            url: timeZoneVotingUrl,
-            data: {timeZone: $('#timeZone').val()}
-        }
-    ).done(function () {
+        url: timeZoneVotingUrl,
+        data: {timeZone: $('#timeZone').val()}
+    }).done(function () {
+        setCurrentTime();
         successNoty("voting.time_zone_enabled");
+    });
+}
+
+function setCurrentTime() {
+    $.get(currentTimeUrl, function (data) {
+        $('#current_time').text(data.currentTime);
     });
 }
 
@@ -83,7 +90,31 @@ function getTimeZones() {
             $(`#timeZone option:contains("${data}")`).prop('selected', true);
         });
     });
+}
 
+function filterTimeZones() {
+    // Получение введенного значения
+    var input = $('#timeZone');
+    var filter = input.value.toUpperCase();
+
+    if (filter.length >= 3) {
+        var options = input.getElementsByTagName('option');
+        // Перебор элементов и скрытие/отображение на основе фильтра
+        for (var i = 0; i < options.length; i++) {
+            var txtValue = options[i].text || options[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                options[i].classList.remove('highlight');
+            } else {
+                options[i].classList.add('highlight');
+            }
+        }
+    } else {
+        // Очистить стили, если введено менее 3 букв
+        var options = input.getElementsByTagName('option');
+        for (var i = 0; i < options.length; i++) {
+            options[i].classList.remove('highlight');
+        }
+    }
 
 }
 
@@ -140,6 +171,7 @@ $(document).ready(function () {
                 ]
         }
     );
+
     $.get(getVotingTimeUrl, function (data) {
         $('#time').val(data);
     });
@@ -151,4 +183,5 @@ $(document).ready(function () {
         value: new Date().toISOString().substring(0, 10)
     });
     getTimeZones();
+    setCurrentTime();
 });

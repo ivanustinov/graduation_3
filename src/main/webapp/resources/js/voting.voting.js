@@ -1,5 +1,5 @@
 const myVoteAjaxUrl = "voting";
-const getVotingTimeUrl = "voting/voting_time";
+const getVotingTimeUrl = "voting/voting_time_left";
 const getResultUrl = "profile/result";
 const my_votes = "voting/my_votes";
 let voted;
@@ -55,7 +55,7 @@ function successNoty(key, value) {
 
 function getVotingTime() {
     $.get(getVotingTimeUrl, function (data) {
-        let leftMinutes = getLeftMinutes(data);
+        let leftMinutes = data;
         $('#votingTime').html(getLeftMinutesAndHours(leftMinutes));
         if (leftMinutes === 0) {
             renderRestultButton();
@@ -77,8 +77,9 @@ function getLeftMinutes(data) {
     let $time = data.split(":");
     var voting_end_hour = Number($time[0]);
     var voting_end_minute = Number($time[1]);
-    var curent_time = new Date();
-    var current_minutes = curent_time.getHours() * 60 + curent_time.getMinutes();
+    var current_time = getCurrentTime();
+    const [hours, minutes] = current_time.split(':').map(Number);
+    var current_minutes = hours * 60 + minutes;
     var end_voting_minutes = voting_end_hour * 60 + voting_end_minute;
     leftMinutes = end_voting_minutes - current_minutes;
     if (leftMinutes < 0) {
