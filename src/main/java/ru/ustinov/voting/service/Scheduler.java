@@ -67,10 +67,10 @@ public class Scheduler {
         }
     }
 
-    public void onChangeVotingTime(LocalTime votingTime) {
+    public void onChangeVotingTime() {
         log.info("change initial delay");
         scheduledFuture.cancel(false);
-        final long initialDelay = calculateInitialDelay(votingTime);
+        final long initialDelay = calculateInitialDelay(voteService.getVotingTime());
         scheduledFuture = scheduler.scheduleAtFixedRate(new SendPostRequest(), initialDelay, secondsInDay, TimeUnit.SECONDS);
     }
 }

@@ -54,7 +54,7 @@ public class AbstractVoteController {
     public void setTime(LocalTime time) {
         log.info("establish voting time to {}", time);
         voteService.setVotingTime(time);
-        scheduler.onChangeVotingTime(time);
+        scheduler.onChangeVotingTime();
     }
 
     public TimeZone getTimeZone() {
@@ -65,6 +65,7 @@ public class AbstractVoteController {
     public void setTimeZone(String timeZone) {
         log.info("establish default time zone to {}", timeZone);
         TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+        scheduler.onChangeVotingTime();
     }
 
     public Vote vote(User user, int restaurant_id) {
