@@ -31,7 +31,7 @@
             <c:if test="${!date.isBefore(dateNow)}">
                 <button style="margin-right: 5px" class="btn btn-primary" onclick="add()">
                     <span class="fa fa-plus"></span>
-                    <spring:message code="common.add"/>
+                    <spring:message code="dish.add"/>
                 </button>
                 <a href="delete_all_dishes?date=${fn:formatDate(date)}&restaurant_id=${restaurant.id}"
                    style="margin-right: 5px" class="btn btn-primary">

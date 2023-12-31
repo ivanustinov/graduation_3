@@ -92,32 +92,6 @@ function getTimeZones() {
     });
 }
 
-function filterTimeZones() {
-    // Получение введенного значения
-    var input = $('#timeZone');
-    var filter = input.value.toUpperCase();
-
-    if (filter.length >= 3) {
-        var options = input.getElementsByTagName('option');
-        // Перебор элементов и скрытие/отображение на основе фильтра
-        for (var i = 0; i < options.length; i++) {
-            var txtValue = options[i].text || options[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                options[i].classList.remove('highlight');
-            } else {
-                options[i].classList.add('highlight');
-            }
-        }
-    } else {
-        // Очистить стили, если введено менее 3 букв
-        var options = input.getElementsByTagName('option');
-        for (var i = 0; i < options.length; i++) {
-            options[i].classList.remove('highlight');
-        }
-    }
-
-}
-
 function createMenu() {
     let date = $('#date').val();
     $('#dateform').attr('action', 'menus?' + date)
