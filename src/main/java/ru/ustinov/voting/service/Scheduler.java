@@ -2,18 +2,17 @@ package ru.ustinov.voting.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import ru.ustinov.voting.to.RestaurantTo;
 import ru.ustinov.voting.web.MyWebClient;
 
-import javax.annotation.PostConstruct;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.TimeZone;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * //TODO add comments.
@@ -37,26 +36,34 @@ public class Scheduler {
 
     private ScheduledFuture<?> scheduledFuture;
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final TaskScheduler taskScheduler;
 
-    private final int secondsInDay = 24*60*60;
-
-    @PostConstruct
-    public void init() {
-        // Рассчитываем время до следующего запуска
-        long initialDelay = calculateInitialDelay(voteService.getVotingTime());
-        scheduledFuture = scheduler.scheduleAtFixedRate(new SendPostRequest(), initialDelay, secondsInDay, TimeUnit.SECONDS);
+    public Scheduler(TaskScheduler taskScheduler) {
+        this.taskScheduler = taskScheduler;
     }
 
-    private long calculateInitialDelay(LocalTime votingTime) {
-        // Рассчитываем следующее время в секундах
-        LocalDateTime targetDateTime = LocalDateTime.of(java.time.LocalDate.now(), votingTime);
-        Duration duration = Duration.between(LocalDateTime.now(), targetDateTime);
-        if (duration.isNegative() || duration.isZero()) {
-            // Если текущее время уже прошло, добавляем 24 часа
-            duration = duration.plusDays(1);
+    @Scheduled(cron = "#{@scheduler.calculateCronExpression()}")
+    public void sendEmails() {
+        log.info("Start Sending Emails on time: " + LocalTime.now());
+    }
+
+    public String calculateCronExpression() {
+        final LocalTime votingTime = voteService.getVotingTime();
+        final int minute = votingTime.getMinute();
+        final int hour = votingTime.getHour();
+        final String cronExpression = "0 " + minute + " " + hour + " * * MON-FRI";
+        log.info(cronExpression);
+        return cronExpression;
+    }
+
+    public void updateVotingTimeOrTimeZone() {
+        // Отменяем предыдущее выполнение
+        if (scheduledFuture != null && !scheduledFuture.isCancelled()) {
+            scheduledFuture.cancel(false);
         }
-        return duration.toSeconds();
+        String cronExpression = calculateCronExpression();
+        // Пересоздаем задачу с новым cron-выражением
+        scheduledFuture = taskScheduler.schedule(this::sendEmails, new CronTrigger(cronExpression, TimeZone.getDefault()));
     }
 
     class SendPostRequest implements Runnable {
@@ -67,10 +74,4 @@ public class Scheduler {
         }
     }
 
-    public void onChangeVotingTime() {
-        log.info("change initial delay");
-        scheduledFuture.cancel(false);
-        final long initialDelay = calculateInitialDelay(voteService.getVotingTime());
-        scheduledFuture = scheduler.scheduleAtFixedRate(new SendPostRequest(), initialDelay, secondsInDay, TimeUnit.SECONDS);
-    }
 }

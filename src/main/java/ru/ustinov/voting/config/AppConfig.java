@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.LocaleContextResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -37,6 +38,7 @@ import java.util.TimeZone;
 @Configuration
 @Slf4j
 @EnableCaching
+@EnableScheduling
 public class AppConfig implements WebMvcConfigurer {
 
     @Value("file:#{systemEnvironment[VOTING_ROOT]}/config/messages/app")
