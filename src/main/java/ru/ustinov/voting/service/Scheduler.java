@@ -11,7 +11,6 @@ import ru.ustinov.voting.web.MyWebClient;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.TimeZone;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -56,14 +55,14 @@ public class Scheduler {
         return cronExpression;
     }
 
-    public void updateVotingTimeOrTimeZone() {
+    public void updateVotingTime() {
         // Отменяем предыдущее выполнение
         if (scheduledFuture != null && !scheduledFuture.isCancelled()) {
             scheduledFuture.cancel(false);
         }
         String cronExpression = calculateCronExpression();
         // Пересоздаем задачу с новым cron-выражением
-        scheduledFuture = taskScheduler.schedule(this::sendEmails, new CronTrigger(cronExpression, TimeZone.getDefault()));
+        scheduledFuture = taskScheduler.schedule(this::sendEmails, new CronTrigger(cronExpression));
     }
 
     class SendPostRequest implements Runnable {
