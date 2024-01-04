@@ -43,7 +43,7 @@ public abstract class AbstractUserController {
     @Autowired
     @SuppressWarnings("deprecation")
     public void setEnvironment(Environment environment) {
-        modificationRestriction = environment.acceptsProfiles(Profiles.HEROKU);
+        modificationRestriction = environment.acceptsProfiles(Profiles.H2_DB);
     }
 
     @InitBinder
@@ -112,7 +112,7 @@ public abstract class AbstractUserController {
     }
 
     protected void checkModificationAllowed(int id) {
-        if (modificationRestriction && id < BaseEntity.START_SEQ + 2) {
+        if (!modificationRestriction && id < BaseEntity.START_SEQ + 2) {
             throw new UpdateRestrictionException();
         }
     }

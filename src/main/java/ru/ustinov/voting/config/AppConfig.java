@@ -41,19 +41,19 @@ import java.util.TimeZone;
 @EnableScheduling
 public class AppConfig implements WebMvcConfigurer {
 
-    @Value("file:#{systemEnvironment[VOTING_ROOT]}/config/messages/app")
+    @Value("file:#{systemEnvironment[VOTING_ROOT]}config/messages/app")
     private String name;
 
     @Autowired
     private Environment env;
 
     @Bean
-    @Profile("heroku")
     public TimeZone defaultTimeZone() {
         final TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
         TimeZone.setDefault(timeZone);
         log.info("Spring boot application running in Moscow timezone :" + LocalTime.now());
-        return TimeZone.getDefault();
+        log.info("SYSTEMENVIRONMENT :" + name);
+        return timeZone;
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")

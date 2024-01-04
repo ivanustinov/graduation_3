@@ -1,5 +1,6 @@
 package ru.ustinov.voting.web.restaurant;
 
+import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import ru.ustinov.voting.model.Restaurant;
 import ru.ustinov.voting.repository.DishRepository;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
+import ru.ustinov.voting.service.Scheduler;
 import ru.ustinov.voting.service.VoteService;
 import ru.ustinov.voting.web.AbstractControllerTest;
 import ru.ustinov.voting.web.formatter.DateFormatter;
@@ -50,6 +52,9 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
 
     @MockBean
     private VoteService voteService;
+
+    @MockBean
+    private Scheduler scheduler;
 
     @Test
     void get() throws Exception {

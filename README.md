@@ -17,6 +17,11 @@ Build a voting system for deciding where to have lunch.
 
 Each restaurant provides a new menu each day.
 
+To deploy the application to Docker, make the docker profile active in the 
+application.yaml file.
+
+
+
 Admin:
 name: admin@gmail.com, password: admin
 User:

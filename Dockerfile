@@ -1,7 +1,7 @@
 # Используем официальный образ OpenJDK 16
 FROM adoptopenjdk:16-jdk-hotspot
 
-ENV VOTING_ROOT=/voting
+ENV VOTING_ROOT=/voting/
 
 # Устанавливаем рабочий каталог
 WORKDIR /voting
