@@ -14,7 +14,7 @@
 </script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
-<div class="jumbotron pt-4">
+<div class="jumbotron pt-1">
     <div class="container">
         <div class="card-body pb-0">
             <div class="row justify-content-end">
@@ -22,45 +22,41 @@
                     <label class="myLabel" for="timeZone"><spring:message
                             code="voting.time_zone"/></label>
                     <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
-                        <select style="margin-right: 5px; width: 80%" class="form-control" name="timeZone"
-                                id="timeZone"></select>
+                        <select style="margin-right: 5px; width: 60%" class="form-control" name="timeZone" id="timeZone"></select>
+                        <span style="margin-right: 5px" class="form-control" id="current_time"></span>
                         <button class="btn btn-info mr-1" onclick="setTimeZone()">
                             <span class="fa fa-check"></span>
                         </button>
                     </div>
                 </div>
-                <div class="col-2">
-                    <label class="myLabel" for="current_time"><spring:message
-                            code="voting.current_time"/></label>
-                    <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
-                        <span style="width: 41%" class="form-control" id="current_time"></span>
-                    </div>
-                </div>
                 <div class="col-3">
                     <div style="margin-block-end: 1em">
-                        <label class="myLabel" for="time"><spring:message
-                                code="voting.time"/></label>
+                        <label class="myLabel" for="time"><spring:message code="voting.time"/></label>
                         <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
                             <input style="margin-right: 5px;" class="form-control" type="time" name="time" id="time"/>
                             <button class="btn btn-info mr-1" onclick="setTime()">
                                 <span class="fa fa-check"></span>
-                                <%--                            <spring:message code="common.establish"/>--%>
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="col-3">
                     <form id="dateform">
-                        <label class="myLabel" for="date"><spring:message
-                                code="menu.date"/></label>
+                        <label class="myLabel" for="date"><spring:message code="menu.date"/></label>
                         <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
-                            <input style="margin-right: 5px; width: 50%" class="form-control" name="date" id="date"/>
+                            <input style="margin-right: 5px; width: 42%" class="form-control" name="date" id="date"/>
                             <button class="btn btn-info mr-1" onclick="createMenu()">
                                 <span class="fa fa-plus"></span>
                                 <spring:message code="common.add"/>
                             </button>
                         </div>
                     </form>
+                </div>
+                <div class="col-2">
+                    <label class="myLabel" for="sendMailChecked"><spring:message code="voting.send_emails"/></label>
+                    <div class="form-inline my-2 align-items-stretch" style="justify-content: flex-end">
+                        <input style="margin-right: 5px;" type="checkbox" id="sendMailChecked">
+                    </div>
                 </div>
             </div>
         </div>

@@ -15,7 +15,8 @@
 
     // user.add/user.edit, restaurant.add/restaurant.edit, menu.add/menu.edit, dish.add/dish.edit;
     <c:forEach var='key' items='<%=new String[]{"common.restaurant", "common.deleted", "common.saved", "commons.saved", "common.copied",
-     "common.search", "common.confirm", "common.voted", "voting.result", "voting.time_enabled", "voting.time_zone_enabled", "dish.rubles"}%>'>
+     "common.search", "common.confirm", "common.voted", "voting.result", "voting.time_enabled", "voting.time_zone_enabled", "dish.rubles",
+     "voting.emails_enabled", "voting.emails_disabled"}%>'>
     i18n['${key}'] = '<spring:message code="${key}"/>';
     </c:forEach>
 </script>

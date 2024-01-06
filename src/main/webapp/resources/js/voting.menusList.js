@@ -4,6 +4,7 @@ const timeZoneVotingUrl = "voting/time_zone"
 const currentTimeUrl = "voting/current_time"
 const currentTimeZoneVotingUrl = "voting/current_time_zone"
 const getVotingTimeUrl = "voting/voting_time"
+const emailSendingUrl = "voting/email_sending"
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
@@ -97,6 +98,20 @@ function createMenu() {
     $('#dateform').attr('action', 'menus?' + date)
 }
 
+function setEmailCheckBox() {
+    $('#sendMailChecked').on('change', function () {
+        var checkboxValue = $(this).prop('checked');
+        $.post(emailSendingUrl, {sendEmails: checkboxValue})
+            .done(function () {
+                if (checkboxValue) {
+                    successNoty("voting.emails_enabled");
+                } else {
+                    successNoty("voting.emails_disabled");
+                }
+            });
+    });
+}
+
 $(document).ready(function () {
     $.fn.dataTable.moment('DD.MM.YYYY');
     makeEditable(
@@ -149,6 +164,9 @@ $(document).ready(function () {
     $.get(getVotingTimeUrl, function (data) {
         $('#time').val(data);
     });
+    $.get(emailSendingUrl, function (data) {
+        $('#sendMailChecked').prop('checked', data);
+    });
     var date_format = (dateFormat === "ru_date_format" ? 'd.m.Y' : 'Y-m-d');
     $.datetimepicker.setLocale(localeCode);
     $('#date').datetimepicker({
@@ -156,6 +174,7 @@ $(document).ready(function () {
         format: date_format,
         value: new Date().toISOString().substring(0, 10)
     });
+    setEmailCheckBox();
     getTimeZones();
     setCurrentTime();
 });

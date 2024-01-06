@@ -12,7 +12,6 @@ import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.web.AuthUser;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -75,6 +74,20 @@ public class VotingUIController extends AbstractVoteController {
     public ResponseEntity<String> setTimezone(String timeZone) {
         super.setTimeZone(timeZone);
         return ResponseEntity.ok("{\"currentTime\":\"" + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) + "\"}");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/email_sending")
+    public ResponseEntity<String> setEmailSending(boolean sendEmails) {
+        super.setMailSending(sendEmails);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/email_sending")
+    public ResponseEntity<Boolean> getEmailSending() {
+        final boolean mailSending = super.getMailSending();
+        return ResponseEntity.ok(mailSending);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -49,7 +49,7 @@ spring:
 #    basename: app
 
   profiles:
-    active: ru_date_format, docker
+    active: ru_date_format, h2
 
 logging:
   level:

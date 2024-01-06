@@ -68,6 +68,17 @@ public class AbstractVoteController {
         scheduler.updateVotingTimeOrTimeZone();
     }
 
+    public void setMailSending(boolean sendEmails) {
+        log.info("establish emailSending to {}", sendEmails);
+        scheduler.setSendMails(sendEmails);
+        scheduler.updateVotingTimeOrTimeZone();
+    }
+
+    public boolean getMailSending() {
+        log.info("get emailSending");
+        return scheduler.isSendMails();
+    }
+
     public Vote vote(User user, int restaurant_id) {
         log.info("user {} is voting for restaurant {}", user.getName(), restaurant_id);
         return voteService.vote(user, restaurant_id);
