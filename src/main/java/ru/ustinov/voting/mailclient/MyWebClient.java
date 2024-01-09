@@ -1,6 +1,6 @@
-package ru.ustinov.voting.web;
+package ru.ustinov.voting.mailclient;
 
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.ustinov.voting.web.json.JsonUtil;
 
 /**
  * //TODO add comments.
@@ -16,8 +17,8 @@ import org.springframework.web.client.RestTemplate;
  * @version 1.0
  * @since 16.12.2023
  */
+@Slf4j
 @Service
-@Getter
 public class MyWebClient {
 
     RestTemplate restTemplate = new RestTemplate();
@@ -25,10 +26,10 @@ public class MyWebClient {
     @Value("${sendMails.url}/sendMails")
     private String apiUrl;
 
-    public void postRequest(int restaurant_id) {
+    public void sendEmailsRequest(RequestPayLoad requestPayLoad) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Integer> requestEntity = new HttpEntity<>(restaurant_id, headers);
+        HttpEntity<RequestPayLoad> requestEntity = new HttpEntity<>(requestPayLoad, headers);
         final ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
         System.out.println("Response: " + stringResponseEntity.getBody() + " " + stringResponseEntity.getStatusCode());
     }

@@ -49,7 +49,7 @@ spring:
 #    basename: app
 
   profiles:
-    active: ru_date_format, h2
+    active: ru_date_format, docker
 
 logging:
   level:
@@ -68,7 +68,7 @@ server.servlet:
     force: true
 
 sendMails:
- url: http://localhost:8081/mail
+ url: http://mailservise
 
 server:
   servlet:

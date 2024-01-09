@@ -22,8 +22,15 @@ services:
     depends_on:
       - postgres
 
+  mail-sender:
+    image: 'mailsender:latest'
+    container_name: mail-sender
+    hostname: mailservise
+    ports:
+      - 90:8081
+
   postgres:
-    image: 'postgres:12.10'
+    image: 'postgres:latest'
     hostname: postgres
     container_name: postgres
     ports:

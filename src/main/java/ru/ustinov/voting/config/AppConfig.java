@@ -60,7 +60,6 @@ public class AppConfig implements WebMvcConfigurer {
     @Profile("!test")
     Server h2Server() throws SQLException {
         log.info("Start H2 TCP server");
-        log.info(name);
         return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
     }
 

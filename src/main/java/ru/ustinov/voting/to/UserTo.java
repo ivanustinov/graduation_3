@@ -30,6 +30,11 @@ public class UserTo implements HasEmail {
     @Size(min = 5, max = 32)
     String password;
 
+    public UserTo(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName();

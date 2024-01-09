@@ -8,7 +8,7 @@
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
-<div class="jumbotron py-0">
+<div class="jumbotron py-0" style="margin-bottom: 0rem;">
     <div class="container">
         <c:if test="${param.error}">
             <div class="error">${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</div>
@@ -51,7 +51,8 @@
             <a href="https://assertj.github.io/doc/">AssertJ</a>,
             <a href="http://jquery.com/">jQuery</a>,
             <a href="https://plugins.jquery.com/">jQuery plugins</a>,
-            <a href="http://getbootstrap.com/">Bootstrap</a>.
+            <a href="http://getbootstrap.com/">Bootstrap</a>,
+            <a href="http://https://docs.docker.com/">Docker</a>.
         </div>
     </div>
 </div>

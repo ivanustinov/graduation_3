@@ -3,18 +3,19 @@ package ru.ustinov.voting.service;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
+import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.to.RestaurantTo;
-import ru.ustinov.voting.web.MyWebClient;
+import ru.ustinov.voting.mailclient.MyWebClient;
+import ru.ustinov.voting.mailclient.RequestPayLoad;
+import ru.ustinov.voting.to.UserTo;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledFuture;
 
@@ -54,7 +55,7 @@ public class Scheduler {
         updateVotingTimeOrTimeZone();
     }
 
-//    @Scheduled(cron = "#{@scheduler.calculateCronExpression()}", zone = "#{@scheduler.getTimeZone.getDefault().getID()}")
+    //    @Scheduled(cron = "#{@scheduler.calculateCronExpression()}", zone = "#{@scheduler.getTimeZone.getDefault().getID()}")
     public void sendEmails() {
         log.info("Start Sending Emails on time: " + LocalTime.now());
     }
@@ -77,7 +78,8 @@ public class Scheduler {
         if (sendMails) {
             String cronExpression = calculateCronExpression();
             // Пересоздаем задачу с новым cron-выражением
-            scheduledFuture = taskScheduler.schedule(this::sendEmails, new CronTrigger(cronExpression, TimeZone.getDefault()));
+            scheduledFuture = taskScheduler.schedule(new SendPostRequest(), new CronTrigger(cronExpression,
+                    TimeZone.getDefault()));
         }
     }
 
@@ -88,8 +90,13 @@ public class Scheduler {
     class SendPostRequest implements Runnable {
         @Override
         public void run() {
-            final RestaurantTo result = restaurantService.getResult(LocalDateTime.now());
-            myWebClient.postRequest(result.getId());
+            final Optional<Set<UserTo>> votedUsers = voteService.getVotedUsers();
+            if (votedUsers.isPresent()) {
+                final Set<UserTo> users = votedUsers.get();
+                final RestaurantTo resultTo = restaurantService.getResult(LocalDateTime.now());
+                final RequestPayLoad requestPayLoad = new RequestPayLoad(resultTo, users);
+                myWebClient.sendEmailsRequest(requestPayLoad);
+            }
         }
     }
 

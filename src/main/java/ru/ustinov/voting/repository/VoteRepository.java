@@ -21,6 +21,10 @@ public interface VoteRepository extends BaseRepository<Vote> {
     @Query("select v from Vote v where v.user =:user and v.date =:date")
     Vote getVoteByUserAndDate(User user, LocalDate date);
 
+    @EntityGraph(attributePaths = {"user"}, type = EntityGraph.EntityGraphType.LOAD)
+    @Query("select v from Vote v where v.date =:date")
+    List<Vote> getVotesWithUserByDate(LocalDate date);
+
     @Query("select v from Vote v where v.date = ?1")
     List<Vote> getVotesByDate(LocalDate date);
 

@@ -12,9 +12,14 @@ import ru.ustinov.voting.model.User;
 import ru.ustinov.voting.model.Vote;
 import ru.ustinov.voting.repository.RestaurantRepository;
 import ru.ustinov.voting.repository.VoteRepository;
+import ru.ustinov.voting.to.UserTo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
@@ -58,5 +63,12 @@ public class VoteService {
             throw new AppException(HttpStatus.CONFLICT, ErrorAttributeOptions.of(MESSAGE),
                     EXCEPTION_VOTING_AFTER_VOTING_TIME_IS_UP);
         }
+    }
+
+    public Optional<Set<UserTo>> getVotedUsers() {
+        final List<Vote> votesByDate = voteRepository.getVotesWithUserByDate(LocalDate.now());
+        Set<UserTo> votedUsers = votesByDate.stream().map(vote -> new UserTo(vote.getUser().getName(), vote.getUser().getEmail()))
+                .collect(Collectors.toSet());
+        return Optional.ofNullable(votedUsers.isEmpty() ? null : votedUsers);
     }
 }
