@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
-import ru.ustinov.voting.model.User;
-import ru.ustinov.voting.to.RestaurantTo;
 import ru.ustinov.voting.mailclient.MyWebClient;
 import ru.ustinov.voting.mailclient.RequestPayLoad;
+import ru.ustinov.voting.to.RestaurantTo;
 import ru.ustinov.voting.to.UserTo;
 
 import java.time.LocalDateTime;
@@ -53,11 +52,6 @@ public class Scheduler {
         this.taskScheduler = taskScheduler;
         this.voteService = voteService;
         updateVotingTimeOrTimeZone();
-    }
-
-    //    @Scheduled(cron = "#{@scheduler.calculateCronExpression()}", zone = "#{@scheduler.getTimeZone.getDefault().getID()}")
-    public void sendEmails() {
-        log.info("Start Sending Emails on time: " + LocalTime.now());
     }
 
     public String calculateCronExpression() {

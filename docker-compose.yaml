@@ -30,13 +30,12 @@ services:
       - 90:8081
 
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:16.1-alpine'
     hostname: postgres
     container_name: postgres
-    ports:
-      - 5433:5432
     volumes:
       - db:/docker-entrypoint-initdb.d
+      - /var/data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password

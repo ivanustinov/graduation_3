@@ -52,7 +52,7 @@
             <a href="http://jquery.com/">jQuery</a>,
             <a href="https://plugins.jquery.com/">jQuery plugins</a>,
             <a href="http://getbootstrap.com/">Bootstrap</a>,
-            <a href="http://https://docs.docker.com/">Docker</a>.
+            <a href="https://docs.docker.com/">Docker</a>.
         </div>
     </div>
 </div>
