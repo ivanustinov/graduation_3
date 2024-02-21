@@ -1,6 +1,7 @@
 Voting Application
 ===============================
-Design and implement a REST API using Hibernate/Spring/SpringMVC (or Spring-Boot) **without frontend**.
+Design and implement a REST API using Spring-Boot   
+[You can test this application](http://ivanustinov1985.fvds.ru/voting).
 
 The task is:
 

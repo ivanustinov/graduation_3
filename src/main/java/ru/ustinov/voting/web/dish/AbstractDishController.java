@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import ru.ustinov.voting.model.Dish;
 import ru.ustinov.voting.repository.DishRepository;
 import ru.ustinov.voting.repository.VoteRepository;
-import ru.ustinov.voting.service.DishServise;
+import ru.ustinov.voting.service.DishService;
 import ru.ustinov.voting.util.validation.Util;
 import ru.ustinov.voting.web.SecurityUtil;
 
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static ru.ustinov.voting.util.validation.ValidationUtil.checkNew;
 
@@ -30,7 +31,7 @@ import static ru.ustinov.voting.util.validation.ValidationUtil.checkNew;
 public abstract class AbstractDishController {
 
     @Autowired
-    private DishServise dishServise;
+    private DishService dishService;
 
     @Autowired
     private DishRepository dishRepository;
@@ -77,31 +78,31 @@ public abstract class AbstractDishController {
 
     public void deleteAllByRestaurantAndDate(int restaurant_id, LocalDate date) {
         log.info("delete dishes with restaurant {} and date {} by user {}", restaurant_id, date, SecurityUtil.authEmail());
-        dishServise.deleteAllByRestaurantAndDate(restaurant_id, date);
+        dishService.deleteAllByRestaurantAndDate(restaurant_id, date);
         voteRepository.deleteAllByDateAndRestaurant(date, restaurant_id);
     }
 
     public void delete(int id, int restaurant_id) {
         log.info("delete dish with id {} by user {}", id, SecurityUtil.authEmail());
-        dishServise.delete(id, restaurant_id);
+        dishService.delete(id, restaurant_id);
     }
 
 
     public void update(Dish dish, int restaurant_id, int id) {
         log.info("update {} for restaurant {} by user {}", dish, restaurant_id, SecurityUtil.authEmail());
-        dishServise.update(dish, restaurant_id, id);
+        dishService.update(dish, restaurant_id, id);
     }
 
 
     public Dish create(Dish dish, int restaurant_id) {
         log.info("create {} for restaurant {} by user {}", dish, restaurant_id, SecurityUtil.authEmail());
         checkNew(dish);
-        return dishServise.save(dish, restaurant_id);
+        return dishService.save(dish, restaurant_id);
     }
 
 
     public void createDishes(int restaurant_id, ArrayList<Dish> dishes) {
         log.info("create dishes {} for restaurant {} by user {}", dishes, restaurant_id, SecurityUtil.authEmail());
-        dishServise.createDishes(restaurant_id, dishes);
+        dishService.createDishes(restaurant_id, dishes);
     }
 }

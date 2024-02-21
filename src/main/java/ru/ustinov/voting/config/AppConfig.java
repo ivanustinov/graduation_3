@@ -52,7 +52,6 @@ public class AppConfig implements WebMvcConfigurer {
         final TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
         TimeZone.setDefault(timeZone);
         log.info("Spring boot application running in Moscow timezone :" + LocalTime.now());
-        log.info("SYSTEMENVIRONMENT :" + name);
         return timeZone;
     }
 

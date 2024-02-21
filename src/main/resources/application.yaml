@@ -60,6 +60,7 @@ logging:
 #    org.springframework.orm.jpa: DEBUG
     org.springframework.web: DEBUG
     org.springframework.cache: DEBUG
+#    org.springframework.transaction: DEBUG
 
 server.servlet:
   encoding:
@@ -71,6 +72,7 @@ sendMails:
  url: http://mailservise
 
 server:
+  port: 80
   servlet:
     context-path: /voting
 

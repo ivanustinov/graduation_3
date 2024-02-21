@@ -24,7 +24,7 @@ public class MenuServise {
 
     private DishRepository dishRepository;
 
-    private DishServise dishServise;
+    private DishService dishService;
 
     private RestaurantRepository restaurantRepository;
 
@@ -46,7 +46,7 @@ public class MenuServise {
         final List<Dish> dishesByDate = dishRepository.getDishesByDate(date);
         dishesByDate.forEach(dish -> {
             final Dish dish1 = new Dish(null, dish.getName(), newDate, dish.getPrice());
-            dishServise.save(dish1, dish.getRestaurant().getId());
+            dishService.save(dish1, dish.getRestaurant().getId());
         });
     }
 }

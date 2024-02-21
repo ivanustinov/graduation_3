@@ -23,10 +23,10 @@ import static ru.ustinov.voting.util.validation.ValidationUtil.assureIdConsisten
 import static ru.ustinov.voting.util.validation.ValidationUtil.checkNotFoundWithId;
 
 @Service
-public class DishServise {
+public class DishService {
 
     @Autowired
-    private DishServise dishServise;
+    private DishService dishService;
 
     @Autowired
     private DishRepository dishRepository;
@@ -87,7 +87,7 @@ public class DishServise {
     @CacheEvict(value = {"restaurants", "result"}, allEntries = true)
     public void createDishes(int restaurant_id, List<Dish> dishes) {
         for (Dish dish : dishes) {
-            dishServise.save(dish, restaurant_id);
+            dishService.save(dish, restaurant_id);
         }
     }
 }

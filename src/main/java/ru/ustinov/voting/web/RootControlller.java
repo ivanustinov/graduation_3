@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.ustinov.voting.service.DishServise;
+import ru.ustinov.voting.service.DishService;
 import ru.ustinov.voting.service.RestaurantService;
 import ru.ustinov.voting.web.formatter.DateFormatter;
 import springfox.documentation.annotations.ApiIgnore;
@@ -32,7 +32,7 @@ public class RootControlller {
     private RestaurantService restaurantService;
 
     @Autowired
-    private DishServise dishServise;
+    private DishService dishService;
 
     @Autowired
     private Environment environment;
@@ -75,7 +75,7 @@ public class RootControlller {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/delete_all_dishes")
     public String deleteAll(@RequestParam LocalDate date, @RequestParam int restaurant_id) {
-        dishServise.deleteAllByRestaurantAndDate(restaurant_id, date);
+        dishService.deleteAllByRestaurantAndDate(restaurant_id, date);
         return "redirect:/menus?date=" + DateFormatter.format(date);
     }
 
