@@ -72,7 +72,7 @@ public class Scheduler {
         if (sendMails) {
             String cronExpression = calculateCronExpression();
             // Пересоздаем задачу с новым cron-выражением
-            scheduledFuture = taskScheduler.schedule(new SendPostRequest(), new CronTrigger(cronExpression,
+            scheduledFuture = taskScheduler.schedule(this::sendMail, new CronTrigger(cronExpression,
                     TimeZone.getDefault()));
         }
     }
@@ -81,16 +81,13 @@ public class Scheduler {
         this.sendMails = sendMails;
     }
 
-    class SendPostRequest implements Runnable {
-        @Override
-        public void run() {
-            final Optional<Set<UserTo>> votedUsers = voteService.getVotedUsers();
-            if (votedUsers.isPresent()) {
-                final Set<UserTo> users = votedUsers.get();
-                final RestaurantTo resultTo = restaurantService.getResult(LocalDateTime.now());
-                final RequestPayLoad requestPayLoad = new RequestPayLoad(resultTo, users);
-                myWebClient.sendEmailsRequest(requestPayLoad);
-            }
+    private void sendMail() {
+        final Optional<Set<UserTo>> votedUsers = voteService.getVotedUsers();
+        if (votedUsers.isPresent()) {
+            final Set<UserTo> users = votedUsers.get();
+            final RestaurantTo resultTo = restaurantService.getResult(LocalDateTime.now());
+            final RequestPayLoad requestPayLoad = new RequestPayLoad(resultTo, users);
+            myWebClient.sendEmailsRequest(requestPayLoad);
         }
     }
 
