@@ -12,11 +12,11 @@ import ru.ustinov.voting.util.validation.ValidationUtil;
 public interface BaseRepository<T> extends JpaRepository<T, Integer> {
 
     //    https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query.spel-expressions
-    @Transactional
     @Modifying
     @Query("DELETE FROM #{#entityName} u WHERE u.id=:id")
     int delete(int id);
 
+    @Transactional
     default void deleteExisted(int id) {
         ValidationUtil.checkModification(delete(id), id);
     }

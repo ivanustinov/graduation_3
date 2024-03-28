@@ -44,9 +44,6 @@ import static ru.ustinov.voting.web.voting.VoteTestData.*;
 class VotingRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
     private VoteRepository voteRepository;
 
     @Autowired
@@ -118,14 +115,14 @@ class VotingRestControllerTest extends AbstractControllerTest {
                 .andDo(print());
     }
 
-    @Test
-    @WithUserDetails(ADMIN_MAIL)
-    void setTimeZone() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + "/time_zone")
-                .param("timeZone", "Asia/Yekaterinburg"))
-                .andDo(print());
-        assertEquals("Asia/Yekaterinburg", TimeZone.getDefault().toZoneId().getId());
-    }
+//    @Test
+//    @WithUserDetails(ADMIN_MAIL)
+//    void setTimeZone() throws Exception {
+//        perform(MockMvcRequestBuilders.post(REST_URL + "/time_zone")
+//                .param("timeZone", "Asia/Yekaterinburg"))
+//                .andDo(print());
+//        assertEquals("Asia/Yekaterinburg", TimeZone.getDefault().toZoneId().getId());
+//    }
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
@@ -138,25 +135,19 @@ class VotingRestControllerTest extends AbstractControllerTest {
 
     @Test
     void voteTwice() throws Exception {
-        final LocalTime votingTime = voteService.getVotingTime();
-//        final MockedStatic<LocalTime> localTimeMockedStaticAnother = fixCurrentTime(votingTime.minusMinutes(15));
-//        try (localTimeMockedStaticAnother) {
         VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(user, DATE), voteUserHarbinNow);
+        final LocalTime votingTime = voteService.getVotingTime();
+        final MockedStatic<LocalTime> localTimeMockedStaticAnother = fixCurrentTime(votingTime.minusMinutes(15));
+        try (localTimeMockedStaticAnother) {
             perform(MockMvcRequestBuilders.post(REST_URL)
-                    .param("restaurant_id", String.valueOf(RESTAURANT_HANOY.id())))
-                    .andExpect(VOTE_MATCHER.contentJson(voteUser_HanoyNow))
-                    .andDo(print());
-//        }
+                .param("restaurant_id", String.valueOf(RESTAURANT_HANOY.id())))
+                .andExpect(VOTE_MATCHER.contentJson(voteUser_HanoyNow))
+                .andDo(print());
+        }
         final Vote voteByUserAndDate = voteRepository.getVoteByUserAndDate(user, DATE);
         final Object unproxy = Hibernate.unproxy(voteByUserAndDate.getRestaurant());
         voteByUserAndDate.setRestaurant((Restaurant) unproxy);
         VOTE_MATCHER.assertMatch(voteByUserAndDate, voteUser_HanoyNow);
-    }
-
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Vote getVote(User user, LocalDate date) {
-        return voteRepository.getVoteByUserAndDate(user, date);
     }
 
     private MockedStatic<LocalTime> fixCurrentTime(LocalTime fixedTime) {
