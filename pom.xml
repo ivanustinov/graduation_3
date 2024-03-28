@@ -240,6 +240,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <argLine>-Duser.language=ru -Duser.region=RU</argLine>
                 </configuration>
             </plugin>
         </plugins>
